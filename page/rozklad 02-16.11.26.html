@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Розклад НУ «ОМА» • 1207</title>
+
+<style>
+:root {
+    --bg: #eef2f7;
+    --text: #222;
+    --card: #ffffff;
+    --accent: #003366;
+    --secondary: #c7d3e4;
+    --shadow: rgba(0,0,0,0.12);
+
+    --lecture: #d6e8ff;
+    --lecture-border: #0066cc;
+
+    --practice: #e5ffe5;
+    --practice-border: #2eb82e;
+
+    --empty: #f1f3f6;
+    --empty-border: #9aa5b4;
+}
+
+.dark {
+    --bg: #0f1116;
+    --text: #f0f0f0;
+    --card: #1a1d23;
+    --accent: #4da3ff;
+    --secondary: #2b3442;
+    --shadow: rgba(0,0,0,0.45);
+
+    --lecture: #1f324a;
+    --lecture-border: #4da3ff;
+
+    --practice: #1e3a2f;
+    --practice-border: #3bdc7c;
+
+    --empty: #232730;
+    --empty-border: #5a6270;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: 0.3s ease-in-out;
+}
+
+header {
+    text-align: center;
+    background: var(--accent);
+    color: white;
+    padding: 15px;
+}
+
+header .title {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+header .subtitle {
+    margin-top: 5px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.top-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+button {
+    padding: 10px 18px;
+    border: none;
+    background: var(--secondary);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 10px;
+}
+
+button.active {
+    background: var(--accent);
+    color: white;
+}
+
+.day {
+    margin: 20px auto;
+    width: 95%;
+    max-width: 850px;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+.day h2 {
+    color: var(--accent);
+}
+
+.pair-title {
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 4px;
+}
+
+.pair-time {
+    font-size: 13px;
+    color: #666;
+}
+
+.dark .pair-time {
+    color: #aaa;
+}
+
+.subject {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border-left: 6px solid;
+}
+
+.lecture {
+    background: var(--lecture);
+    border-left-color: var(--lecture-border);
+}
+
+.practice {
+    background: var(--practice);
+    border-left-color: var(--practice-border);
+}
+
+.empty {
+    background: var(--empty);
+    border-left-color: var(--empty-border);
+    opacity: 0.75;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="title">Розклад занять • Група 1207</div>
+<div class="subtitle" id="currentInfo"></div>
+</header>
+
+<div class="top-controls">
+    <button id="oddBtn">Непарний</button>
+    <button id="evenBtn">Парний</button>
+    <button id="themeBtn">🌙 Темна тема</button>
+</div>
+
+<div id="schedule"></div>
+
+<script>
+const pairTimes = {
+    1: "09:00 – 10:20",
+    2: "10:30 – 11:50",
+    3: "12:10 – 13:30"
+};
+
+function getWeekType(){
+    const now = new Date();
+    if(now.getDay() === 0){
+        now.setDate(now.getDate() + 1);
+    }
+    const firstThursday = new Date(now.getFullYear(),0,4);
+    const weekNumber = Math.ceil((((now - firstThursday) / 86400000) + firstThursday.getDay()+1)/7);
+    return (weekNumber % 2 === 0) ? "even" : "odd";
+}
+
+function updateHeaderInfo(weekType){
+    const now = new Date();
+    const options = { day: 'numeric', month: 'long' };
+    const dateStr = now.toLocaleDateString('uk-UA', options);
+    const weekText = weekType === "even" ? "Парний" : "Непарний";
+
+    document.getElementById("currentInfo").innerText =
+        `Сьогодні: ${dateStr} • Поточний тиждень: ${weekText}`;
+}
+
+const savedTheme = localStorage.getItem("theme");
+
+if(savedTheme === "dark"){
+    document.body.classList.add("dark");
+}
+
+document.getElementById("themeBtn").onclick = ()=>{
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "theme",
+        document.body.classList.contains("dark") ? "dark" : "light"
+    );
+};
+
+const scheduleData = {
+
+// Непарний тиждень (верхня сітка)
+odd: {
+    "Понеділок":[
+        {pair:1, type:"practice", subject:"Англійська мова (за професійним спрямуванням)"},
+        {pair:2, type:"lecture", subject:"Навігація та лоція"},
+        {pair:3, type:"practice", subject:"Англійська мова (за професійним спрямуванням)"}
+    ],
+
+    "Вівторок":[
+        {pair:1, type:"practice", subject:"Англійська мова (за професійним спрямуванням)"},
+        {pair:2, type:"practice", subject:"Теоретична механіка"},
+        {pair:3, type:"lecture", subject:"Теоретична механіка"}
+    ],
+
+    "Середа":[
+        {pair:1, type:"lecture", subject:"Філософія"},
+        {pair:2, type:"practice", subject:"Основи електротехніки (Лаб)"},
+        {pair:3, type:"practice", subject:"Суднові енергетичні установки та електрообладнання суден (Лаб)"}
+    ],
+
+    "Четвер":[
+        {pair:1, type:"lecture", subject:"Теоретична механіка"},
+        {pair:2, type:"lecture", subject:"Суднові енергетичні установки та електрообладнання суден"},
+        {pair:3, type:"lecture", subject:"Філософія"}
+    ],
+
+    "Пʼятниця":[
+        {pair:1, type:"practice", subject:"Суднові енергетичні установки та електрообладнання суден (Лаб)"},
+        {pair:2, type:"practice", subject:"Філософія"},
+        {pair:3, type:"practice", subject:"Навігація та лоція (Лаб)"}
+    ]
+},
+
+// Парний тиждень (нижня сітка — з 02.11)
+even: {
+    "Понеділок":[
+        {pair:1, type:"empty", subject:"нету пары сейчас"},
+        {pair:2, type:"lecture", subject:"Навігація та лоція"},
+        {pair:3, type:"practice", subject:"Англійська мова (за професійним спрямуванням)"}
+    ],
+
+    "Вівторок":[
+        {pair:1, type:"practice", subject:"Англійська мова (за професійним спрямуванням)"},
+        {pair:2, type:"practice", subject:"Теоретична механіка"},
+        {pair:3, type:"practice", subject:"Основи електротехніки (Лаб)"}
+    ],
+
+    "Середа":[
+        {pair:1, type:"empty", subject:"нету пары сейчас"},
+        {pair:2, type:"practice", subject:"Основи електротехніки (Лаб)"},
+        {pair:3, type:"practice", subject:"Теоретична механіка"}
+    ],
+
+    "Четвер":[
+        {pair:1, type:"lecture", subject:"Теоретична механіка"},
+        {pair:2, type:"lecture", subject:"Суднові енергетичні установки та електрообладнання суден"},
+        {pair:3, type:"lecture", subject:"Філософія"}
+    ],
+
+    "Пʼятниця":[
+        {pair:1, type:"practice", subject:"Суднові енергетичні установки та електрообладнання суден (Лаб)"},
+        {pair:2, type:"practice", subject:"Філософія"},
+        {pair:3, type:"practice", subject:"Навігація та лоція (Лаб)"}
+    ]
+}
+
+};
+
+function renderSchedule(type){
+    updateHeaderInfo(type);
+
+    const root = document.getElementById("schedule");
+    root.innerHTML = "";
+
+    Object.entries(scheduleData[type]).forEach(([day, lessons]) => {
+
+        const div = document.createElement("div");
+        div.className = "day";
+        div.innerHTML = `<h2>${day}</h2>`;
+
+        lessons.forEach(item => {
+
+            const s = document.createElement("div");
+            s.className = `subject ${item.type}`;
+
+            s.innerHTML = `
+                <div class="pair-title">
+                    ${item.pair}-я пара |
+                    <span class="pair-time">${pairTimes[item.pair]}</span>
+                </div>
+                <b>${item.subject}</b>
+            `;
+
+            div.appendChild(s);
+        });
+
+        root.appendChild(div);
+    });
+}
+
+const oddBtn = document.getElementById("oddBtn");
+const evenBtn = document.getElementById("evenBtn");
+
+oddBtn.onclick = ()=>{
+    oddBtn.classList.add("active");
+    evenBtn.classList.remove("active");
+    renderSchedule("odd");
+};
+
+evenBtn.onclick = ()=>{
+    evenBtn.classList.add("active");
+    oddBtn.classList.remove("active");
+    renderSchedule("even");
+};
+
+const currentWeek = getWeekType();
+
+if(currentWeek === "even"){
+    evenBtn.classList.add("active");
+    renderSchedule("even");
+}else{
+    oddBtn.classList.add("active");
+    renderSchedule("odd");
+}
+</script>
+
+</body>
+</html>
