@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigational Vocabulary Training</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #e2e8f0;
+            color: #0f172a;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        .section-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #94a3b8;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+            display: flex;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .card-number {
+            background: #0f172a;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            flex-shrink: 0;
+        }
+        .card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .sentence-box {
+            padding: 20px;
+        }
+        .eng-sentence {
+            font-size: 18px;
+            color: #1e293b;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .eng-sentence strong {
+            color: #0369a1; /* Синій акцент для дієслова */
+            background: #e0f2fe;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .eng-sentence i {
+            color: #0f766e; /* Зеленуватий акцент для терміну */
+            background: #ccfbf1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-style: normal;
+            font-weight: 600;
+        }
+        .ukr-text {
+            font-size: 15px;
+            color: #64748b;
+        }
+        .terms-box {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 16px 20px;
+            display: flex;
+            gap: 40px;
+        }
+        .term-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .term-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #94a3b8;
+            letter-spacing: 0.05em;
+        }
+        .term-eng {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .term-ukr {
+            font-size: 14px;
+            color: #475569;
+            font-style: italic;
+        }
+        
+        @media (max-width: 600px) {
+            .terms-box {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed; top:15px; left:15px; background:#2563eb; color:white; padding:10px 15px; text-decoration:none; border-radius:8px; font-family:sans-serif; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index:9999;">⬅ На главную</a>
+
+
+<div class="container" id="app">
+    <!-- Блоки будуть згенеровані через JavaScript -->
+</div>
+
+<script>
+    const vocab1 = [
+        { v: "Carry out", b: " ", t: "dead reckoning", a: " now.", s: "Ми повинні виконати зчислення шляху зараз.", tu: "зчислення шляху", vu: "виконувати" },
+        { v: "Look up", b: " ", t: "piloting", a: " techniques.", s: "Пошукай методи навігації по орієнтирам.", tu: "навігація по орієнтирам", vu: "шукати інформацію" },
+        { v: "Turn on", b: " the ", t: "electronic navigation", a: ".", s: "Увімкни електронну навігацію.", tu: "електронна навігація", vu: "вмикати" },
+        { v: "Give up", b: " ", t: "celestial navigation", a: " today.", s: "Відмовся від астронавігації сьогодні.", tu: "астронавігація", vu: "відмовлятися" },
+        { v: "Take over", b: " and ", t: "direct a vessel", a: ".", s: "Прийми управління і направляй судно.", tu: "направляти судно", vu: "приймати управління" },
+        { v: "Go out", b: " and ", t: "observe landmarks", a: ".", s: "Вийди і стеж за орієнтирами.", tu: "стежити за орієнтирами", vu: "виходити" },
+        { v: "Look for", b: " ", t: "buoys and beacons", a: ".", s: "Шукай буйки та бакени.", tu: "буйки та бакени", vu: "шукати" },
+        { v: "Find out", b: " the radar ", t: "range", a: ".", s: "З'ясуй дальність дії радара.", tu: "дальність дії", vu: "з'ясовувати" },
+        { v: "Pick up", b: " a ", t: "prominent", a: " object.", s: "Зафіксуй помітний об'єкт.", tu: "помітний", vu: "фіксувати" },
+        { v: "Put down", b: " the ", t: "soundings", a: ".", s: "Запиши вимірювання глибин.", tu: "вимірювання глибин", vu: "записувати" },
+        { v: "Find out", b: " the flash ", t: "duration", a: ".", s: "Дізнайся тривалість проблиску.", tu: "тривалість", vu: "з'ясовувати" },
+        { v: "Look out", b: " for the ", t: "flash", a: ".", s: "Будь уважним, чекай на спалах.", tu: "спалах / проблиск", vu: "бути обережним" },
+        { v: "Put down", b: " the ", t: "visual bearings", a: ".", s: "Запиши візуальні пеленги.", tu: "візуальні пеленги", vu: "записувати" },
+        { v: "Stand by", b: " ", t: "to take bearings of", a: " the lighthouse.", s: "Будь напоготові взяти пеленг на маяк.", tu: "брати пеленг на", vu: "бути напоготові" },
+        { v: "Come across", b: " ", t: "floating navigational aids", a: ".", s: "Натрапити на плавучі засоби навігації.", tu: "плавучі засоби навігації", vu: "випадково натрапити" },
+        { v: "Keep on", b: " the ", t: "given direction", a: ".", s: "Продовжуй йти заданим напрямком.", tu: "заданий напрямок", vu: "продовжувати" },
+        { v: "Work out", b: " how to ", t: "fix a ship's position", a: ".", s: "Розрахуй, як визначити координати судна.", tu: "визначити координати судна", vu: "розрахувати" },
+        { v: "Look for", b: " a ", t: "reference point", a: ".", s: "Шукай контрольний орієнтир.", tu: "контрольний орієнтир", vu: "шукати" },
+        { v: "Work out", b: " where they ", t: "intersect", a: ".", s: "Вирахуй, де вони перетинаються.", tu: "перетинати", vu: "розрахувати" },
+        { v: "Put down", b: " the ", t: "cross-bearings", a: ".", s: "Запиши крюйс-пеленг.", tu: "крюйс-пеленг", vu: "записувати" },
+        { v: "Look out", b: " for ", t: "conspicuous landmarks", a: ".", s: "Шукай помітні берегові орієнтири.", tu: "помітні берегові орієнтири", vu: "вишукувати" },
+        { v: "Pick up", b: " the ", t: "spire", a: " visually.", s: "Поміть шпиль візуально.", tu: "шпиль", vu: "підмітити" },
+        { v: "Carry on", b: " to ", t: "keep a careful account", a: ".", s: "Продовжуй вести ретельний підрахунок.", tu: "вести ретельний підрахунок", vu: "продовжувати" },
+        { v: "Get back", b: " to ", t: "coastal navigation", a: ".", s: "Повертайся до каботажного судноплавства.", tu: "каботажне судноплавство", vu: "повертатися" },
+        { v: "Run into", b: " a ", t: "navigational hazard", a: ".", s: "Зіткнутися з навігаційною небезпекою.", tu: "навігаційна небезпека", vu: "зіткнутися" },
+        { v: "Make up", b: " for lack of ", t: "local knowledge", a: ".", s: "Компенсуй брак знань місцевих умов.", tu: "знання місцевих умов", vu: "компенсувати" },
+        { v: "Stand by", b: " ", t: "to guide through", a: " the channel.", s: "Будь напоготові проводити через канал.", tu: "проводити через", vu: "бути напоготові" },
+        { v: "Find out", b: " who is ", t: "licensed by the local port authority", a: ".", s: "Дізнайся, хто ліцензований місцевою портовою адміністрацією.", tu: "ліцензований місцевою адміністрацією", vu: "з'ясовувати" },
+        { v: "Keep on", b: " this ", t: "heading", a: ".", s: "Продовжуй іти цим компасним курсом.", tu: "компасний курс", vu: "продовжувати" },
+        { v: "Work out", b: " the new ", t: "course", a: ".", s: "Розрахуй нову лінію шляху.", tu: "лінія шляху судна", vu: "розрахувати" },
+        { v: "Look after", b: " the actual ", t: "track", a: ".", s: "Стеж за фактичним шляхом судна.", tu: "фактичний шлях судна", vu: "наглядати за" },
+        { v: "Find out", b: " the ", t: "course made good", a: ".", s: "З'ясуй шлях судна відносно дна.", tu: "шлях відносно дна", vu: "з'ясовувати" },
+        { v: "Check out", b: " the ", t: "Sailing directions", a: ".", s: "Перевір лоції.", tu: "Лоції", vu: "перевіряти" },
+        { v: "Take out", b: " the ", t: "List of lights", a: ".", s: "Дістань список вогнів.", tu: "список вогнів", vu: "діставати" },
+        { v: "Pass on", b: " the ", t: "Notice to mariners", a: ".", s: "Передай повідомлення мореплавцям.", tu: "повідомлення мореплавцям", vu: "передавати далі" },
+        { v: "Look up", b: " the ", t: "Tide tables", a: ".", s: "Пошукай інформацію в таблицях припливів.", tu: "таблиці припливів", vu: "шукати інформацію" },
+        { v: "Go on", b: " at one ", t: "knot", a: ".", s: "Продовжуй рух на швидкості один вузол.", tu: "вузол", vu: "продовжувати" },
+        { v: "Turn on", b: " the electronic ", t: "log", a: ".", s: "Увімкни електронний лаг.", tu: "лаг", vu: "вмикати" },
+        { v: "Put away", b: " the ", t: "logbook", a: ".", s: "Прибери судновий журнал на місце.", tu: "судновий журнал", vu: "прибирати на місце" },
+        { v: "Look out", b: " ", t: "to detect ice", a: ".", s: "Будь уважним, щоб помітити лід.", tu: "помітити лід", vu: "бути уважним" },
+        { v: "Run out of", b: " fuel in one ", t: "nautical mile", a: ".", s: "У нас закінчиться паливо через одну морську милю.", tu: "морська миля", vu: "закінчуватися" },
+        { v: "Get away", b: " for one ", t: "cable", a: ".", s: "Відійди на один кабельтов.", tu: "кабельтов", vu: "відійти" },
+        { v: "Turn around", b: " if depth is one ", t: "fathom", a: ".", s: "Глибина один сажень, розвертайся.", tu: "морський сажень", vu: "розвертатися" }
+    ];
+
+    const vocab2 = [
+        { v: "Set up", b: " the ", t: "compass", a: ".", s: "Налаштуй компас.", tu: "компас", vu: "налаштовувати" },
+        { v: "Take out", b: " the ", t: "chronometer", a: ".", s: "Дістань хронометр.", tu: "хронометр", vu: "діставати" },
+        { v: "Put away", b: " the ", t: "sextant", a: ".", s: "Прибери секстант на місце.", tu: "секстант", vu: "прибирати на місце" },
+        { v: "Work out", b: " how ", t: "to determine ship’s longitude", a: ".", s: "Розрахуй, як визначити довготу судна.", tu: "визначити довготу судна", vu: "розраховувати" },
+        { v: "Find out", b: " how ", t: "to calculate a ship’s latitude", a: ".", s: "З'ясуй, як визначити широту судна.", tu: "визначити широту судна", vu: "з'ясовувати" },
+        { v: "Turn on", b: " the ", t: "radar", a: ".", s: "Увімкни радар.", tu: "радар", vu: "вмикати" },
+        { v: "Look out", b: " ", t: "to spot an object", a: ".", s: "Будь уважним, щоб помітити об’єкт.", tu: "помітити, виявити об’єкт", vu: "бути уважним" },
+        { v: "Turn off", b: " the ", t: "automatic pilot", a: ".", s: "Вимкни автопілот.", tu: "автопілот", vu: "вимикати" },
+        { v: "Check out", b: " the ", t: "gyrocompass", a: ".", s: "Перевір гірокомпас.", tu: "гірокомпас", vu: "перевіряти" },
+        { v: "Carry out", b: " the ", t: "passage planning", a: ".", s: "Виконай планування рейса.", tu: "планування рейса", vu: "виконувати" },
+        { v: "Stand by", b: " ", t: "to prevent collision", a: ".", s: "Будь напоготові попередити зіткнення.", tu: "попередити зіткнення", vu: "бути напоготові" },
+        { v: "Find out", b: " how ", t: "to identify a vessel", a: ".", s: "З'ясуй, як визначити координати судна.", tu: "визначити координати судна", vu: "з'ясовувати" },
+        { v: "Keep on", b: " ", t: "to monitor objects underway", a: ".", s: "Продовжуй відстежувати об’єкти на ходу.", tu: "відстежувати об’єкти на ходу", vu: "продовжувати" },
+        { v: "Set up", b: " the radar ", t: "to track a vessel", a: ".", s: "Налаштуй радар, щоб відстежувати судно.", tu: "відстежувати судно", vu: "налаштовувати" },
+        { v: "Turn on", b: " the screen ", t: "to display a target", a: ".", s: "Увімкни екран, щоб відображати ціль.", tu: "відображати ціль", vu: "вмикати" },
+        { v: "Come across", b: " a ship ", t: "within the range", a: ".", s: "Випадково натрапити на судно в діапазоні.", tu: "в діапазоні", vu: "випадково натрапити" },
+        { v: "Put down", b: " the ", t: "true bearing", a: ".", s: "Запиши дійсний пеленг.", tu: "дійсний / істинний пеленг", vu: "записувати" },
+        { v: "Work out", b: " how ", t: "to determine speed / course", a: ".", s: "Розрахуй, як визначати швидкість / курс.", tu: "визначати швидкість / курс", vu: "розраховувати" },
+        { v: "Carry on", b: " ", t: "to maintain a safe course", a: ".", s: "Продовжуй втримувати судно на безпечному курсі.", tu: "втримувати судно на безпечному курсі", vu: "продовжувати" },
+        { v: "Look out", b: " for the ", t: "risk of collision", a: ".", s: "Бережись небезпеки зіткнення.", tu: "небезпека зіткнення", vu: "бути обережним" },
+        { v: "Look for", b: " ships ", t: "in the vicinity", a: ".", s: "Шукай судна поблизу.", tu: "поблизу", vu: "шукати" },
+        { v: "Put down", b: " the ", t: "call sign", a: ".", s: "Запиши позивний сигнал.", tu: "позивний сигнал", vu: "записувати" },
+        { v: "Set off", b: " to the ", t: "destination", a: ".", s: "Вирушай у пункт призначення.", tu: "пункт призначення", vu: "вирушати" },
+        { v: "Pass on", b: " the ", t: "digital data", a: ".", s: "Передай цифрові дані далі.", tu: "цифрові дані", vu: "передавати далі" },
+        { v: "Call back", b: " ", t: "to obtain information", a: ".", s: "Передзвони, щоб одержати інформацію.", tu: "одержати інформацію", vu: "передзвонити" },
+        { v: "Take out", b: " the ", t: "nautical chart", a: ".", s: "Дістань морську навігаційну карту.", tu: "морська навігаційна карта", vu: "діставати" },
+        { v: "Find out", b: " the ", t: "tide", a: ".", s: "З'ясуй про приплив / відплив.", tu: "приплив / відплив", vu: "з'ясовувати" },
+        { v: "Look out", b: " for the ", t: "current", a: ".", s: "Бережись течії.", tu: "течія", vu: "бути уважним" },
+        { v: "Look for", b: " an ", t: "anchorage", a: ".", s: "Шукай якірну стоянку.", tu: "якірна стоянка", vu: "шукати" },
+        { v: "Find out", b: " the ", t: "nature of the seabed", a: ".", s: "З'ясуй характер морського дна.", tu: "характер морського дна", vu: "з'ясовувати" },
+        { v: "Put down", b: " the map on the ", t: "chart table", a: ".", s: "Поклади карту на навігаційний стіл.", tu: "навігаційний стіл", vu: "записувати / класти" },
+        { v: "Work out", b: " how ", t: "to shape the course", a: ".", s: "Розрахуй, як прокласти курс.", tu: "прокладати курс / маршрут", vu: "розраховувати" },
+        { v: "Check out", b: " the ", t: "nautical publication", a: ".", s: "Перевір морське видання.", tu: "морське видання / публікація", vu: "перевіряти" },
+        { v: "Pass on", b: " the ", t: "navigational data", a: ".", s: "Передай навігаційну інформацію.", tu: "навігаційна інформація, дані", vu: "передавати далі" },
+        { v: "Turn on", b: " the ", t: "echo sounder", a: ".", s: "Увімкни ехолот.", tu: "ехолот", vu: "вмикати" },
+        { v: "Set up", b: " the ", t: "satellite-based tracking system", a: ".", s: "Налаштуй супутникову систему спостереження.", tu: "супутникова система спостереження", vu: "налаштовувати" },
+        { v: "Work out", b: " how ", t: "to take the route", a: ".", s: "Розрахуй, як вибрати маршрут.", tu: "выбрати маршрут / курс", vu: "розраховувати" },
+        { v: "Turn around", b: " ", t: "to avoid the course", a: ".", s: "Розвернися, щоб ухилитися від курсу.", tu: "ухилятися від курсу", vu: "розвертатися" },
+        { v: "Make up", b: " an ", t: "accurate", a: " report.", s: "Склади точний звіт.", tu: "точний", vu: "складати / вигадувати" },
+        { v: "Look out", b: " not ", t: "to be affected by", a: " the wind.", s: "Будь обережним, щоб не піддаватися впливу вітру.", tu: "піддаватися впливу", vu: "бути уважним" },
+        { v: "Pick up", b: " a ", t: "reliable tool", a: ".", s: "Візьми надійний прилад.", tu: "надійний прилад", vu: "брати / піднімати" },
+        { v: "Check out", b: " the ", t: "compass needle", a: ".", s: "Перевір стрілку компаса.", tu: "стрілка компаса", vu: "перевіряти" },
+        { v: "Carry out", b: " checks ", t: "to determine compass errors", a: ".", s: "Виконай перевірки, щоб визначити погрішність компаса.", tu: "визначати поправки / девіацію компаса", vu: "виконувати" },
+        { v: "Stand by", b: " ", t: "to alter the course", a: ".", s: "Будь напоготові змінити курс.", tu: "змінювати курс", vu: "бути напоготові" },
+        { v: "Take over", b: " the ", t: "helm / steering wheel", a: ".", s: "Прийми штурвал.", tu: "штурвал", vu: "приймати управління" },
+        { v: "Stand by", b: " ", t: "to switch to manual steering", a: ".", s: "Будь напоготові перейти на ручне рульове управління.", tu: "перейти на ручне рульове управління", vu: "бути напоготові" },
+        { v: "Come in", b: " the ", t: "navigation bridge", a: ".", s: "Заходь на навігаційний місток.", tu: "навигаційний / штурманський місток", vu: "заходити" },
+        { v: "Keep on", b: " ", t: "to carry out activities", a: ".", s: "Продовжуй виконувати роботу.", tu: "здійснювати діяльність / виконувати роботу", vu: "продовжувати" },
+        { v: "Go out", b: " ", t: "to keep a lookout", a: ".", s: "Вийди, щоб вести спостереження.", tu: "вести спостереження", vu: "виходити" },
+        { v: "Call back", b: " ", t: "a lookout", a: ".", s: "Поклич назад спостерігача.", tu: "спостерігач (матрос)", vu: "покликати назад" },
+        { v: "Look forward to", b: " ", t: "clear visibility", a: ".", s: "Чекай з нетерпінням на хорошу видимість.", tu: "хороша видимість", vu: "чекати з нетерпінням" },
+        { v: "Carry on", b: " with ", t: "efficient navigation", a: ".", s: "Продовжуй ефективне судноводіння.", tu: "ефективне судноводіння", vu: "продовжувати" },
+        { v: "Turn on", b: " the ", t: "Automatic Radar Plotting Aid (ARPA)", a: ".", s: "Увімкни САРП.", tu: "засоби автоматичного радіолокаційного прокладання курсу (САРП)", vu: "вмикати" },
+        { v: "Check out", b: " the ", t: "Automatic Identification System (AIS)", a: ".", s: "Перевір автоматичну систему розпізнавання (AIS).", tu: "автоматична система розпізнавання", vu: "перевіряти" },
+        { v: "Look up", b: " the ", t: "International Maritime Organization (IMO)", a: " rules.", s: "Пошукай правила Міжнародної Морської Організації.", tu: "Міжнародна Морськая Організація", vu: "шукати інформацію" },
+        { v: "Look out", b: " for ", t: "Dangerous Goods (DG)", a: ".", s: "Будь обережним з небезпечними вантажами.", tu: "небезпечні вантажі", vu: "бути обережним" },
+        { v: "Set up", b: " the ", t: "Electronic Chart Display and Information System (ECDIS)", a: ".", s: "Налаштуй електронну картографічну навігаційну систему інформування.", tu: "електронна картографічна навігаційна система (ECDIS)", vu: "налаштовувати" },
+        { v: "Call back", b: " the ", t: "Vessel Traffic Service (VTS)", a: ".", s: "Передзвони в службу керування руху суден.", tu: "служба керування руху суден (VTS)", vu: "передзвонити" },
+        { v: "Turn on", b: " the ", t: "Global Positioning System (GPS)", a: ".", s: "Увімкни систему глобального позиціювання (GPS).", tu: "система глобального позиціювання (GPS)", vu: "вмикати" }
+    ];
+
+    let globalCounter = 1;
+
+    function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function renderBlock(container, items, title) {
+        const titleEl = document.createElement('div');
+        titleEl.className = 'section-title';
+        titleEl.textContent = title;
+        container.appendChild(titleEl);
+
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const numberCol = document.createElement('div');
+            numberCol.className = 'card-number';
+            numberCol.textContent = globalCounter++;
+
+            const contentCol = document.createElement('div');
+            contentCol.className = 'card-content';
+            
+            // Верхній блок: речення
+            const topBox = document.createElement('div');
+            topBox.className = 'sentence-box';
+            topBox.innerHTML = `
+                <div class="eng-sentence"><strong>${item.v}</strong>${item.b}<i>${item.t}</i>${item.a}</div>
+                <div class="ukr-text">${item.s}</div>
+            `;
+
+            // Нижній блок: деталі
+            const bottomBox = document.createElement('div');
+            bottomBox.className = 'terms-box';
+            bottomBox.innerHTML = `
+                <div class="term-col">
+                    <span class="term-label">Термін (Навігація)</span>
+                    <span class="term-eng">${capitalize(item.t)}</span>
+                    <span class="term-ukr">${capitalize(item.tu)}</span>
+                </div>
+                <div class="term-col">
+                    <span class="term-label">Фразове дієслово</span>
+                    <span class="term-eng">${capitalize(item.v)}</span>
+                    <span class="term-ukr">${capitalize(item.vu)}</span>
+                </div>
+            `;
+
+            contentCol.appendChild(topBox);
+            contentCol.appendChild(bottomBox);
+            card.appendChild(numberCol);
+            card.appendChild(contentCol);
+            
+            container.appendChild(card);
+        });
+    }
+
+    const app = document.getElementById('app');
+    
+    if (vocab1.length > 0) {
+        renderBlock(app, vocab1, 'Вокаблюар 1');
+    }
+    
+    if (vocab2.length > 0) {
+        renderBlock(app, vocab2, 'Вокаблюар 2');
+    }
+
+</script>
+</body>
+</html>

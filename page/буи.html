@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IALA Maritime Buoyage System — Інтерактивний конспект</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Плавное размытие для режима самопроверки */
+        .ua-trans {
+            transition: filter 0.25s ease, opacity 0.25s ease;
+        }
+        body.hide-ua .ua-trans {
+            filter: blur(6px);
+            opacity: 0.65;
+            user-select: none;
+            cursor: pointer;
+        }
+        body.hide-ua .ua-trans:hover,
+        body.hide-ua .ua-trans.revealed {
+            filter: blur(0px);
+            opacity: 1;
+        }
+        /* Скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<a href="../index.html" style="position:fixed; top:15px; left:15px; background:#2563eb; color:white; padding:10px 15px; text-decoration:none; border-radius:8px; font-family:sans-serif; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index:9999;">⬅ На главную</a>
+
+
+    <!-- Верхняя панель (Header) -->
+    <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- Лого и заголовок -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-extrabold text-lg shadow-lg shadow-blue-600/30">
+                    ⚓
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight">
+                        IALA Buoyage System — Конспект (Стр. 1–15)
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Усі схеми з підручника (у векторі SVG) • Построковий переклад (EN / UA) • Структуровані списки
+                    </p>
+                </div>
+            </div>
+
+            <!-- Кнопки управления -->
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Скрыть/показать перевод -->
+                <button id="btnToggleUa" onclick="toggleTranslation()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 transition">
+                    <span id="eyeIcon">👁️</span>
+                    <span id="eyeText">Приховати переклад (UA)</span>
+                </button>
+
+                <!-- Переключатель темы (Dark / Light) -->
+                <button id="btnTheme" onclick="toggleTheme()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 transition">
+                    <span id="themeIcon">☀️</span>
+                    <span id="themeText">Світла тема</span>
+                </button>
+
+                <!-- Показать все темы подряд -->
+                <button id="btnViewAll" onclick="toggleViewAll()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                    📋 Показати всі 6 тем підряд
+                </button>
+            </div>
+        </div>
+
+        <!-- Навигационные вкладки (Tabs) -->
+        <div class="max-w-7xl mx-auto px-4 pb-2 overflow-x-auto">
+            <div class="flex items-center gap-1.5 min-w-max" id="navTabs"></div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-8" id="mainContainer">
+        <!-- Заполняется скриптом -->
+    </main>
+
+    <!-- Подвал -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 py-4 text-center text-xs text-slate-500 dark:text-slate-400">
+        IALA Maritime Buoyage System • Навчальний модуль за конспектом (Стор. 1–15) та схемами IALA (Стор. 79–80)
+    </footer>
+
+    <script>
+        // =========================================================================
+        // ГЕНЕРАТОР SVG-ИЛЛЮСТРАЦИЙ (1-В-1 КАК В КНИГЕ И ТЕТРАДИ)
+        // =========================================================================
+        const COLORS = {
+            red: '#dc2626',
+            green: '#16a34a',
+            yellow: '#facc15',
+            black: '#1e293b',
+            white: '#f8fafc',
+            blue: '#2563eb',
+            stroke: '#0f172a'
+        };
+
+        // Полоса светового ритма (как в книге)
+        function svgLightStrip(label, boxes, bgColor = '#1e293b') {
+            let rects = '';
+            boxes.forEach(b => {
+                rects += `<rect x="${b.x}" y="6" width="${b.w}" height="12" fill="${b.color}" rx="1"/>`;
+            });
+            return `
+                <g transform="translate(0, 0)">
+                    <rect x="0" y="4" width="220" height="16" fill="${bgColor}" stroke="#475569" stroke-width="1" rx="2"/>
+                    ${rects}
+                    <text x="110" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="700" fill="currentColor">${label}</text>
+                </g>
+            `;
+        }
+
+        // 1. PREFERRED CHANNEL BUOYS (Region A & B)
+        function svgPreferredBuoys(type) {
+            // type: 'regA_port' (G-R-G, cone), 'regB_starboard' (G-R-G, can), 'regB_port' (R-G-R, cone)
+            const isGRG = (type === 'regA_port' || type === 'regB_starboard');
+            const mainCol = isGRG ? COLORS.green : COLORS.red;
+            const bandCol = isGRG ? COLORS.red : COLORS.green;
+            const isCone = (type === 'regA_port' || type === 'regB_port');
+            const codeText = isGRG ? 'GRG (Green-Red-Green)' : 'RGR (Red-Green-Red)';
+            const lightText = isGRG ? 'The light phase characteristic is G Fl (2+1)' : 'The light phase characteristic is R Fl (2+1)';
+
+            // Фигура 1 слева (Conical или Can)
+            let leftShape = '';
+            if (isCone) {
+                leftShape = `
+                    <g transform="translate(25, 65)">
+                        <clipPath id="clipCone_${type}">
+                            <polygon points="35,10 68,95 2,95"/>
+                        </clipPath>
+                        <g clip-path="url(#clipCone_${type})">
+                            <rect x="0" y="10" width="70" height="30" fill="${mainCol}"/>
+                            <rect x="0" y="40" width="70" height="25" fill="${bandCol}"/>
+                            <rect x="0" y="65" width="70" height="35" fill="${mainCol}"/>
+                        </g>
+                        <polygon points="35,10 68,95 2,95" fill="none" stroke="#0f172a" stroke-width="2"/>
+                        <text x="35" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Conical</text>
+                    </g>
+                `;
+            } else {
+                leftShape = `
+                    <g transform="translate(25, 65)">
+                        <rect x="8" y="25" width="54" height="23" fill="${mainCol}" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="8" y="48" width="54" height="22" fill="${bandCol}" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="8" y="70" width="54" height="25" fill="${mainCol}" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="8" y="25" width="54" height="70" fill="none" stroke="#0f172a" stroke-width="2"/>
+                        <text x="35" y="114" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Can (CRG)</text>
+                    </g>
+                `;
+            }
+
+            // Топовая фигура (Topmark)
+            const topmarkPillar = isCone
+                ? `<polygon points="150,24 163,46 137,46" fill="${mainCol}" stroke="#0f172a" stroke-width="2"/>`
+                : `<rect x="139" y="24" width="22" height="22" fill="${mainCol}" stroke="#0f172a" stroke-width="2"/>`;
+
+            const topmarkSpar = isCone
+                ? `<polygon points="235,24 246,44 224,44" fill="${mainCol}" stroke="#0f172a" stroke-width="2"/>`
+                : `<rect x="226" y="24" width="18" height="20" fill="${mainCol}" stroke="#0f172a" stroke-width="2"/>`;
+
+            // Световые вспышки (2+1)
+            const lightBoxes = [
+                { x: 12, w: 8, color: mainCol },
+                { x: 26, w: 8, color: mainCol },
+                { x: 52, w: 8, color: mainCol },
+                { x: 115, w: 8, color: mainCol },
+                { x: 129, w: 8, color: mainCol },
+                { x: 155, w: 8, color: mainCol }
+            ];
+
+            return `
+                <svg viewBox="0 0 300 235" class="w-full max-w-[340px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <!-- Заголовок схемы -->
+                    <text x="150" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">${codeText}</text>
+
+                    <!-- 1. Conical / Can -->
+                    ${leftShape}
+
+                    <!-- 2. Pillar Buoy -->
+                    <g>
+                        ${topmarkPillar}
+                        <line x1="150" y1="46" x2="150" y2="55" stroke="#0f172a" stroke-width="2.5"/>
+                        <clipPath id="clipPillar_${type}">
+                            <path d="M135,55 L165,55 L175,135 L190,142 L190,160 L110,160 L110,142 L125,135 Z"/>
+                        </clipPath>
+                        <g clip-path="url(#clipPillar_${type})">
+                            <rect x="105" y="55" width="90" height="35" fill="${mainCol}"/>
+                            <rect x="105" y="90" width="90" height="30" fill="${bandCol}"/>
+                            <rect x="105" y="120" width="90" height="45" fill="${mainCol}"/>
+                        </g>
+                        <path d="M135,55 L165,55 L175,135 L190,142 L190,160 L110,160 L110,142 L125,135 Z" fill="none" stroke="#0f172a" stroke-width="2"/>
+                        <text x="150" y="179" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Pillar (4a)</text>
+                    </g>
+
+                    <!-- 3. Spar Buoy -->
+                    <g>
+                        ${topmarkSpar}
+                        <line x1="235" y1="44" x2="235" y2="55" stroke="#0f172a" stroke-width="2.5"/>
+                        <rect x="229" y="55" width="12" height="35" fill="${mainCol}" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="229" y="90" width="12" height="30" fill="${bandCol}" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="229" y="120" width="12" height="40" fill="${mainCol}" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="229" y="55" width="12" height="105" fill="none" stroke="#0f172a" stroke-width="2"/>
+                        <text x="235" y="179" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Spar</text>
+                    </g>
+
+                    <!-- Световая полоса снизу -->
+                    <g transform="translate(40, 192)">
+                        ${svgLightStrip(lightText, lightBoxes)}
+                    </g>
+                </svg>
+            `;
+        }
+
+        // 2. CARDINAL BUOYS (N, E, S, W) + БОЛЬШАЯ СХЕМА КОМПАСА ИЗ КНИГИ
+        function svgCardinalSingle(dir) {
+            // dir: 'N', 'E', 'S', 'W'
+            let topConesPillar = '', topConesSpar = '';
+            let pillarBands = '', sparBands = '';
+            let badgeCode = '', lightLabel = '', lightBoxes = [];
+
+            if (dir === 'N') {
+                // 2 конуса вверх (▲ ▲), Black above Yellow (BY)
+                topConesPillar = `
+                    <polygon points="115,14 127,32 103,32" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <polygon points="115,35 127,53 103,53" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                `;
+                topConesSpar = `
+                    <polygon points="205,14 216,32 194,32" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <polygon points="205,35 216,53 194,53" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                `;
+                pillarBands = `
+                    <rect x="70" y="60" width="90" height="50" fill="${COLORS.black}"/>
+                    <rect x="70" y="110" width="90" height="50" fill="${COLORS.yellow}"/>
+                `;
+                sparBands = `
+                    <rect x="199" y="60" width="12" height="50" fill="${COLORS.black}"/>
+                    <rect x="199" y="110" width="12" height="50" fill="${COLORS.yellow}"/>
+                `;
+                badgeCode = 'N — BY (Black above Yellow)';
+                lightLabel = 'White: Q or VQ (uninterrupted)';
+                for (let i = 8; i < 210; i += 10) lightBoxes.push({ x: i, w: 4, color: COLORS.white });
+            } else if (dir === 'E') {
+                // 2 конуса врозь (▲ ▼), Black with Yellow band (BYB)
+                topConesPillar = `
+                    <polygon points="115,14 127,32 103,32" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <polygon points="103,36 127,36 115,54" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                `;
+                topConesSpar = `
+                    <polygon points="205,14 216,32 194,32" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <polygon points="194,36 216,36 205,54" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                `;
+                pillarBands = `
+                    <rect x="70" y="60" width="90" height="33" fill="${COLORS.black}"/>
+                    <rect x="70" y="93" width="90" height="34" fill="${COLORS.yellow}"/>
+                    <rect x="70" y="127" width="90" height="33" fill="${COLORS.black}"/>
+                `;
+                sparBands = `
+                    <rect x="199" y="60" width="12" height="33" fill="${COLORS.black}"/>
+                    <rect x="199" y="93" width="12" height="34" fill="${COLORS.yellow}"/>
+                    <rect x="199" y="127" width="12" height="33" fill="${COLORS.black}"/>
+                `;
+                badgeCode = 'E — BYB (Black with Yellow band)';
+                lightLabel = 'White: Q(3) or VQ(3)';
+                [15, 25, 35, 115, 125, 135].forEach(x => lightBoxes.push({ x, w: 5, color: COLORS.white }));
+            } else if (dir === 'S') {
+                // 2 конуса вниз (▼ ▼), Black below Yellow (YB)
+                topConesPillar = `
+                    <polygon points="103,14 127,14 115,32" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <polygon points="103,35 127,35 115,53" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                `;
+                topConesSpar = `
+                    <polygon points="194,14 216,14 205,32" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <polygon points="194,35 216,35 205,53" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                `;
+                pillarBands = `
+                    <rect x="70" y="60" width="90" height="50" fill="${COLORS.yellow}"/>
+                    <rect x="70" y="110" width="90" height="50" fill="${COLORS.black}"/>
+                `;
+                sparBands = `
+                    <rect x="199" y="60" width="12" height="50" fill="${COLORS.yellow}"/>
+                    <rect x="199" y="110" width="12" height="50" fill="${COLORS.black}"/>
+                `;
+                badgeCode = 'S — YB (Black below Yellow)';
+                lightLabel = 'White: Q(6)+LFl or VQ(6)+LFl';
+                [10, 18, 26, 34, 42, 50].forEach(x => lightBoxes.push({ x, w: 4, color: COLORS.white }));
+                lightBoxes.push({ x: 62, w: 22, color: COLORS.white });
+                [115, 123, 131, 139, 147, 155].forEach(x => lightBoxes.push({ x, w: 4, color: COLORS.white }));
+                lightBoxes.push({ x: 167, w: 22, color: COLORS.white });
+            } else if (dir === 'W') {
+                // 2 конуса вершинами внутрь (▼ ▲), Black with Yellow above & below (YBY)
+                topConesPillar = `
+                    <polygon points="103,14 127,14 115,32" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <polygon points="115,35 127,53 103,53" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                `;
+                topConesSpar = `
+                    <polygon points="194,14 216,14 205,32" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <polygon points="205,35 216,53 194,53" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                `;
+                pillarBands = `
+                    <rect x="70" y="60" width="90" height="33" fill="${COLORS.yellow}"/>
+                    <rect x="70" y="93" width="90" height="34" fill="${COLORS.black}"/>
+                    <rect x="70" y="127" width="90" height="33" fill="${COLORS.yellow}"/>
+                `;
+                sparBands = `
+                    <rect x="199" y="60" width="12" height="33" fill="${COLORS.yellow}"/>
+                    <rect x="199" y="93" width="12" height="34" fill="${COLORS.black}"/>
+                    <rect x="199" y="127" width="12" height="33" fill="${COLORS.yellow}"/>
+                `;
+                badgeCode = 'W — YBY (Yellow-Black-Yellow)';
+                lightLabel = 'White: Q(9) or VQ(9)';
+                [8, 15, 22, 29, 36, 43, 50, 57, 64].forEach(x => lightBoxes.push({ x, w: 4, color: COLORS.white }));
+                [115, 122, 129, 136, 143, 150, 157, 164, 171].forEach(x => lightBoxes.push({ x, w: 4, color: COLORS.white }));
+            }
+
+            return `
+                <svg viewBox="0 0 280 235" class="w-full max-w-[310px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <!-- Квадратный бейдж стороны света (как в тетради) -->
+                    <rect x="14" y="14" width="38" height="38" rx="8" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="33" y="40" text-anchor="middle" font-size="22" font-weight="900" fill="#0f172a">${dir}</text>
+
+                    <!-- Pillar Buoy -->
+                    ${topConesPillar}
+                    <line x1="115" y1="53" x2="115" y2="60" stroke="currentColor" stroke-width="2.5"/>
+                    <clipPath id="clipCardP_${dir}">
+                        <path d="M102,60 L128,60 L138,136 L152,143 L152,160 L78,160 L78,143 L92,136 Z"/>
+                    </clipPath>
+                    <g clip-path="url(#clipCardP_${dir})">
+                        ${pillarBands}
+                    </g>
+                    <path d="M102,60 L128,60 L138,136 L152,143 L152,160 L78,160 L78,143 L92,136 Z" fill="none" stroke="#0f172a" stroke-width="2"/>
+                    <text x="115" y="177" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Pillar</text>
+
+                    <!-- Spar Buoy -->
+                    ${topConesSpar}
+                    <line x1="205" y1="53" x2="205" y2="60" stroke="currentColor" stroke-width="2.5"/>
+                    <g>
+                        ${sparBands}
+                        <rect x="199" y="60" width="12" height="100" fill="none" stroke="#0f172a" stroke-width="2"/>
+                    </g>
+                    <text x="205" y="177" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Spar</text>
+
+                    <!-- Подпись раскраски -->
+                    <text x="33" y="95" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">${badgeCode.split(' ')[2]}</text>
+
+                    <!-- Световая полоса -->
+                    <g transform="translate(30, 190)">
+                        ${svgLightStrip(lightLabel, lightBoxes)}
+                    </g>
+                </svg>
+            `;
+        }
+
+        // Круговая схема компаса кардинальных знаков (1-в-1 из книги стр. 78)
+        function svgCardinalCompassRose() {
+            return `
+                <svg viewBox="0 0 500 380" class="w-full max-w-[540px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <!-- Внешний круг компаса -->
+                    <circle cx="250" cy="190" r="155" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <!-- Диагональные линии секторов NW, NE, SE, SW -->
+                    <line x1="140" y1="80" x2="360" y2="300" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5,4"/>
+                    <line x1="360" y1="80" x2="140" y2="300" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+                    <!-- Центральный ромб POINT OF INTEREST -->
+                    <polygon points="250,152 288,190 250,228 212,190" fill="#ef4444" fill-opacity="0.18" stroke="currentColor" stroke-width="2"/>
+                    <text x="250" y="184" text-anchor="middle" font-size="9" font-weight="800" fill="currentColor">POINT OF</text>
+                    <text x="250" y="196" text-anchor="middle" font-size="9" font-weight="800" fill="currentColor">INTEREST</text>
+                    <text x="250" y="207" text-anchor="middle" font-size="7.5" font-weight="600" fill="#ef4444">(DANGER)</text>
+
+                    <!-- Кружки N, E, S, W -->
+                    <circle cx="250" cy="30" r="18" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="250" y="36" text-anchor="middle" font-size="16" font-weight="900" fill="#0f172a">N</text>
+
+                    <circle cx="410" cy="190" r="18" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="410" y="196" text-anchor="middle" font-size="16" font-weight="900" fill="#0f172a">E</text>
+
+                    <circle cx="250" cy="350" r="18" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="250" y="356" text-anchor="middle" font-size="16" font-weight="900" fill="#0f172a">S</text>
+
+                    <circle cx="90" cy="190" r="18" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="90" y="196" text-anchor="middle" font-size="16" font-weight="900" fill="#0f172a">W</text>
+
+                    <!-- Подписи NW, NE, SE, SW -->
+                    <text x="122" y="72" text-anchor="middle" font-size="12" font-weight="800" fill="currentColor">NW</text>
+                    <text x="378" y="72" text-anchor="middle" font-size="12" font-weight="800" fill="currentColor">NE</text>
+                    <text x="378" y="318" text-anchor="middle" font-size="12" font-weight="800" fill="currentColor">SE</text>
+                    <text x="122" y="318" text-anchor="middle" font-size="12" font-weight="800" fill="currentColor">SW</text>
+
+                    <!-- Мини-схемы в каждом секторе -->
+                    <!-- N -->
+                    <polygon points="250,62 258,74 242,74" fill="currentColor"/>
+                    <polygon points="250,76 258,88 242,88" fill="currentColor"/>
+                    <rect x="242" y="92" width="16" height="16" fill="${COLORS.black}" stroke="#0f172a"/>
+                    <rect x="242" y="108" width="16" height="16" fill="${COLORS.yellow}" stroke="#0f172a"/>
+                    <text x="250" y="136" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor">Q or VQ (BY)</text>
+
+                    <!-- E -->
+                    <polygon points="335,152 343,164 327,164" fill="currentColor"/>
+                    <polygon points="327,167 343,167 335,179" fill="currentColor"/>
+                    <rect x="327" y="183" width="16" height="10" fill="${COLORS.black}" stroke="#0f172a"/>
+                    <rect x="327" y="193" width="16" height="11" fill="${COLORS.yellow}" stroke="#0f172a"/>
+                    <rect x="327" y="204" width="16" height="10" fill="${COLORS.black}" stroke="#0f172a"/>
+                    <text x="335" y="227" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor">Q(3) / VQ(3)</text>
+
+                    <!-- S -->
+                    <polygon points="242,248 258,248 250,260" fill="currentColor"/>
+                    <polygon points="242,263 258,263 250,275" fill="currentColor"/>
+                    <rect x="242" y="279" width="16" height="16" fill="${COLORS.yellow}" stroke="#0f172a"/>
+                    <rect x="242" y="295" width="16" height="16" fill="${COLORS.black}" stroke="#0f172a"/>
+                    <text x="250" y="324" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor">Q(6)+LFl (YB)</text>
+
+                    <!-- W -->
+                    <polygon points="157,152 173,152 165,164" fill="currentColor"/>
+                    <polygon points="165,167 173,179 157,179" fill="currentColor"/>
+                    <rect x="157" y="183" width="16" height="10" fill="${COLORS.yellow}" stroke="#0f172a"/>
+                    <rect x="157" y="193" width="16" height="11" fill="${COLORS.black}" stroke="#0f172a"/>
+                    <rect x="157" y="204" width="16" height="10" fill="${COLORS.yellow}" stroke="#0f172a"/>
+                    <text x="165" y="227" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor">Q(9) / VQ(9)</text>
+                </svg>
+            `;
+        }
+
+        // 3. ISOLATED DANGER MARKS (Стр. 9)
+        function svgIsolatedDanger() {
+            const lightBoxes = [
+                { x: 14, w: 9, color: COLORS.white },
+                { x: 29, w: 9, color: COLORS.white },
+                { x: 120, w: 9, color: COLORS.white },
+                { x: 135, w: 9, color: COLORS.white }
+            ];
+            return `
+                <svg viewBox="0 0 300 240" class="w-full max-w-[340px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="150" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">ISOLATED DANGER MARKS (BRB)</text>
+
+                    <!-- Ретрорефлектор слева (как в книге стр. 79) -->
+                    <g transform="translate(20, 88)">
+                        <text x="25" y="-6" text-anchor="middle" font-size="8.5" font-weight="600" fill="currentColor">Retroflector</text>
+                        <rect x="5" y="0" width="40" height="14" fill="${COLORS.blue}" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="5" y="14" width="40" height="14" fill="${COLORS.red}" stroke="#0f172a" stroke-width="1.5"/>
+                    </g>
+
+                    <!-- 1. Pillar Buoy с 2 черными сферами -->
+                    <circle cx="135" cy="30" r="8.5" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <circle cx="135" cy="50" r="8.5" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <line x1="135" y1="58" x2="135" y2="66" stroke="currentColor" stroke-width="2.5"/>
+
+                    <clipPath id="clipIsoPillar">
+                        <path d="M122,66 L148,66 L158,140 L172,147 L172,165 L98,165 L98,147 L112,140 Z"/>
+                    </clipPath>
+                    <g clip-path="url(#clipIsoPillar)">
+                        <rect x="90" y="66" width="90" height="33" fill="${COLORS.black}"/>
+                        <rect x="90" y="99" width="90" height="33" fill="${COLORS.red}"/>
+                        <rect x="90" y="132" width="90" height="35" fill="${COLORS.black}"/>
+                    </g>
+                    <path d="M122,66 L148,66 L158,140 L172,147 L172,165 L98,165 L98,147 L112,140 Z" fill="none" stroke="#0f172a" stroke-width="2"/>
+                    <text x="135" y="182" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Pillar (BRB)</text>
+
+                    <!-- 2. Spar Buoy с 2 черными сферами -->
+                    <circle cx="225" cy="30" r="8" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <circle cx="225" cy="50" r="8" fill="${COLORS.black}" stroke="#0f172a" stroke-width="1.5"/>
+                    <line x1="225" y1="58" x2="225" y2="66" stroke="currentColor" stroke-width="2.5"/>
+
+                    <rect x="219" y="66" width="12" height="33" fill="${COLORS.black}"/>
+                    <rect x="219" y="99" width="12" height="33" fill="${COLORS.red}"/>
+                    <rect x="219" y="132" width="12" height="33" fill="${COLORS.black}"/>
+                    <rect x="219" y="66" width="12" height="99" fill="none" stroke="#0f172a" stroke-width="2"/>
+                    <text x="225" y="182" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Spar (BRB)</text>
+
+                    <!-- Световая полоса Group-Flashing [2] -->
+                    <g transform="translate(40, 195)">
+                        ${svgLightStrip('White, Group-flashing [2] — Fl(2)W', lightBoxes)}
+                    </g>
+                </svg>
+            `;
+        }
+
+        // 4. SAFE WATER MARKS (Стр. 10–11) — 3 буя (Spherical, Pillar, Spar) + 4 ритма огней
+        function svgSafeWater() {
+            return `
+                <svg viewBox="0 0 340 275" class="w-full max-w-[380px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="170" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">SAFE WATER MARKS (RW — Red & White Stripes)</text>
+
+                    <!-- 1. Spherical Buoy (Сферический с вертикальными полосами) -->
+                    <g transform="translate(15, 50)">
+                        <clipPath id="clipSafeSphere">
+                            <path d="M15,95 C5,70 12,35 45,35 C78,35 85,70 75,95 L82,108 L8,108 Z"/>
+                        </clipPath>
+                        <g clip-path="url(#clipSafeSphere)">
+                            <rect x="5" y="30" width="16" height="85" fill="${COLORS.red}"/>
+                            <rect x="21" y="30" width="16" height="85" fill="${COLORS.white}"/>
+                            <rect x="37" y="30" width="16" height="85" fill="${COLORS.red}"/>
+                            <rect x="53" y="30" width="16" height="85" fill="${COLORS.white}"/>
+                            <rect x="69" y="30" width="16" height="85" fill="${COLORS.red}"/>
+                        </g>
+                        <path d="M15,95 C5,70 12,35 45,35 C78,35 85,70 75,95 L82,108 L8,108 Z" fill="none" stroke="#0f172a" stroke-width="2"/>
+                        <text x="45" y="125" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Spherical</text>
+                    </g>
+
+                    <!-- 2. Pillar Buoy с одной красной сферой -->
+                    <g>
+                        <circle cx="165" cy="36" r="9.5" fill="${COLORS.red}" stroke="#0f172a" stroke-width="2"/>
+                        <line x1="165" y1="45.5" x2="165" y2="55" stroke="currentColor" stroke-width="2.5"/>
+                        <clipPath id="clipSafePillar">
+                            <path d="M152,55 L178,55 L188,132 L202,140 L202,158 L128,158 L128,140 L142,132 Z"/>
+                        </clipPath>
+                        <g clip-path="url(#clipSafePillar)">
+                            <rect x="126" y="55" width="15" height="105" fill="${COLORS.red}"/>
+                            <rect x="141" y="55" width="16" height="105" fill="${COLORS.white}"/>
+                            <rect x="157" y="55" width="16" height="105" fill="${COLORS.red}"/>
+                            <rect x="173" y="55" width="16" height="105" fill="${COLORS.white}"/>
+                            <rect x="189" y="55" width="15" height="105" fill="${COLORS.red}"/>
+                        </g>
+                        <path d="M152,55 L178,55 L188,132 L202,140 L202,158 L128,158 L128,140 L142,132 Z" fill="none" stroke="#0f172a" stroke-width="2"/>
+                        <text x="165" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Pillar</text>
+                    </g>
+
+                    <!-- 3. Spar Buoy с одной красной сферой -->
+                    <g>
+                        <circle cx="255" cy="36" r="9" fill="${COLORS.red}" stroke="#0f172a" stroke-width="2"/>
+                        <line x1="255" y1="45" x2="255" y2="55" stroke="currentColor" stroke-width="2.5"/>
+                        <rect x="247" y="55" width="8" height="103" fill="${COLORS.red}" stroke="#0f172a" stroke-width="1"/>
+                        <rect x="255" y="55" width="8" height="103" fill="${COLORS.white}" stroke="#0f172a" stroke-width="1"/>
+                        <rect x="247" y="55" width="16" height="103" fill="none" stroke="#0f172a" stroke-width="2"/>
+                        <text x="255" y="175" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Spar</text>
+                    </g>
+
+                    <!-- 4 полосы световых характеристик (Iso, Occ, LFl 10s, Mo(A)) -->
+                    <g transform="translate(20, 190)">
+                        <!-- Isophase -->
+                        <rect x="0" y="0" width="210" height="12" fill="#1e293b" rx="2"/>
+                        <rect x="10" y="2" width="25" height="8" fill="#f8fafc"/>
+                        <rect x="60" y="2" width="25" height="8" fill="#f8fafc"/>
+                        <rect x="110" y="2" width="25" height="8" fill="#f8fafc"/>
+                        <rect x="160" y="2" width="25" height="8" fill="#f8fafc"/>
+                        <text x="220" y="10" font-size="9" font-weight="700" fill="currentColor">ISOPHASE (Iso)</text>
+
+                        <!-- Occulting -->
+                        <rect x="0" y="18" width="210" height="12" fill="#1e293b" rx="2"/>
+                        <rect x="8" y="20" width="40" height="8" fill="#f8fafc"/>
+                        <rect x="58" y="20" width="40" height="8" fill="#f8fafc"/>
+                        <rect x="108" y="20" width="40" height="8" fill="#f8fafc"/>
+                        <rect x="158" y="20" width="40" height="8" fill="#f8fafc"/>
+                        <text x="220" y="28" font-size="9" font-weight="700" fill="currentColor">OCCULTING (Occ)</text>
+
+                        <!-- Long-Flashing 10s -->
+                        <rect x="0" y="36" width="210" height="12" fill="#1e293b" rx="2"/>
+                        <rect x="20" y="38" width="38" height="8" fill="#f8fafc"/>
+                        <rect x="125" y="38" width="38" height="8" fill="#f8fafc"/>
+                        <text x="220" y="46" font-size="9" font-weight="700" fill="currentColor">LFl. 10s (Всегда 10с)</text>
+
+                        <!-- Morse Code (A) -->
+                        <rect x="0" y="54" width="210" height="12" fill="#1e293b" rx="2"/>
+                        <rect x="15" y="56" width="8" height="8" fill="#f8fafc"/>
+                        <rect x="28" y="56" width="24" height="8" fill="#f8fafc"/>
+                        <rect x="95" y="56" width="8" height="8" fill="#f8fafc"/>
+                        <rect x="108" y="56" width="24" height="8" fill="#f8fafc"/>
+                        <text x="220" y="64" font-size="9" font-weight="700" fill="currentColor">MORSE CODE Mo(A)</text>
+                    </g>
+                </svg>
+            `;
+        }
+
+        // 5. SPECIAL MARKS (Стр. 12–14) — все 6 желтых фигур с косым крестом X (как в тетради стр. 12 и книге стр. 79)
+        function svgSpecialMarks() {
+            // Функция рисования желтого косого креста X
+            const xCross = (cx, cy) => `
+                <g transform="translate(${cx}, ${cy})">
+                    <path d="M-7,-7 L7,7 M7,-7 L-7,7" stroke="#0f172a" stroke-width="5.5" stroke-linecap="square"/>
+                    <path d="M-7,-7 L7,7 M7,-7 L-7,7" stroke="${COLORS.yellow}" stroke-width="3.2" stroke-linecap="square"/>
+                </g>
+            `;
+
+            return `
+                <svg viewBox="0 0 350 285" class="w-full max-w-[390px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="175" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">SPECIAL MARKS (Yellow + X-shape Cross)</text>
+
+                    <!-- ВЕРХНИЙ РЯД (Pillar, Barrel, Spar — как в книге + X сверху) -->
+                    <!-- 1. Pillar -->
+                    ${xCross(65, 34)}
+                    <line x1="65" y1="42" x2="65" y2="50" stroke="currentColor" stroke-width="2"/>
+                    <path d="M54,50 L76,50 L85,112 L98,118 L98,132 L32,132 L32,118 L45,112 Z" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="65" y="146" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">1. Pillar</text>
+
+                    <!-- 2. Barrel (Бочка) -->
+                    ${xCross(175, 58)}
+                    <line x1="175" y1="66" x2="175" y2="85" stroke="currentColor" stroke-width="2"/>
+                    <rect x="135" y="85" width="80" height="45" rx="14" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <ellipse cx="147" cy="107.5" rx="8" ry="22.5" fill="none" stroke="#0f172a" stroke-width="1.5"/>
+                    <text x="175" y="146" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">2. Barrel</text>
+
+                    <!-- 3. Spar (Веха) -->
+                    ${xCross(280, 34)}
+                    <line x1="280" y1="42" x2="280" y2="50" stroke="currentColor" stroke-width="2"/>
+                    <rect x="274" y="50" width="12" height="82" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="280" y="146" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">3. Spar</text>
+
+                    <!-- НИЖНИЙ РЯД (Conical, Spherical, Can — как в книге и на стр. 12 тетради) -->
+                    <!-- 4. Conical -->
+                    ${xCross(65, 165)}
+                    <polygon points="65,175 95,230 35,230" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="65" y="244" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">4. Conical</text>
+
+                    <!-- 5. Spherical -->
+                    ${xCross(175, 165)}
+                    <path d="M150,222 C142,202 150,176 175,176 C200,176 208,202 200,222 L206,230 L144,230 Z" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="175" y="244" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">5. Spherical</text>
+
+                    <!-- 6. Can -->
+                    ${xCross(280, 165)}
+                    <rect x="253" y="177" width="54" height="53" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="2"/>
+                    <text x="280" y="244" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">6. Can</text>
+
+                    <!-- Световая полоса -->
+                    <g transform="translate(30, 255)">
+                        <rect x="0" y="0" width="290" height="14" fill="#1e293b" rx="2"/>
+                        <rect x="12" y="2" width="7" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="24" y="2" width="7" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="36" y="2" width="7" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="48" y="2" width="7" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="130" y="2" width="12" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="210" y="2" width="12" height="10" fill="${COLORS.yellow}"/>
+                        <text x="145" y="25" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="currentColor">Yellow Light: Fl(Y) or Fl(4)Y (not white rhythm)</text>
+                    </g>
+                </svg>
+            `;
+        }
+
+        // 6. EMERGENCY WRECK MARKS (Стр. 15) — Сине-желтые вертикальные полосы + прямой крест (+)
+        function svgEmergencyWreck() {
+            const uprightCross = (cx, cy) => `
+                <g transform="translate(${cx}, ${cy})">
+                    <path d="M-9,0 L9,0 M0,-9 L0,9" stroke="#0f172a" stroke-width="6.5" stroke-linecap="square"/>
+                    <path d="M-9,0 L9,0 M0,-9 L0,9" stroke="${COLORS.yellow}" stroke-width="4" stroke-linecap="square"/>
+                </g>
+            `;
+
+            return `
+                <svg viewBox="0 0 320 250" class="w-full max-w-[350px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="160" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">EMERGENCY WRECK MARKS (BuY: min 4, max 8)</text>
+
+                    <!-- Ретрорефлектор слева -->
+                    <g transform="translate(18, 90)">
+                        <text x="26" y="-6" text-anchor="middle" font-size="8.5" font-weight="600" fill="currentColor">Retroflector</text>
+                        <rect x="4" y="0" width="22" height="14" fill="${COLORS.blue}" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="26" y="0" width="22" height="14" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="1.5"/>
+                    </g>
+
+                    <!-- 1. Pillar Buoy (BuY vertical stripes + upright cross) -->
+                    ${uprightCross(140, 36)}
+                    <line x1="140" y1="45" x2="140" y2="56" stroke="currentColor" stroke-width="2.5"/>
+                    <clipPath id="clipWreckPillar">
+                        <path d="M126,56 L154,56 L164,135 L178,142 L178,160 L102,160 L102,142 L116,135 Z"/>
+                    </clipPath>
+                    <g clip-path="url(#clipWreckPillar)">
+                        <rect x="100" y="56" width="13" height="106" fill="${COLORS.blue}"/>
+                        <rect x="113" y="56" width="13" height="106" fill="${COLORS.yellow}"/>
+                        <rect x="126" y="56" width="14" height="106" fill="${COLORS.blue}"/>
+                        <rect x="140" y="56" width="14" height="106" fill="${COLORS.yellow}"/>
+                        <rect x="154" y="56" width="13" height="106" fill="${COLORS.blue}"/>
+                        <rect x="167" y="56" width="13" height="106" fill="${COLORS.yellow}"/>
+                    </g>
+                    <path d="M126,56 L154,56 L164,135 L178,142 L178,160 L102,160 L102,142 L116,135 Z" fill="none" stroke="#0f172a" stroke-width="2"/>
+                    <text x="140" y="178" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Pillar (BuY)</text>
+
+                    <!-- 2. Spar Buoy (BuY + upright cross) -->
+                    ${uprightCross(235, 36)}
+                    <line x1="235" y1="45" x2="235" y2="56" stroke="currentColor" stroke-width="2.5"/>
+                    <rect x="227" y="56" width="8" height="104" fill="${COLORS.blue}" stroke="#0f172a" stroke-width="1"/>
+                    <rect x="235" y="56" width="8" height="104" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="1"/>
+                    <rect x="227" y="56" width="16" height="104" fill="none" stroke="#0f172a" stroke-width="2"/>
+                    <text x="235" y="178" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Spar (BuY)</text>
+
+                    <!-- Световая полоса Alternating Blue / Yellow 3s -->
+                    <g transform="translate(35, 194)">
+                        <rect x="0" y="0" width="250" height="16" fill="#1e293b" stroke="#475569" rx="2"/>
+                        <rect x="10" y="2" width="45" height="12" fill="${COLORS.blue}"/>
+                        <rect x="75" y="2" width="45" height="12" fill="${COLORS.yellow}"/>
+                        <rect x="140" y="2" width="45" height="12" fill="${COLORS.blue}"/>
+                        <rect x="205" y="2" width="35" height="12" fill="${COLORS.yellow}"/>
+                        <text x="125" y="30" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="700" fill="currentColor">Al.Occ.BuY.3s (Bu 1.0s + 0.5s + Y 1.0s + 0.5s)</text>
+                    </g>
+                </svg>
+            `;
+        }
+
+        // =========================================================================
+        // БАЗА ДАННЫХ ВСЕХ 6 ТЕМ (СТР. 1–15 ТЕТРАДИ) С ПЕРЕЧИСЛЕНИЯМИ И СПИСКАМИ
+        // =========================================================================
+        const TOPICS = [
+            {
+                id: 'preferred',
+                tabName: '1. Preferred Channel (Стр. 1–3)',
+                title: 'Тема 1: Preferred Channel Buoys (Region A & Region B)',
+                subtitle: 'Буї рекомендованого (основного) фарватеру в Регіонах А та В • Стор. 1–3 зошита + Стор. 80 підручника',
+                cards: [
+                    {
+                        badge: 'Стор. 1 зошита • Region A',
+                        titleEn: 'Preferred Channel Buoy — Region A (To Port)',
+                        titleUa: 'Буй рекомендованого фарватеру — Регіон А (Основний фарватер ліворуч)',
+                        svg: svgPreferredBuoys('regA_port'),
+                        points: [
+                            {
+                                num: '1',
+                                en: 'This is the Preferred channel buoy (Region A).',
+                                ua: 'Це буй рекомендованого (основного) фарватеру в Регіоні А.'
+                            },
+                            {
+                                num: '2',
+                                en: 'It indicates that the preferred channel is to port in Region A.',
+                                ua: 'Він вказує, що рекомендований (основний) фарватер знаходиться ліворуч (по лівому борту) у Регіоні А.'
+                            },
+                            {
+                                num: '3',
+                                en: 'The colour of the buoy is green with a red band (GRG).',
+                                ua: 'Колір буя — зелений з однією червоною горизонтальною смугою посередині (З-Ч-З).'
+                            },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoy is:',
+                                ua: 'Форма буя (перелік допустимих форм):',
+                                listItems: [
+                                    { code: 'Conical', en: 'Conical buoy', ua: 'Конічний буй' },
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний буй (буй-колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина / сигароподібний буй)' }
+                                ]
+                            },
+                            {
+                                num: '4a',
+                                en: 'It is surmounted by a single green cone point upward.',
+                                ua: 'На ньому встановлена топова фігура — один зелений конус вершиною вгору (▲).'
+                            },
+                            {
+                                num: '5',
+                                en: 'It exhibits Fl(2+1)G (Green group-flashing 2+1).',
+                                ua: 'Випромінює зелений групово-проблисковий вогонь за схемою (2+1) проблиски.'
+                            }
+                        ]
+                    },
+                    {
+                        badge: 'Стор. 2 зошита • Region B (To Starboard)',
+                        titleEn: 'Preferred Channel Buoy — Region B (To Starboard)',
+                        titleUa: 'Буй рекомендованого фарватеру — Регіон B (Основний фарватер праворуч)',
+                        svg: svgPreferredBuoys('regB_starboard'),
+                        points: [
+                            {
+                                num: '1',
+                                en: 'This is the Preferred channel buoy (Region B).',
+                                ua: 'Це буй рекомендованого (основного) фарватеру в Регіоні B.'
+                            },
+                            {
+                                num: '2',
+                                en: 'It indicates that the preferred channel is to starboard in Region B.',
+                                ua: 'Він вказує, що рекомендований (основний) фарватер знаходиться праворуч (по правому борту) у Регіоні B.'
+                            },
+                            {
+                                num: '3',
+                                en: 'The colour of the buoy is green with a red band (CRG / GRG).',
+                                ua: 'Колір буя — зелений з однією червоною горизонтальною смугою.'
+                            },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoy is (в зошиті виправлено з conical на CAN):',
+                                ua: 'Форма буя (перелік форм):',
+                                listItems: [
+                                    { code: 'CAN', en: 'Can (cylindrical) buoy', ua: 'Циліндричний буй (банка)' },
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний буй (колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            {
+                                num: '4a',
+                                en: 'It is surmounted by a single green can.',
+                                ua: 'На ньому встановлена топова фігура — один зелений циліндр (■).'
+                            },
+                            {
+                                num: '5',
+                                en: 'It exhibits Fl(2+1)G.',
+                                ua: 'Випромінює групово-проблисковий зелений вогонь Fl(2+1)G (2+1 проблиски).'
+                            }
+                        ]
+                    },
+                    {
+                        badge: 'Стор. 3 зошита • Region B (To Port)',
+                        titleEn: 'Preferred Channel Buoy — Region B (To Port)',
+                        titleUa: 'Буй рекомендованого фарватеру — Регіон B (Основний фарватер ліворуч)',
+                        svg: svgPreferredBuoys('regB_port'),
+                        points: [
+                            {
+                                num: '1',
+                                en: 'It indicates that the preferred channel is to port in Region B.',
+                                ua: 'Він вказує, що рекомендований (основний) фарватер знаходиться ліворуч (по лівому борту) у Регіоні B.'
+                            },
+                            {
+                                num: '2',
+                                en: 'The colour of the buoys is red with a green band (RGR).',
+                                ua: 'Колір буїв — червоний із зеленою горизонтальною смугою посередині (Ч-З-Ч).'
+                            },
+                            {
+                                num: '3',
+                                en: 'The shape of the buoy is:',
+                                ua: 'Форма буя (перелік форм):',
+                                listItems: [
+                                    { code: 'Conical', en: 'Conical buoy', ua: 'Конічний буй' },
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний буй (колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            {
+                                num: '4a',
+                                en: 'It is surmounted by a single red cone point upward.',
+                                ua: 'На ньому встановлена топова фігура — один червоний конус вершиною вгору (▲).'
+                            },
+                            {
+                                num: '5',
+                                en: 'It exhibits Fl(2+1)R (Red group-flashing 2+1).',
+                                ua: 'Випромінює групово-проблисковий червоний вогонь Fl(2+1)R (2+1 проблиски).'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'cardinal',
+                tabName: '2. Cardinal Buoys (Стр. 4–8)',
+                title: 'Тема 2: Cardinal Buoys — N, E, S, W (Кардинальні буї)',
+                subtitle: 'Визначення кардинальних знаків та всі 4 сторони світу (North, East, South, West) • Стор. 4–8 зошита',
+                introBlock: {
+                    badge: 'Стор. 4 (вступ) • Загальне правило Cardinal Buoys',
+                    svg: svgCardinalCompassRose(),
+                    rules: [
+                        {
+                            en: 'Cardinal Buoys are used to indicate the side on which to pass a danger.',
+                            ua: 'Кардинальні буї використовуються для вказівки сторони (за компасом), з якої слід обходити небезпеку.'
+                        },
+                        {
+                            en: 'They indicate that the deepest water is on the named side of the buoy.',
+                            ua: 'Вони вказують, що найглибша (безпечна) вода знаходиться з однойменної сторони від буя.'
+                        },
+                        {
+                            en: 'Note from notebook: BY = Black and Yellow (the position of black matches the direction of the 2 black cones!).',
+                            ua: 'Підказка з зошита: BY = Чорний та Жовтий (положення чорної смуги завжди підказує напрямок вершин чорних конусів!).'
+                        }
+                    ]
+                },
+                cards: [
+                    {
+                        badge: 'Стор. 4–5 зошита • NORTH (N)',
+                        titleEn: 'North Cardinal Buoy (N)',
+                        titleUa: 'Північний кардинальний буй (N)',
+                        svg: svgCardinalSingle('N'),
+                        points: [
+                            { num: '1', en: 'This is North Cardinal buoy.', ua: 'Це північний кардинальний буй.' },
+                            { num: '2', en: 'It indicates that you should pass a danger on the northern side.', ua: 'Він вказує, що небезпеку слід обходити з північної сторони.' },
+                            { num: '3', en: 'The colour of the buoys is black above yellow (BY).', ua: 'Колір буїв — чорний над жовтим (зверху чорний, знизу жовтий).' },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoys is:',
+                                ua: 'Форма буїв:',
+                                listItems: [
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний (колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            { num: '5 (4a)', en: 'It is surmounted by 2 black cones points upward, disposed vertically.', ua: 'На ньому встановлені 2 чорні конуси вершинами вгору (▲▲), розташовані вертикально.' },
+                            { num: '6', en: 'It exhibits Q / VQ uninterrupted. The colour of the light is White.', ua: 'Випромінює безперервний частий (Q) або дуже частий (VQ) вогонь. Колір вогню — білий.' }
+                        ]
+                    },
+                    {
+                        badge: 'Стор. 6 зошита • EAST (E)',
+                        titleEn: 'East Cardinal Buoy (E)',
+                        titleUa: 'Східний кардинальний буй (E)',
+                        svg: svgCardinalSingle('E'),
+                        points: [
+                            { num: '1', en: 'This is East Cardinal buoy.', ua: 'Це східний кардинальний буй.' },
+                            { num: '2', en: 'It indicates that you should pass a danger on the eastern side.', ua: 'Він вказує, що небезпеку слід обходити зі східної сторони.' },
+                            { num: '3', en: 'The colour of the buoy is black with a yellow band (BYB).', ua: 'Колір буя — чорний із жовтою горизонтальною смугою посередині (Ч-Ж-Ч).' },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoy is:',
+                                ua: 'Форма буя:',
+                                listItems: [
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний (колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            { num: '5', en: 'It is surmounted by 2 black cones points outward, disposed vertically.', ua: 'На ньому встановлені 2 чорні конуси вершинами назовні / основами один до одного (▲▼), розташовані вертикально.' },
+                            { num: '6', en: 'It exhibits Q(3) or VQ(3) White light (every 5s / 10s).', ua: 'Випромінює груповий частий Q(3) або дуже частий VQ(3) білий вогонь (3 проблиски — як 3 години на циферблаті).' }
+                        ]
+                    },
+                    {
+                        badge: 'Стор. 7 зошита • SOUTH (S)',
+                        titleEn: 'South Cardinal Buoy (S)',
+                        titleUa: 'Південний кардинальний буй (S)',
+                        svg: svgCardinalSingle('S'),
+                        points: [
+                            { num: '1', en: 'It is South Cardinal buoy.', ua: 'Це південний кардинальний буй.' },
+                            { num: '2', en: 'It indicates that you should pass a danger on the southern side.', ua: 'Він вказує, що небезпеку слід обходити з південної сторони.' },
+                            { num: '3', en: 'The colour of the buoy is black below yellow (YB).', ua: 'Колір буя — чорний під жовтим (зверху жовтий, знизу чорний).' },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoy is:',
+                                ua: 'Форма буя:',
+                                listItems: [
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний (колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            { num: '5', en: 'It is surmounted by 2 black cones points downward, disposed vertically.', ua: 'На ньому встановлені 2 чорні конуси вершинами донизу (▼▼), розташовані вертикально.' },
+                            { num: '6', en: 'It exhibits Q(6)+LFl or VQ(6)+LFl White light.', ua: 'Випромінює 6 частих Q(6) або дуже частих VQ(6) проблисків + 1 тривалий проблиск (LFl) білого кольору (6 годин на циферблаті).' }
+                        ]
+                    },
+                    {
+                        badge: 'Стор. 8 зошита • WEST (W)',
+                        titleEn: 'West Cardinal Buoy (W)',
+                        titleUa: 'Західний кардинальний буй (W)',
+                        svg: svgCardinalSingle('W'),
+                        points: [
+                            { num: '1', en: 'It is West Cardinal buoy.', ua: 'Це західний кардинальний буй.' },
+                            { num: '2', en: 'It indicates that you should pass a danger on the West (western) side.', ua: 'Він вказує, що небезпеку слід обходити із західної сторони.' },
+                            { num: '3', en: 'The colour of the buoy is black with yellow bands above and below (YBY).', ua: 'Колір буя — чорний із жовтими смугами зверху та знизу (Ж-Ч-Ж).' },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoy is:',
+                                ua: 'Форма буя:',
+                                listItems: [
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний (колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            { num: '5', en: 'It is surmounted by 2 black cones points inward, disposed vertically.', ua: 'На ньому встановлені 2 чорні конуси вершинами всередину / один до одного (▼▲), розташовані вертикально.' },
+                            { num: '6', en: 'It exhibits Q(9) or VQ(9) White light.', ua: 'Випромінює груповий частий Q(9) або дуже частий VQ(9) білий вогонь (9 проблисків — як 9 годин на циферблаті).' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'isolated',
+                tabName: '3. Isolated Danger (Стр. 9)',
+                title: 'Тема 3: Isolated Danger Marks (Знаки поодинокої небезпеки)',
+                subtitle: 'Позначення ізольованої навігаційної небезпеки обмеженого розміру • Стор. 9 зошита',
+                cards: [
+                    {
+                        badge: 'Стор. 9 зошита • BRB + 2 Black Spheres',
+                        titleEn: 'Isolated Danger Marks',
+                        titleUa: 'Знаки поодинокої (ізольованої) небезпеки',
+                        svg: svgIsolatedDanger(),
+                        points: [
+                            {
+                                num: '1',
+                                en: 'It is Isolated Danger mark.',
+                                ua: 'Це знак поодинокої (ізольованої) небезпеки.'
+                            },
+                            {
+                                num: '2',
+                                en: 'It indicates that there is an isolated danger of limited extent with navigable water all round it.',
+                                ua: 'Він вказує на те, що тут знаходиться ізольована небезпека обмеженої площі, навколо якої з усіх боків є судноплавна (безпечна) вода.'
+                            },
+                            {
+                                num: '3',
+                                en: 'The colour of the buoy is black with red band(s) (BRB).',
+                                ua: 'Колір буя — чорний з однією або декількома червоними горизонтальними смугами (Ч-Чр-Ч).'
+                            },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoy is:',
+                                ua: 'Форма буя (перелік форм):',
+                                listItems: [
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний буй (колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            {
+                                num: '5',
+                                en: 'It is surmounted by 2 black spheres, disposed vertically.',
+                                ua: 'На ньому встановлена топова фігура — 2 чорні кулі (сфери ●●), розташовані вертикально.'
+                            },
+                            {
+                                num: '6',
+                                en: 'It exhibits Fl(2) White light (Group-flashing 2).',
+                                ua: 'Випромінює білий групово-проблисковий вогонь по 2 проблиски в групі — Fl(2)W.'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'safewater',
+                tabName: '4. Safe Water (Стр. 10–11)',
+                title: 'Тема 4: Safe Water Marks (Знаки чистої / безпечної води)',
+                subtitle: 'Визначення, перелік призначень (1–4) та повні характеристики (1–6) • Стор. 10–11 зошита',
+                cards: [
+                    {
+                        badge: 'Стор. 10–11 зошита • RW Vertical Stripes',
+                        titleEn: 'Safe Water Marks (RW)',
+                        titleUa: 'Знаки чистої (безпечної) води',
+                        svg: svgSafeWater(),
+                        points: [
+                            {
+                                num: 'Визначення (Стор. 10)',
+                                en: 'Safe Water Marks are used to indicate that there is navigable water all round the mark.',
+                                ua: 'Знаки чистої води використовуються для вказівки на те, що навколо знака з усіх боків є судноплавна вода.'
+                            },
+                            {
+                                num: 'Список (Стор. 10)',
+                                en: 'Safe water mark can be used as (4 варіанти зі списку в зошиті):',
+                                ua: 'Знак чистої води може використовуватися як:',
+                                listItems: [
+                                    { code: '1', en: 'Centre line buoy', ua: 'Осьовий буй (буй, що позначає вісь фарватеру / систему розділення руху)' },
+                                    { code: '2', en: 'Mid-channel buoy', ua: 'Буй середини каналу (фарватеру)' },
+                                    { code: '3', en: 'Landfall buoy', ua: 'Приймальний буй (буй підходу з відкритого моря до берега або порту)' },
+                                    { code: '4', en: 'The best passage under the fixed bridge', ua: 'Вказівник найкращого (найбезпечнішого) проходу під нерозвідним мостом' }
+                                ]
+                            },
+                            {
+                                num: '1 (Стор. 11)',
+                                en: 'This is a Safe Water mark.',
+                                ua: 'Це знак чистої (безпечної) води.'
+                            },
+                            {
+                                num: '2',
+                                en: 'It indicates that there is navigable water all round it.',
+                                ua: 'Він вказує, що навколо нього з усіх боків є судноплавна вода.'
+                            },
+                            {
+                                num: '3',
+                                en: 'The colour of the buoy is red and white vertical stripes (RW).',
+                                ua: 'Колір буя — червоні та білі вертикальні смуги.'
+                            },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoy is:',
+                                ua: 'Форма буя (перелік форм):',
+                                listItems: [
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний буй (колона)' },
+                                    { code: 'Spherical', en: 'Spherical buoy', ua: 'Сферичний (кулястий) буй' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            {
+                                num: '5',
+                                en: 'It is surmounted by a single red sphere.',
+                                ua: 'На ньому встановлена топова фігура — одна червона куля (сфера ●).'
+                            },
+                            {
+                                num: '6',
+                                en: 'It exhibits Occ / Iso / Mo(A) / LFl 10s (Light is ALWAYS White!):',
+                                ua: 'Випромінює завжди БІЛИЙ вогонь одного з 4 ритмів (з помітками з твого зошита):',
+                                listItems: [
+                                    { code: 'Occ', en: 'Occulting White light', ua: 'Затемнений білий вогонь (різні періоди)' },
+                                    { code: 'Iso', en: 'Isophase White light', ua: 'Ізофазний білий вогонь — світло дорівнює темряві (різні періоди)' },
+                                    { code: 'Mo(A)', en: 'Morse Code (A) [ • — ] White light', ua: 'Кодовий вогонь за азбукою Морзе літера «А» (крапка-тире, різні періоди)' },
+                                    { code: 'LFl 10s', en: 'Long-flashing every 10 seconds', ua: 'Тривало-проблисковий білий вогонь — період ЗАВЖДИ 10 секунд!' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'special',
+                tabName: '5. Special Marks (Стр. 12–14)',
+                title: 'Тема 5: Special Marks & ODAS (Спеціальні знаки)',
+                subtitle: 'Усі 6 форм (Стор. 12), визначення за публікаціями (Стор. 13) та повний список об\'єктів 1–6 і ODAS (Стор. 14)',
+                cards: [
+                    {
+                        badge: 'Стор. 12–14 зошита • Одна підтема',
+                        titleEn: 'Special Marks (Yellow)',
+                        titleUa: 'Спеціальні знаки (Жовті буї зі знаком Х)',
+                        svg: svgSpecialMarks(),
+                        points: [
+                            {
+                                num: '1 (Стор. 12)',
+                                en: 'This is Special mark.',
+                                ua: 'Це спеціальний знак.'
+                            },
+                            {
+                                num: '2',
+                                en: 'It indicates a special feature of the water area, the nature of which is known from nautical publications.',
+                                ua: 'Він вказує на особливу ділянку або об\'єкт акваторії, характер яких відомий з навігаційних публікацій.'
+                            },
+                            {
+                                num: 'Доповнення (Стор. 13)',
+                                en: 'Special marks are used to indicate special features or areas, the nature of which is known from a reference to a chart, Sailing Directions or Notices to Mariners.',
+                                ua: 'Спеціальні знаки використовуються для позначення особливих об\'єктів чи районів, призначення яких визначається за посиланням на морську карту (Chart), Лоцію (Sailing Directions) або Повідомлення мореплавцям (Notices to Mariners).'
+                            },
+                            {
+                                num: '3',
+                                en: 'The colour of the buoys is yellow.',
+                                ua: 'Колір буїв — жовтий.'
+                            },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoys is (всі форми, перелічені на стор. 12):',
+                                ua: 'Форма буїв (довільна / необов\'язкова — повний перелік із зошита):',
+                                listItems: [
+                                    { code: 'CAN', en: 'Can (cylindrical)', ua: 'Циліндричний (банка)' },
+                                    { code: 'PILLAR', en: 'Pillar buoy', ua: 'Стовпоподібний (колона)' },
+                                    { code: 'Spherical', en: 'Spherical buoy', ua: 'Сферичний (кулястий)' },
+                                    { code: 'Barrel', en: 'Barrel buoy', ua: 'Бочкоподібний (бочка)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' },
+                                    { code: 'Conical', en: 'Conical buoy (на схемі)', ua: 'Конічний (якщо використовується конус чи циліндр — вказує сторону обходу)' }
+                                ]
+                            },
+                            {
+                                num: '5',
+                                en: 'It is surmounted by a single X-shape yellow cross.',
+                                ua: 'На ньому встановлена топова фігура — один жовтий косий Х-подібний хрест (хрест св. Андрія ×).'
+                            },
+                            {
+                                num: '6 (Стор. 12–13)',
+                                en: 'It exhibits any yellow light not used for white light on Cardinal, Safe Water and Isolated Danger marks.',
+                                ua: 'Випромінює жовтий вогонь з будь-яким ритмом, що НЕ використовується для білих вогнів кардинальних знаків, знаків чистої води та поодинокої небезпеки (наприклад: Fl Y, Fl(4)Y).'
+                            },
+                            {
+                                num: 'Список 1–6 (Стор. 14)',
+                                en: 'Special mark can indicate (перелік із 6 пунктів у зошиті):',
+                                ua: 'Спеціальний знак може позначати:',
+                                listItems: [
+                                    { code: '1', en: 'Cables', ua: 'Підводні кабелі' },
+                                    { code: '2', en: 'Pipelines / Military exercise areas / TSS (Traffic Separation Schemes)', ua: 'Підводні трубопроводи / Райони військових навчань / Системи розділення руху (СРР)' },
+                                    { code: '3', en: 'Underwater infrastructure', ua: 'Підводну інфраструктуру (гідротехнічні споруди)' },
+                                    { code: '4', en: 'Recreation areas', ua: 'Зони відпочинку (рекреаційні зони, акваторії для спорту)' },
+                                    { code: '5', en: 'Anchorage areas', ua: 'Райони якірної стоянки' },
+                                    { code: '6', en: 'Fishing ➔ Clam | Oyster | Nets | Stakes | Havens / Horns', ua: 'Риболовні ділянки: молюскові (Clam) та устричні (Oyster) ферми | рибальські сітки (Nets) | кілки/палі (Stakes) | межі гаваней та заповідників' }
+                                ]
+                            },
+                            {
+                                num: 'ODAS (Стор. 14 внизу)',
+                                en: 'Special mark can be used as ODAS buoy: Ocean Data Acquisition System.',
+                                ua: 'Спеціальний знак може використовуватися як буй ODAS — Система збору океанографічних даних (Ocean Data Acquisition System).'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'wreck',
+                tabName: '6. Emergency Wreck (Стр. 15)',
+                title: 'Тема 6: Emergency Wreck Marks (Аварійні знаки нового затонулого судна)',
+                subtitle: 'Огородження нових затонулих суден та перешкод, ще не нанесених на карту • Стор. 15 зошита',
+                cards: [
+                    {
+                        badge: 'Стор. 15 зошита • BuY (min 4, max 8)',
+                        titleEn: 'Emergency Wreck Marks',
+                        titleUa: 'Аварійні знаки нового затонулого судна',
+                        svg: svgEmergencyWreck(),
+                        points: [
+                            {
+                                num: '1',
+                                en: 'This is Emergency Wreck mark.',
+                                ua: 'Це аварійний знак нового затонулого судна (нововиявленої навігаційної перешкоди).'
+                            },
+                            {
+                                num: '2',
+                                en: 'It indicates the new wreck that is not marked on the chart.',
+                                ua: 'Він вказує на нове затонуле судно (перешкоду), яке ще не позначене на навігаційній карті.'
+                            },
+                            {
+                                num: '3',
+                                en: 'The colour of the buoy is blue and yellow vertical stripes (BuY: min 4, max 8 stripes).',
+                                ua: 'Колір буя — сині та жовті вертикальні смуги однакової ширини (мінімум 4, максимум 8 смуг).'
+                            },
+                            {
+                                num: '4',
+                                en: 'The shape of the buoy is:',
+                                ua: 'Форма буя (перелік форм):',
+                                listItems: [
+                                    { code: 'Pillar', en: 'Pillar buoy', ua: 'Стовпоподібний буй (колона)' },
+                                    { code: 'Spar', en: 'Spar buoy', ua: 'Віха (жердина)' }
+                                ]
+                            },
+                            {
+                                num: '5',
+                                en: 'It is surmounted by a single upright (standing vertical) yellow cross (+).',
+                                ua: 'На ньому встановлена топова фігура — один прямий (вертикальний) жовтий хрест (+).'
+                            },
+                            {
+                                num: '6',
+                                en: 'It exhibits Al.Occ.BuY.3s (Alternating Occulting Blue & Yellow, period 3s):',
+                                ua: 'Випромінює змінний затемнений синьо-жовтий вогонь з періодом 3 секунди (детальний розбір циклу):',
+                                listItems: [
+                                    { code: 'Bu 1.0s', en: 'Blue light flash — 1.0 second', ua: 'Синій спалах тривалістю 1,0 секунда' },
+                                    { code: '+ 0.5s', en: 'Darkness (eclipse) — 0.5 second', ua: 'Затемнення (пауза) 0,5 секунди' },
+                                    { code: 'Y 1.0s', en: 'Yellow light flash — 1.0 second', ua: 'Жовтий спалах тривалістю 1,0 секунда' },
+                                    { code: '+ 0.5s', en: 'Darkness (eclipse) — 0.5 second (Total = 3s)', ua: 'Затемнення (пауза) 0,5 секунди (Разом цикл = 3,0 с)' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // РЕНДЕРИНГ ИНТЕРФЕЙСА И УПРАВЛЕНИЕ СОСТОЯНИЕМ
+        // =========================================================================
+        let activeTopicIdx = 0;
+        let showAllMode = false;
+        let hideUaMode = false;
+
+        function initApp() {
+            renderNavTabs();
+            renderMainContent();
+        }
+
+        function renderNavTabs() {
+            const nav = document.getElementById('navTabs');
+            nav.innerHTML = TOPICS.map((t, idx) => {
+                const isActive = (!showAllMode && idx === activeTopicIdx);
+                return `
+                    <button onclick="selectTab(${idx})" class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border ${
+                        isActive
+                            ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-600/20'
+                            : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }">
+                        <span>${t.tabName}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectTab(idx) {
+            showAllMode = false;
+            activeTopicIdx = idx;
+            document.getElementById('btnViewAll').textContent = '📋 Показати всі 6 тем підряд';
+            renderNavTabs();
+            renderMainContent();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleViewAll() {
+            showAllMode = !showAllMode;
+            const btn = document.getElementById('btnViewAll');
+            btn.textContent = showAllMode ? '🎯 Повернутися до вкладок (по 1 темі)' : '📋 Показати всі 6 тем підряд';
+            renderNavTabs();
+            renderMainContent();
+        }
+
+        function toggleTranslation() {
+            hideUaMode = !hideUaMode;
+            document.body.classList.toggle('hide-ua', hideUaMode);
+            document.getElementById('eyeIcon').textContent = hideUaMode ? '🙈' : '👁️';
+            document.getElementById('eyeText').textContent = hideUaMode ? 'Показати переклад (UA)' : 'Приховати переклад (UA)';
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = isDark ? 'Світла тема' : 'Темна тема';
+        }
+
+        // Отрисовка одной темы
+        function renderTopicSection(topic) {
+            let introHtml = '';
+            if (topic.introBlock) {
+                const rulesHtml = topic.introBlock.rules.map((r, i) => `
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/70">
+                        <div class="flex items-start gap-2.5">
+                            <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 font-mono text-xs font-bold shrink-0">Правило ${i + 1}</span>
+                            <div class="space-y-1">
+                                <p class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug">${r.en}</p>
+                                <p class="text-xs sm:text-sm text-blue-700 dark:text-amber-300/90 font-medium ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${r.ua}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                introHtml = `
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-md mb-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                            <div class="lg:col-span-6 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col items-center">
+                                <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">${topic.introBlock.badge}</span>
+                                ${topic.introBlock.svg}
+                            </div>
+                            <div class="lg:col-span-6 space-y-3">
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">Загальні правила Кардинальної системи (Стор. 4)</h3>
+                                ${rulesHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const cardsHtml = topic.cards.map(card => {
+                const pointsHtml = card.points.map(pt => {
+                    let subListHtml = '';
+                    if (pt.listItems && pt.listItems.length > 0) {
+                        subListHtml = `
+                            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 pl-1">
+                                ${pt.listItems.map(item => `
+                                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 shadow-sm flex items-start gap-2.5">
+                                        <span class="px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-xs font-bold shrink-0 mt-0.5">${item.code}</span>
+                                        <div class="min-w-0">
+                                            <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white leading-tight">${item.en}</div>
+                                            <div class="text-xs text-emerald-700 dark:text-emerald-400 font-medium mt-0.5 ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${item.ua}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 transition hover:border-blue-400 dark:hover:border-blue-500/60">
+                            <div class="flex items-start gap-3">
+                                <span class="px-2.5 py-0.5 rounded-md bg-blue-600/15 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border border-blue-500/30 font-mono text-xs font-bold shrink-0 mt-0.5">
+                                    Пункт ${pt.num}
+                                </span>
+                                <div class="flex-1 min-w-0">
+                                    <!-- Вариант В: Английская строка сверху, украинский перевод прямо под ней -->
+                                    <p class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug">
+                                        ${pt.en}
+                                    </p>
+                                    <p class="text-xs sm:text-sm text-blue-700 dark:text-amber-300/90 font-medium mt-1 ua-trans" onclick="this.classList.toggle('revealed')">
+                                        🇺🇦 ${pt.ua}
+                                    </p>
+                                    ${subListHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+                        <!-- Шапка карточки -->
+                        <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/80 px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">${card.titleEn}</h3>
+                                <p class="text-xs sm:text-sm text-blue-700 dark:text-blue-300 font-medium ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${card.titleUa}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-600/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border border-blue-500/30">
+                                ${card.badge}
+                            </span>
+                        </div>
+
+                        <!-- Контент карточки: Слева SVG-схема из книги, Справа пункты и списки -->
+                        <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                            <!-- Левая колонка: векторная схема буев (sticky) -->
+                            <div class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-28 bg-slate-50 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center shadow-inner">
+                                ${card.svg}
+                                <span class="mt-2 text-[11px] text-slate-400 dark:text-slate-500 font-mono">
+                                    Векторна схема 1-в-1 за підручником IALA
+                                </span>
+                            </div>
+
+                            <!-- Правая колонка: структурированные пункты и перечисления -->
+                            <div class="lg:col-span-7 xl:col-span-8 space-y-3">
+                                ${pointsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <section class="space-y-5">
+                    <div class="border-l-4 border-blue-600 pl-4 py-1">
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">${topic.title}</h2>
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">${topic.subtitle}</p>
+                    </div>
+                    ${introHtml}
+                    <div class="space-y-6">
+                        ${cardsHtml}
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderMainContent() {
+            const container = document.getElementById('mainContainer');
+            if (showAllMode) {
+                container.innerHTML = TOPICS.map(t => renderTopicSection(t)).join('<hr class="border-slate-300 dark:border-slate-800 my-10"/>');
+            } else {
+                container.innerHTML = renderTopicSection(TOPICS[activeTopicIdx]);
+            }
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>

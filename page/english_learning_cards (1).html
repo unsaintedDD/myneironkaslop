@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Learning - Тема 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #cccccc; /* Светло-серый фон как на рисунке */
+        }
+        /* Кастомний скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #6b6b6b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9ca3af; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db; 
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-slate-800">
+<a href="../index.html" style="position:fixed; top:15px; left:15px; background:#2563eb; color:white; padding:10px 15px; text-decoration:none; border-radius:8px; font-family:sans-serif; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index:9999;">⬅ На главную</a>
+
+
+    <!-- Верхня панель (Header) -->
+    <header class="bg-[#6b6b6b] shadow-sm z-10 relative flex-shrink-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Навігація по темах -->
+                <nav class="flex space-x-8" aria-label="Global">
+                    <button onclick="switchTopic('topic1')" id="btn-topic1" class="border-b-2 border-blue-400 text-white font-medium px-1 py-5 transition-colors">
+                        Тема 1
+                    </button>
+                    <button onclick="switchTopic('topic12')" id="btn-topic12" class="border-b-2 border-transparent text-gray-300 hover:text-white hover:border-gray-400 font-medium px-1 py-5 transition-colors">
+                        Тема 12
+                    </button>
+                    <button onclick="switchTopic('topicOther')" id="btn-topicOther" class="border-b-2 border-transparent text-gray-300 hover:text-white hover:border-gray-400 font-medium px-1 py-5 transition-colors">
+                        Тема і т.д.
+                    </button>
+                </nav>
+
+                <!-- Пошук (Аналог Ctrl+F) -->
+                <div class="flex items-center">
+                    <div class="relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="searchInput" class="focus:ring-blue-500 focus:border-gray-500 block w-full pl-10 sm:text-sm border-gray-500 rounded-lg bg-[#5c5c5c] text-white placeholder-gray-300 py-2 border outline-none px-4 transition-all focus:bg-[#4d4d4d]" placeholder="Швидкий пошук (Ctrl+F)...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основний контейнер -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Бокова панель (Sidebar) -->
+        <aside id="sidebar" class="w-64 bg-[#6b6b6b] overflow-y-auto hidden md:block flex-shrink-0 transition-all duration-300">
+            <div class="p-5">
+                <h3 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">Підрозділи за ситуаціями</h3>
+                <nav class="space-y-1" id="sidebar-nav">
+                    <!-- Пункти меню генеруються через JS -->
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Основний контент (Лента карток) -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative">
+            
+            <div id="empty-state" class="hidden h-full flex-col items-center justify-center text-gray-400">
+                <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <p class="text-lg">У цій темі поки немає карток.</p>
+            </div>
+
+            <div id="no-results" class="hidden h-full flex-col items-center justify-center text-gray-400">
+                <p class="text-lg">За вашим запитом нічого не знайдено.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-6 pb-20" id="cards-container">
+                <!-- Картки будуть вставлені сюди через JS -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // База даних слів
+        const vocabularyData = [
+            // 1. Базовые слова и фразы
+            {
+                word: "I guess", translation: "гадаю / напевно", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "I guessed + [що завгодно]", sentence: "I guessed the right answer.", translation: "Я вгадав правильну відповідь." },
+                    present: { pattern: "I guess + [що завгодно]", sentence: "I guess you are right.", translation: "Гадаю, ти правий." },
+                    future: { pattern: "I will guess + [що завгодно]", sentence: "I will guess the password.", translation: "Я вгадаю пароль." }
+                }
+            },
+            {
+                word: "Also", translation: "також", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "[Хтось] also + [дієслово в Past]", sentence: "He also bought a car.", translation: "Він також купив машину." },
+                    present: { pattern: "[Хтось] also + [дієслово]", sentence: "She also likes tea.", translation: "Вона також любить чай." },
+                    future: { pattern: "[Хтось] will also + [дієслово]", sentence: "I will also invite him.", translation: "Я також запрошу його." }
+                }
+            },
+            {
+                word: "But to be honest", translation: "але чесно кажучи", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "But to be honest, + [що завгодно]", sentence: "But to be honest, I didn't like it.", translation: "Але чесно кажучи, мені це не сподобалося." },
+                    present: { pattern: "But to be honest, + [що завгодно]", sentence: "But to be honest, I don't know.", translation: "Але чесно кажучи, я не знаю." },
+                    future: { pattern: "But to be honest, + [що завгодно]", sentence: "But to be honest, I will not do this.", translation: "Але чесно кажучи, я не буду цього робити." }
+                }
+            },
+            {
+                word: "That aside", translation: "не зважаючи на це / залишаючи це осторонь", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "That aside, + [що завгодно]", sentence: "That aside, we had fun.", translation: "Не зважаючи на це, ми повеселилися." },
+                    present: { pattern: "That aside, + [що завгодно]", sentence: "That aside, the plan works.", translation: "Не зважаючи на це, план працює." },
+                    future: { pattern: "That aside, + [що завгодно]", sentence: "That aside, we will finish it tomorrow.", translation: "Не зважаючи на це, ми закінчимо це завтра." }
+                }
+            },
+            {
+                word: "You are welcome", translation: "будь ласка / завжди радий", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "[Хтось] said I was welcome + [де завгодно]", sentence: "He said I was welcome here.", translation: "Він сказав, що мені тут раді." },
+                    present: { pattern: "You are welcome + [де/куди завгодно]", sentence: "You are welcome in my house.", translation: "Тобі раді в моєму домі." },
+                    future: { pattern: "You will be welcome + [куди завгодно]", sentence: "You will be welcome to join us.", translation: "Ми будемо раді, якщо ти приєднаєшся до нас." }
+                }
+            },
+            {
+                word: "endure", translation: "терпіти / витримувати", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "endured + [що завгодно]", sentence: "She endured the pain.", translation: "Вона витерпіла біль." },
+                    present: { pattern: "endure(s) + [що завгодно]", sentence: "I endure this cold weather.", translation: "Я терплю цю холодну погоду." },
+                    future: { pattern: "will endure + [що завгодно]", sentence: "He will endure the test.", translation: "Він витримає випробування." }
+                }
+            },
+            {
+                word: "deception", translation: "обман", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "deception + [дія]", sentence: "Their deception ruined our plans.", translation: "Їхній обман зруйнував наші плани." },
+                    present: { pattern: "deception is + [якась]", sentence: "Deception is a bad strategy.", translation: "Обман — це погана стратегія." },
+                    future: { pattern: "deception will + [дія]", sentence: "This deception will cost them a lot.", translation: "Цей обман коштуватиме їм багато." }
+                }
+            },
+            {
+                word: "patience", translation: "терпіння", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "patience + [дія]", sentence: "My patience ended quickly.", translation: "Моє терпіння швидко закінчилося." },
+                    present: { pattern: "patience is + [якась]", sentence: "Patience is a great skill.", translation: "Терпіння — це чудова навичка." },
+                    future: { pattern: "will need + patience", sentence: "I will need a lot of patience.", translation: "Мені знадобиться багато терпіння." }
+                }
+            },
+            {
+                word: "innocent", translation: "невинний", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "was innocent + [в чомусь]", sentence: "He was innocent in that crime.", translation: "Він був невинним у тому злочині." },
+                    present: { pattern: "is innocent + [в чомусь]", sentence: "She looks so innocent.", translation: "Вона виглядає такою невинною." },
+                    future: { pattern: "will be declared innocent + [ким/де]", sentence: "He will be declared innocent.", translation: "Його оголосять невинним." }
+                }
+            },
+            {
+                word: "Sorry, I don't quite understand you.", translation: "Вибачте, я не зовсім зрозумів вас.", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "didn't quite understand + [когось]", sentence: "I didn't quite understand him, so I asked to repeat.", translation: "Я не зовсім зрозумів його, тому попросив повторити." },
+                    present: { pattern: "don't quite understand + [когось]", sentence: "Sorry, I don't quite understand you.", translation: "Вибачте, я вас не зовсім розумію." },
+                    future: { pattern: "will say I don't understand + [комусь]", sentence: "I will tell him if I don't understand.", translation: "Я скажу йому, якщо не зрозумію." }
+                }
+            },
+            {
+                word: "Yes, just a little bit", translation: "Так, зовсім трохи", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "knew + [щось] + just a little bit", sentence: "I knew French just a little bit.", translation: "Я знав французьку зовсім трохи." },
+                    present: { pattern: "understand + [щось] + just a little bit", sentence: "I understand English just a little bit.", translation: "Я розумію англійську зовсім трохи." },
+                    future: { pattern: "will speak + [щось] + just a little bit", sentence: "I will speak Spanish just a little bit.", translation: "Я буду говорити іспанською зовсім трохи." }
+                }
+            },
+            {
+                word: "Yes, but speak slower and clearer, please", translation: "Так, але говоріть повільніше і чіткіше", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "asked to speak slower + [кому]", sentence: "I asked him to speak slower and clearer.", translation: "Я попросив його говорити повільніше і чіткіше." },
+                    present: { pattern: "please, speak slower + [якщо можна]", sentence: "Yes, but speak slower and clearer, please.", translation: "Так, але говоріть повільніше і чіткіше, будь ласка." },
+                    future: { pattern: "will ask to speak slower + [когось]", sentence: "I will ask you to speak slower and clearer.", translation: "Я попрошу тебе говорити повільніше і чіткіше." }
+                }
+            },
+            {
+                word: "Do you have some problems with English?", translation: "У тебе проблеми з англійською?", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "had problems with + [щось]", sentence: "I had problems with English, I understood but spoke badly.", translation: "У мене були проблеми з англійською, я розумів, але говорив погано." },
+                    present: { pattern: "have problems with + [щось]", sentence: "Do you have problems with English? I understand but speak badly.", translation: "У тебе проблеми з англійською? Я розумію, але говорю погано." },
+                    future: { pattern: "will not have problems with + [щось]", sentence: "Soon I will understand everything and speak well.", translation: "Скоро я буду все розуміти і говорити добре." }
+                }
+            },
+            {
+                word: "Are you still working?", translation: "Ти все ще працюєш?", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "Were you still working + [коли]", sentence: "Were you still working at midnight?", translation: "Ти все ще працював опівночі?" },
+                    present: { pattern: "Are you still working + [де/над чим]", sentence: "Are you still working on this project?", translation: "Ти все ще працюєш над цим проєктом?" },
+                    future: { pattern: "Will you still be working + [коли]", sentence: "Will you still be working tomorrow?", translation: "Ти все ще працюватимеш завтра?" }
+                }
+            },
+            {
+                word: "I accept your offer", translation: "Я приймаю вашу пропозицію", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "accepted + [чиюсь] offer", sentence: "I accepted your offer yesterday.", translation: "Я прийняв вашу пропозицію вчора." },
+                    present: { pattern: "accept + [чиюсь] offer", sentence: "I accept your offer with pleasure.", translation: "Я з радістю приймаю вашу пропозицію." },
+                    future: { pattern: "will accept + [чиюсь] offer", sentence: "I will accept your offer if the price is good.", translation: "Я прийму вашу пропозицію, якщо ціна буде хорошою." }
+                }
+            },
+            {
+                word: "Is it far from the city centre?", translation: "Це далеко від центру?", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "It depended on + [щось]", sentence: "It depended on the traffic yesterday.", translation: "Вчора це залежало від заторів." },
+                    present: { pattern: "It depends on + [щось]", sentence: "Is it far? Well, it depends on the route.", translation: "Це далеко? Ну, це залежить від маршруту." },
+                    future: { pattern: "It will depend on + [щось]", sentence: "It will depend on the weather tomorrow.", translation: "Завтра це залежатиме від погоди." }
+                }
+            },
+            {
+                word: "Teamwork makes the dream work", translation: "Командна робота творить дива", category: "Базові фрази",
+                examples: {
+                    past: { pattern: "teamwork made + [щось]", sentence: "Our teamwork made the dream work.", translation: "Наша командна робота створила диво." },
+                    present: { pattern: "teamwork makes + [щось]", sentence: "Teamwork makes the dream work here.", translation: "Командна робота творить дива тут." },
+                    future: { pattern: "teamwork will make + [щось]", sentence: "Good teamwork will make the dream work.", translation: "Хороша командна робота допоможе досягти мрії." }
+                }
+            },
+
+            // 2. Частые слова и фразовые глаголы
+            {
+                word: "run out", translation: "закінчуватися", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "ran out of + [щось]", sentence: "We ran out of money.", translation: "У нас закінчилися гроші." },
+                    present: { pattern: "run(s) out of + [щось]", sentence: "My patience runs out fast.", translation: "Моє терпіння закінчується швидко." },
+                    future: { pattern: "will run out of + [щось]", sentence: "Time will run out soon.", translation: "Час скоро закінчиться." }
+                }
+            },
+            {
+                word: "turn out", translation: "виявлятися", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "turned out to be + [яким]", sentence: "The movie turned out to be great.", translation: "Фільм виявився чудовим." },
+                    present: { pattern: "turn(s) out + [що]", sentence: "It turns out he is my brother.", translation: "Виявляється, він мій брат." },
+                    future: { pattern: "will turn out + [як]", sentence: "Everything will turn out fine.", translation: "Все виявиться нормальним." }
+                }
+            },
+            {
+                word: "look for", translation: "шукати", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "looked for + [щось/когось]", sentence: "I looked for my keys.", translation: "Я шукав свої ключі." },
+                    present: { pattern: "look(s) for + [щось/когось]", sentence: "I look for new opportunities.", translation: "Я шукаю нові можливості." },
+                    future: { pattern: "will look for + [щось/когось]", sentence: "She will look for a new job.", translation: "Вона буде шукати нову роботу." }
+                }
+            },
+            {
+                word: "get up", translation: "вставати", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "got up at + [час]", sentence: "I got up at 7 AM.", translation: "Я встав о 7 ранку." },
+                    present: { pattern: "get(s) up + [коли]", sentence: "I usually get up early.", translation: "Я зазвичай встаю рано." },
+                    future: { pattern: "will get up + [коли]", sentence: "I will get up late tomorrow.", translation: "Я встану пізно завтра." }
+                }
+            },
+            {
+                word: "working", translation: "працюючий / робота", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "was/were working + [де/коли]", sentence: "The machine was working perfectly.", translation: "Машина працювала ідеально." },
+                    present: { pattern: "am/is/are working + [де/коли]", sentence: "I am working right now.", translation: "Я працюю прямо зараз." },
+                    future: { pattern: "will be working + [де/коли]", sentence: "I will be working on Monday.", translation: "Я буду працювати в понеділок." }
+                }
+            },
+            {
+                word: "break down", translation: "ламатися / зриватися", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "broke down + [де/коли]", sentence: "My car broke down on the road.", translation: "Моя машина зламалася на дорозі." },
+                    present: { pattern: "break(s) down + [як часто]", sentence: "Old computers break down often.", translation: "Старі комп'ютери часто ламаються." },
+                    future: { pattern: "will break down + [коли]", sentence: "The system will break down without an update.", translation: "Система зламається без оновлення." }
+                }
+            },
+            {
+                word: "find out", translation: "дізнаватися", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "found out + [що]", sentence: "I found out the truth.", translation: "Я дізнався правду." },
+                    present: { pattern: "find(s) out + [що]", sentence: "I want to find out more.", translation: "Я хочу дізнатися більше." },
+                    future: { pattern: "will find out + [що]", sentence: "You will find out the results soon.", translation: "Ти дізнаєшся результати скоро." }
+                }
+            },
+            {
+                word: "rather be", translation: "краще б бути/робити", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "would rather have been + [де]", sentence: "I would rather have been at home.", translation: "Я б краще був вдома тоді." },
+                    present: { pattern: "would rather be + [де/ким]", sentence: "I would rather be here than there.", translation: "Я б краще був тут, ніж там." },
+                    future: { pattern: "would rather be + [роблячи щось]", sentence: "I would rather be working tomorrow.", translation: "Я б краще працював завтра." }
+                }
+            },
+            {
+                word: "answer", translation: "відповідь / відповідати", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "answered + [що/кому]", sentence: "He answered all my questions.", translation: "Він відповів на всі мої питання." },
+                    present: { pattern: "answer(s) + [що/кому]", sentence: "I always answer messages.", translation: "Я завжди відповідаю на повідомлення." },
+                    future: { pattern: "will answer + [що/кому]", sentence: "I will answer you later.", translation: "Я відповім тобі пізніше." }
+                }
+            },
+            {
+                word: "look forward to", translation: "чекати з нетерпінням", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "looked forward to + [чому/кому]", sentence: "I looked forward to meeting you.", translation: "Я з нетерпінням чекав на зустріч з тобою." },
+                    present: { pattern: "look(s) forward to + [чому/кому]", sentence: "I look forward to your reply.", translation: "Я з нетерпінням чекаю на твою відповідь." },
+                    future: { pattern: "will look forward to + [чому/кому]", sentence: "We will look forward to the weekend.", translation: "Ми будемо з нетерпінням чекати вихідних." }
+                }
+            },
+            {
+                word: "let down", translation: "підводити / розчаровувати", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "let down + [когось]", sentence: "He let me down again.", translation: "Він знову мене підвів." },
+                    present: { pattern: "let(s) down + [когось]", sentence: "Please, don't let me down.", translation: "Будь ласка, не підводь мене." },
+                    future: { pattern: "will let down + [когось]", sentence: "I promise I will not let you down.", translation: "Обіцяю, я тебе не підведу." }
+                }
+            },
+            {
+                word: "make out", translation: "розрізняти / розуміти", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "could(not) make out + [щось]", sentence: "I couldn't make out his face.", translation: "Я не міг розгледіти його обличчя." },
+                    present: { pattern: "can(not) make out + [щось]", sentence: "I can't make out what you are saying.", translation: "Я не можу розібрати, що ти говориш." },
+                    future: { pattern: "will make out + [щось]", sentence: "You will make out the sign when we get closer.", translation: "Ти розгледиш знак, коли ми під'їдемо ближче." }
+                }
+            },
+            {
+                word: "come back", translation: "повертатися", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "came back + [коли]", sentence: "She came back yesterday.", translation: "Вона повернулася вчора." },
+                    present: { pattern: "come(s) back + [коли]", sentence: "Please, come back soon.", translation: "Будь ласка, повертайся швидше." },
+                    future: { pattern: "will come back + [коли]", sentence: "I will come back in an hour.", translation: "Я повернуся через годину." }
+                }
+            },
+            {
+                word: "calm down", translation: "заспокоюватися", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "calmed down + [коли]", sentence: "He finally calmed down.", translation: "Він нарешті заспокоївся." },
+                    present: { pattern: "calm(s) down + [коли/як]", sentence: "Calm down and tell me everything.", translation: "Заспокойся і розкажи мені все." },
+                    future: { pattern: "will calm down + [коли]", sentence: "She will calm down after tea.", translation: "Вона заспокоїться після чаю." }
+                }
+            },
+            {
+                word: "go on", translation: "продовжувати / відбуватися", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "went on for + [час]", sentence: "The concert went on for two hours.", translation: "Концерт тривав дві години." },
+                    present: { pattern: "go(es) on + [з чим]", sentence: "Go on, I am listening.", translation: "Продовжуй, я слухаю." },
+                    future: { pattern: "will go on + [як]", sentence: "The show will go on.", translation: "Шоу триватиме." }
+                }
+            },
+            {
+                word: "hold on", translation: "чекати / триматися", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "held on + [як]", sentence: "I held on tightly.", translation: "Я тримався міцно." },
+                    present: { pattern: "hold(s) on + [скільки]", sentence: "Hold on a second, please.", translation: "Зачекай секунду, будь ласка." },
+                    future: { pattern: "will hold on + [доки]", sentence: "We will hold on until help arrives.", translation: "Ми протримаємося, поки не прибуде допомога." }
+                }
+            },
+            {
+                word: "keep on", translation: "продовжувати робити щось", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "kept on + [дієслово-ing]", sentence: "He kept on talking.", translation: "Він продовжував говорити." },
+                    present: { pattern: "keep(s) on + [дієслово-ing]", sentence: "Keep on smiling!", translation: "Продовжуй посміхатися!" },
+                    future: { pattern: "will keep on + [дієслово-ing]", sentence: "I will keep on trying.", translation: "Я буду продовжувати намагатися." }
+                }
+            },
+            {
+                word: "exactly", translation: "точно", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "exactly + [що/як]", sentence: "He did exactly what I asked.", translation: "Він зробив точно те, що я просив." },
+                    present: { pattern: "exactly + [що/як]", sentence: "That is exactly the point.", translation: "Саме в цьому і суть." },
+                    future: { pattern: "exactly + [коли]", sentence: "The train will arrive exactly on time.", translation: "Потяг прибуде точно за розкладом." }
+                }
+            },
+            {
+                word: "want to", translation: "хотіти", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "wanted to + [дія]", sentence: "I wanted to buy this.", translation: "Я хотів купити це." },
+                    present: { pattern: "want(s) to + [дія]", sentence: "I want to sleep.", translation: "Я хочу спати." },
+                    future: { pattern: "will want to + [дія]", sentence: "I will want to eat later.", translation: "Я захочу їсти пізніше." }
+                }
+            },
+            {
+                word: "would like to", translation: "хотів би", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "would have liked to + [дія]", sentence: "I would have liked to join you.", translation: "Я б із задоволенням приєднався до вас тоді." },
+                    present: { pattern: "would like to + [дія]", sentence: "I would like to order a coffee.", translation: "Я хотів би замовити каву." },
+                    future: { pattern: "will would like to + [дія]", sentence: "I will definitely want to visit this place.", translation: "Я точно захочу відвідати це місце." }
+                }
+            },
+            {
+                word: "because / of", translation: "тому що / через", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "because of + [щось]", sentence: "We stayed home because of the rain.", translation: "Ми залишилися вдома через дощ." },
+                    present: { pattern: "because + [причина]", sentence: "I smile because I am happy.", translation: "Я посміхаюся, тому що щасливий." },
+                    future: { pattern: "because of + [щось]", sentence: "The flight will be delayed because of the storm.", translation: "Рейс буде затримано через шторм." }
+                }
+            },
+            {
+                word: "aside", translation: "осторонь / убік", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "[дієслово] aside + [куди]", sentence: "He stepped aside.", translation: "Він відійшов убік." },
+                    present: { pattern: "[дієслово] aside + [що]", sentence: "Put your phone aside.", translation: "Відклади телефон убік." },
+                    future: { pattern: "will [дієслово] aside + [що]", sentence: "I will set some money aside.", translation: "Я відкладу трохи грошей." }
+                }
+            },
+            {
+                word: "let me go", translation: "відпусти мене", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "let me go + [коли]", sentence: "He finally let me go.", translation: "Він нарешті відпустив мене." },
+                    present: { pattern: "let me go + [коли]", sentence: "Please, let me go now.", translation: "Будь ласка, відпусти мене зараз." },
+                    future: { pattern: "will let me go + [коли]", sentence: "They will let me go early.", translation: "Вони відпустять мене раніше." }
+                }
+            },
+            {
+                word: "cause", translation: "спричиняти / причина", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "caused + [що]", sentence: "The storm caused damage.", translation: "Шторм спричинив шкоду." },
+                    present: { pattern: "cause(s) + [що]", sentence: "Stress causes problems.", translation: "Стрес викликає проблеми." },
+                    future: { pattern: "will cause + [що]", sentence: "This decision will cause trouble.", translation: "Це рішення спричинить проблеми." }
+                }
+            },
+            {
+                word: "thought", translation: "думка / думав", category: "Фразові дієслова",
+                examples: {
+                    past: { pattern: "thought about + [що/кого]", sentence: "I thought about you.", translation: "Я думав про тебе." },
+                    present: { pattern: "is a thought + [яка]", sentence: "It is an interesting thought.", translation: "Це цікава думка." },
+                    future: { pattern: "will give thought to + [що]", sentence: "I will give it some thought.", translation: "Я подумаю про це." }
+                }
+            },
+
+            // 3. Неправильные глаголы (Pages 4-7)
+            ...[
+                ["be", "was/were, been", "бути", "was/were + [де/ким]", "I was at home.", "Я був вдома.", "am/is/are + [де/ким]", "I am happy.", "Я щасливий.", "will be + [де/ким]", "I will be there.", "Я буду там."],
+                ["beat", "beat, beaten", "бити / перемагати", "beat + [кого/що]", "He beat his opponent.", "Він переміг свого суперника.", "beat(s) + [кого/що]", "Our team beats them every time.", "Наша команда перемагає їх щоразу.", "will beat + [кого/що]", "I will beat this record.", "Я поб'ю цей рекорд."],
+                ["become", "became, become", "ставати", "became + [ким/чим]", "He became a doctor.", "Він став лікарем.", "become(s) + [ким/чим]", "The weather becomes colder.", "Погода стає холоднішою.", "will become + [ким/чим]", "She will become famous.", "Вона стане відомою."],
+                ["begin", "began, begun", "починати", "began + [робити щось]", "The rain began to fall.", "Почав іти дощ.", "begin(s) + [о котрій]", "The movie begins at 8.", "Фільм починається о 8.", "will begin + [коли]", "We will begin tomorrow.", "Ми почнемо завтра."],
+                ["bend", "bent, bent", "згинати(ся)", "bent + [щось]", "He bent the metal pipe.", "Він зігнув металеву трубу.", "bend(s) + [як]", "Trees bend in the wind.", "Дерева гнуться на вітрі.", "will bend + [щось]", "I will bend this wire.", "Я зігну цей дріт."],
+                ["bet", "bet, bet", "битися об заклад", "bet + [скільки/на що]", "I bet ten dollars on that horse.", "Я поставив десять доларів на того коня.", "bet + [що]", "I bet you can't do it.", "Б'юся об заклад, ти не зможеш цього зробити.", "will bet + [скільки/на що]", "I will bet all my money.", "Я поставлю всі свої гроші."],
+                ["bite", "bit, bitten", "кусати", "bit + [кого/що]", "The dog bit his leg.", "Собака вкусив його за ногу.", "bite(s) + [кого/що]", "Does your dog bite?", "Ваша собака кусається?", "will bite + [кого/що]", "Be careful, it will bite you.", "Будь обережний, він тебе вкусить."],
+                ["bleed", "bled, bled", "кровоточити", "bled + [як]", "His nose bled heavily.", "У нього сильно йшла кров з носа.", "bleed(s) + [коли]", "My gums bleed when I brush.", "Мої ясна кровоточать, коли я чищу зуби.", "will bleed + [якщо]", "The cut will bleed if you touch it.", "Поріз буде кровоточити, якщо ти його торкнешся."],
+                ["blow", "blew, blown", "дути", "blew + [як]", "The wind blew strongly.", "Вітер дув сильно.", "blow(s) + [що]", "Blow the candles!", "Задуй свічки!", "will blow + [куди]", "The storm will blow away the leaves.", "Шторм здує листя."],
+                ["break", "broke, broken", "ламати", "broke + [щось]", "He broke the window.", "Він розбив вікно.", "break(s) + [як]", "Glass breaks easily.", "Скло легко б'ється.", "will break + [щось]", "I will not break my promise.", "Я не порушу свою обіцянку."],
+                ["bring", "brought, brought", "приносити", "brought + [що/кому]", "She brought me a coffee.", "Вона принесла мені каву.", "bring(s) + [що/кому]", "Please bring your documents.", "Будь ласка, принесіть ваші документи.", "will bring + [що/кому]", "I will bring my friend to the party.", "Я приведу друга на вечірку."],
+                ["build", "built, built", "будувати", "built + [що]", "They built a new house.", "Вони побудували новий будинок.", "build(s) + [що]", "He builds websites.", "Він створює сайти.", "will build + [що]", "We will build a garage.", "Ми побудуємо гараж."],
+                ["burn", "burnt, burnt", "горіти / палити", "burnt + [що]", "I burnt my finger.", "Я обпік палець.", "burn(s) + [як]", "Dry wood burns well.", "Сухе дерево горить добре.", "will burn + [що]", "The fire will burn the trash.", "Вогонь спалить сміття."],
+                ["buy", "bought, bought", "купувати", "bought + [що]", "I bought a new phone.", "Я купив новий телефон.", "buy(s) + [що]", "She buys clothes often.", "Вона часто купує одяг.", "will buy + [що]", "I will buy you a drink.", "Я куплю тобі випити."],
+                ["catch", "caught, caught", "ловити", "caught + [кого/що]", "He caught the ball.", "Він спіймав м'яч.", "catch(es) + [кого/що]", "Cats catch mice.", "Коти ловлять мишей.", "will catch + [кого/що]", "I will catch the early train.", "Я встигну на ранній потяг."],
+                ["choose", "chose, chosen", "вибирати", "chose + [що/кого]", "I chose the red car.", "Я вибрав червону машину.", "choose(s) + [що/кого]", "We choose quality.", "Ми вибираємо якість.", "will choose + [що/кого]", "They will choose a leader.", "Вони виберуть лідера."],
+                ["come", "came, come", "приходити", "came + [куди/коли]", "He came home late.", "Він прийшов додому пізно.", "come(s) + [куди/коли]", "She comes here every day.", "Вона приходить сюди щодня.", "will come + [куди/коли]", "I will come to your party.", "Я прийду на твою вечірку."],
+                ["cost", "cost, cost", "коштувати", "cost + [скільки]", "It cost me 50 dollars.", "Це коштувало мені 50 доларів.", "cost(s) + [скільки]", "This bag costs a lot.", "Ця сумка коштує багато.", "will cost + [скільки]", "The repair will cost you.", "Ремонт обійдеться тобі в копієчку."],
+                ["cut", "cut, cut", "різати", "cut + [що]", "I cut my finger yesterday.", "Я порізав палець вчора.", "cut(s) + [що]", "She cuts paper.", "Вона ріже папір.", "will cut + [що]", "I will cut the cake.", "Я розріжу торт."],
+                ["deal", "dealt, dealt", "мати справу", "dealt with + [чим]", "I dealt with this problem.", "Я розібрався з цією проблемою.", "deal(s) with + [чим]", "He deals with clients.", "Він працює з клієнтами.", "will deal with + [чим]", "I will deal with it tomorrow.", "Я розберуся з цим завтра."],
+                ["dig", "dug, dug", "копати", "dug + [що]", "The dog dug a hole.", "Собака вирив яму.", "dig(s) + [що]", "They dig for gold.", "Вони шукають золото.", "will dig + [що]", "We will dig a well here.", "Ми викопаємо тут колодязь."],
+                ["do", "did, done", "робити", "did + [що]", "I did my homework.", "Я зробив домашнє завдання.", "do(es) + [що]", "I do yoga.", "Я займаюся йогою.", "will do + [що]", "I will do it later.", "Я зроблю це пізніше."],
+                ["draw", "drew, drawn", "малювати", "drew + [що]", "He drew a beautiful picture.", "Він намалював гарну картину.", "draw(s) + [що]", "She draws portraits.", "Вона малює портрети.", "will draw + [що]", "I will draw a map for you.", "Я намалюю карту для тебе."],
+                ["dream", "dreamt, dreamt", "мріяти", "dreamt about + [що]", "I dreamt about you.", "Мені снився ти.", "dream(s) of + [чим]", "I dream of a big house.", "Я мрію про великий будинок.", "will dream about + [що]", "I will dream about our vacation.", "Я буду мріяти про нашу відпустку."],
+                ["drink", "drank, drunk", "пити", "drank + [що]", "I drank coffee.", "Я випив каву.", "drink(s) + [що]", "He drinks tea.", "Він п'є чай.", "will drink + [що]", "We will drink wine tonight.", "Сьогодні ми будемо пити вино."],
+                ["drive", "drove, driven", "водити (авто)", "drove + [куди]", "She drove to the office.", "Вона поїхала в офіс на машині.", "drive(s) + [що]", "I drive a truck.", "Я воджу вантажівку.", "will drive + [куди]", "I will drive you home.", "Я відвезу тебе додому."],
+                ["eat", "ate, eaten", "їсти", "ate + [що]", "I ate an apple.", "Я з'їв яблуко.", "eat(s) + [що]", "Cats eat meat.", "Коти їдять м'ясо.", "will eat + [що]", "We will eat pizza.", "Ми будемо їсти піцу."],
+                ["fall", "fell, fallen", "падати", "fell + [звідки]", "He fell from the tree.", "Він впав з дерева.", "fall(s) + [куди]", "Snow falls in winter.", "Взимку йде сніг.", "will fall + [куди]", "You will fall if you run.", "Ти впадеш, якщо побіжиш."],
+                ["feed", "fed, fed", "годувати", "fed + [кого]", "I fed the dog.", "Я погодував собаку.", "feed(s) + [кого]", "She feeds birds.", "Вона годує птахів.", "will feed + [кого]", "I will feed the baby.", "Я погодую дитину."],
+                ["feel", "felt, felt", "відчувати", "felt + [як]", "I felt sick yesterday.", "Вчора я почувався хворим.", "feel(s) + [як]", "I feel good.", "Я почуваюся добре.", "will feel + [як]", "You will feel better soon.", "Ти скоро відчуєш себе краще."],
+                ["fight", "fought, fought", "битися / боротися", "fought + [з ким/за що]", "They fought for freedom.", "Вони боролися за свободу.", "fight(s) + [з ким]", "Brothers fight sometimes.", "Брати іноді б'ються.", "will fight + [за що]", "I will fight for my rights.", "Я буду боротися за свої права."],
+                ["find", "found, found", "знаходити", "found + [що]", "I found my keys.", "Я знайшов свої ключі.", "find(s) + [що]", "It is hard to find a good job.", "Важко знайти хорошу роботу.", "will find + [що]", "We will find a solution.", "Ми знайдемо рішення."],
+                ["fly", "flew, flown", "літати", "flew + [куди]", "We flew to Paris.", "Ми полетіли до Парижа.", "fly/flies + [хто/як]", "Birds fly high.", "Птахи літають високо.", "will fly + [куди]", "I will fly tomorrow.", "Я полечу завтра."],
+                ["forget", "forgot, forgotten", "забувати", "forgot + [що/про що]", "I forgot my password.", "Я забув свій пароль.", "forget(s) + [що]", "I always forget names.", "Я завжди забуваю імена.", "will forget + [що]", "You will forget this quickly.", "Ти швидко це забудеш."],
+                ["forgive", "forgave, forgiven", "прощати", "forgave + [кого]", "She forgave him.", "Вона пробачила йому.", "forgive(s) + [кого]", "Please, forgive me.", "Будь ласка, пробач мені.", "will forgive + [кого]", "I will never forgive you.", "Я ніколи не пробачу тобі."],
+                ["freeze", "froze, frozen", "замерзати", "froze + [де]", "The lake froze yesterday.", "Озеро замерзло вчора.", "freeze(s) + [коли]", "Water freezes at zero.", "Вода замерзає при нулі градусів.", "will freeze + [якщо]", "You will freeze outside.", "Ти змерзнеш на вулиці."],
+                ["get", "got, got", "отримувати", "got + [що]", "I got a gift.", "Я отримав подарунок.", "get(s) + [як]", "I get tired fast.", "Я швидко втомлююся.", "will get + [що]", "You will get an email.", "Ти отримаєш імейл."],
+                ["give", "gave, given", "давати", "gave + [що/кому]", "She gave me a book.", "Вона дала мені книгу.", "give(s) + [що/кому]", "Cows give milk.", "Корови дають молоко.", "will give + [що/кому]", "I will give you a chance.", "Я дам тобі шанс."],
+                ["go", "went, gone", "йти", "went + [куди]", "We went to the park.", "Ми ходили в парк.", "go(es) + [куди]", "I go to school.", "Я ходжу в школу.", "will go + [куди]", "They will go to Spain.", "Вони поїдуть до Іспанії."],
+                ["grow", "grew, grown", "рости / вирощувати", "grew + [що/як]", "He grew tomatoes.", "Він виростив помідори.", "grow(s) + [як]", "Children grow fast.", "Діти ростуть швидко.", "will grow + [що]", "We will grow potatoes.", "Ми будемо вирощувати картоплю."],
+                ["hang", "hung, hung", "висіти / вішати", "hung + [що]", "I hung the picture on the wall.", "Я повісив картину на стіну.", "hang(s) + [де]", "The coat hangs in the closet.", "Пальто висить у шафі.", "will hang + [що]", "I will hang this lamp here.", "Я повішу цю лампу тут."],
+                ["have", "had, had", "мати", "had + [що]", "I had a dog.", "У мене був собака.", "have/has + [що]", "I have a car.", "У мене є машина.", "will have + [що]", "We will have fun.", "Ми будемо веселитися."],
+                ["hear", "heard, heard", "чути", "heard + [що/кого]", "I heard a noise.", "Я почув шум.", "hear(s) + [що/кого]", "I hear you well.", "Я добре тебе чую.", "will hear + [що/кого]", "You will hear the news soon.", "Ти скоро почуєш новини."],
+                ["hide", "hid, hidden", "ховати(ся)", "hid + [що/де]", "He hid the money.", "Він сховав гроші.", "hide(s) + [від кого]", "Cats hide from dogs.", "Коти ховаються від собак.", "will hide + [де]", "I will hide behind the tree.", "Я сховаюся за деревом."],
+                ["hit", "hit, hit", "бити / вдаряти", "hit + [що/кого]", "The ball hit the window.", "М'яч вдарив у вікно.", "hit(s) + [що/кого]", "Don't hit your brother!", "Не бий свого брата!", "will hit + [що/кого]", "The storm will hit the coast.", "Шторм ударить по узбережжю."],
+                ["hold", "held, held", "тримати", "held + [що]", "I held her hand.", "Я тримав її за руку.", "hold(s) + [що]", "Hold this bag for me.", "Потримай цю сумку для мене.", "will hold + [що]", "I will hold the door.", "Я потримаю двері."],
+                ["hurt", "hurt, hurt", "боліти / ранити", "hurt + [що]", "I hurt my knee.", "Я поранив коліно.", "hurt(s) + [де]", "My head hurts.", "У мене болить голова.", "will hurt + [що]", "This injection will not hurt.", "Цей укол не болітиме."],
+                ["keep", "kept, kept", "тримати / зберігати", "kept + [що/як]", "I kept the secret.", "Я зберіг таємницю.", "keep(s) + [що/як]", "Keep calm.", "Зберігай спокій.", "will keep + [що]", "I will keep your money safe.", "Я збережу твої гроші в безпеці."],
+                ["know", "knew, known", "знати", "knew + [що/кого]", "I knew the answer.", "Я знав відповідь.", "know(s) + [що/кого]", "I know him well.", "Я знаю його добре.", "will know + [що/кого]", "We will know tomorrow.", "Ми дізнаємося завтра."],
+                ["lay", "laid, laid", "класти", "laid + [що]", "He laid the book on the table.", "Він поклав книгу на стіл.", "lay(s) + [що]", "Hens lay eggs.", "Кури несуть яйця.", "will lay + [що]", "I will lay the carpet here.", "Я постелю тут килим."],
+                ["lead", "led, led", "вести", "led + [куди]", "The guide led us to the cave.", "Гід повів нас до печери.", "lead(s) + [куди]", "All roads lead to Rome.", "Всі дороги ведуть до Риму.", "will lead + [кого]", "He will lead the team.", "Він очолить команду."],
+                ["learn", "learnt, learnt", "вчити(ся)", "learnt + [що]", "I learnt Spanish in school.", "Я вивчив іспанську в школі.", "learn(s) + [як]", "Children learn fast.", "Діти вчаться швидко.", "will learn + [що]", "I will learn to drive.", "Я навчуся водити."],
+                ["leave", "left, left", "залишати / йти", "left + [що/звідки]", "I left my phone at home.", "Я залишив телефон вдома.", "leave(s) + [коли]", "The train leaves at 5.", "Потяг відправляється о 5.", "will leave + [коли]", "We will leave soon.", "Ми скоро підемо."],
+                ["lend", "lent, lent", "позичати", "lent + [що/кому]", "I lent him some money.", "Я позичив йому трохи грошей.", "lend(s) + [що/кому]", "Banks lend money.", "Банки позичають гроші.", "will lend + [що/кому]", "I will lend you my car.", "Я позичу тобі свою машину."],
+                ["let", "let, let", "дозволяти", "let + [кому/що робити]", "My mom let me go to the party.", "Мама дозволила мені піти на вечірку.", "let(s) + [кому/що робити]", "Let me help you.", "Дозволь мені допомогти тобі.", "will let + [кому/що робити]", "I will let you know.", "Я дам тобі знати."],
+                ["lie", "lay, lain", "лежати", "lay + [де]", "I lay on the bed all day.", "Я лежав на ліжку весь день.", "lie(s) + [де]", "Don't lie on the cold floor.", "Не лежи на холодній підлозі.", "will lie + [де]", "I will lie on the beach tomorrow.", "Я буду лежати на пляжі завтра."],
+                ["lose", "lost, lost", "втрачати", "lost + [що/де]", "I lost my wallet.", "Я загубив гаманець.", "lose(s) + [що]", "Our team never loses.", "Наша команда ніколи не програє.", "will lose + [що]", "You will lose the game.", "Ти програєш гру."],
+                ["make", "made, made", "робити", "made + [що]", "I made a mistake.", "Я зробив помилку.", "make(s) + [що]", "She makes coffee.", "Вона робить каву.", "will make + [що]", "I will make dinner.", "Я приготую вечерю."],
+                ["mean", "meant, meant", "означати", "meant + [що]", "I meant no harm.", "Я не мав на увазі нічого поганого.", "mean(s) + [що]", "What does this mean?", "Що це означає?", "will mean + [що]", "This will mean war.", "Це означатиме війну."],
+                ["meet", "met, met", "зустрічати", "met + [кого]", "I met my friend yesterday.", "Я зустрів друга вчора.", "meet(s) + [коли/де]", "We meet every Friday.", "Ми зустрічаємося кожної п'ятниці.", "will meet + [кого]", "I will meet you at the station.", "Я зустріну тебе на вокзалі."],
+                ["pay", "paid, paid", "платити", "paid + [за що]", "I paid for the dinner.", "Я заплатив за вечерю.", "pay(s) + [як]", "I always pay in cash.", "Я завжди плачу готівкою.", "will pay + [за що]", "I will pay the bill.", "Я оплачу рахунок."],
+                ["put", "put, put", "класти", "put + [що/куди]", "I put the keys on the table.", "Я поклав ключі на стіл.", "put(s) + [що/куди]", "Put it here.", "Поклади це сюди.", "will put + [що/куди]", "I will put the box there.", "Я покладу коробку туди."],
+                ["read", "read, read", "читати", "read + [що]", "I read an interesting book.", "Я прочитав цікаву книгу.", "read(s) + [що]", "She reads a lot.", "Вона багато читає.", "will read + [що]", "I will read this email.", "Я прочитаю цей імейл."],
+                ["ride", "rode, ridden", "їздити", "rode + [на чому]", "I rode a bike yesterday.", "Я катався на велосипеді вчора.", "ride(s) + [на чому]", "I ride a horse every weekend.", "Я катаюся на коні кожні вихідні.", "will ride + [на чому]", "We will ride the bus.", "Ми поїдемо на автобусі."],
+                ["ring", "rang, rung", "дзвонити", "rang + [хто/що]", "The phone rang twice.", "Телефон задзвонив двічі.", "ring(s) + [хто/що]", "The school bell rings at 8.", "Шкільний дзвоник дзвонить о 8.", "will ring + [кого]", "I will ring you later.", "Я подзвоню тобі пізніше."],
+                ["rise", "rose, risen", "підніматися", "rose + [що/хто]", "The sun rose early.", "Сонце зійшло рано.", "rise(s) + [що]", "Prices rise every year.", "Ціни зростають щороку.", "will rise + [що]", "The temperature will rise tomorrow.", "Температура підвищиться завтра."],
+                ["run", "ran, run", "бігати", "ran + [куди]", "He ran away.", "Він втік.", "run(s) + [як]", "I run fast.", "Я бігаю швидко.", "will run + [куди]", "I will run a marathon.", "Я пробіжу марафон."],
+                ["say", "said, said", "говорити", "said + [що]", "She said \"hello\".", "Вона сказала \"привіт\".", "say(s) + [що]", "What do you say?", "Що скажеш?", "will say + [що]", "I will say the truth.", "Я скажу правду."],
+                ["see", "saw, seen", "бачити", "saw + [що/кого]", "I saw a bird.", "Я бачив птаха.", "see(s) + [що/кого]", "I see a problem.", "Я бачу проблему.", "will see + [кого]", "I will see you tomorrow.", "Побачимося завтра."],
+                ["sell", "sold, sold", "продавати", "sold + [що]", "I sold my old car.", "Я продав свою стару машину.", "sell(s) + [що]", "They sell fresh bread.", "Вони продають свіжий хліб.", "will sell + [що]", "I will sell this house.", "Я продам цей будинок."],
+                ["send", "sent, sent", "відправляти", "sent + [що]", "I sent a message.", "Я відправив повідомлення.", "send(s) + [що]", "Please send me the file.", "Будь ласка, надішліть мені файл.", "will send + [що]", "I will send you an invite.", "Я надішлю тобі запрошення."],
+                ["shake", "shook, shaken", "трясти", "shook + [що]", "He shook my hand.", "Він потис мені руку.", "shake(s) + [що/як]", "The dog shakes its tail.", "Собака махає хвостом.", "will shake + [що]", "Shake the bottle before opening.", "Потряси пляшку перед відкриттям."],
+                ["shine", "shone, shone", "світити", "shone + [як]", "The sun shone brightly.", "Сонце світило яскраво.", "shine(s) + [де]", "Stars shine at night.", "Зірки світять вночі.", "will shine + [завтра]", "The sun will shine tomorrow.", "Завтра світитиме сонце."],
+                ["shoot", "shot, shot", "стріляти", "shot + [в кого/що]", "The hunter shot a duck.", "Мисливець підстрелив качку.", "shoot(s) + [як]", "Don't shoot!", "Не стріляй!", "will shoot + [якщо]", "I will shoot if you move.", "Я буду стріляти, якщо ти поворухнешся."],
+                ["show", "showed, shown", "показувати", "showed + [кому/що]", "He showed me his new phone.", "Він показав мені свій новий телефон.", "show(s) + [кому/що]", "Show me the way.", "Покажи мені дорогу.", "will show + [кому/що]", "I will show you magic.", "Я покажу тобі магію."],
+                ["shut", "shut, shut", "закривати", "shut + [що]", "I shut the door.", "Я закрив двері.", "shut(s) + [що]", "Shut the window, please.", "Закрий вікно, будь ласка.", "will shut + [коли]", "The store will shut at 9.", "Магазин закриється о 9."],
+                ["sing", "sang, sung", "співати", "sang + [що]", "She sang a song.", "Вона заспівала пісню.", "sing(s) + [як]", "Birds sing in the morning.", "Птахи співають вранці.", "will sing + [що]", "I will sing for you.", "Я заспіваю для тебе."],
+                ["sink", "sank, sunk", "тонути", "sank + [де/що]", "The ship sank in the ocean.", "Корабель затонув в океані.", "sink(s) + [як]", "Heavy stones sink in water.", "Важкі камені тонуть у воді.", "will sink + [що]", "This boat will sink!", "Цей човен потоне!"],
+                ["sit", "sat, sat", "сидіти", "sat + [де]", "I sat on the chair.", "Я сів на стілець.", "sit(s) + [де]", "Please, sit down.", "Будь ласка, сідай.", "will sit + [де]", "I will sit here.", "Я сяду тут."],
+                ["sleep", "slept, slept", "спати", "slept + [як/скільки]", "I slept for 8 hours.", "Я спав 8 годин.", "sleep(s) + [як]", "Babies sleep a lot.", "Немовлята багато сплять.", "will sleep + [де]", "I will sleep on the couch.", "Я буду спати на дивані."],
+                ["smell", "smelt, smelt", "пахнути", "smelt + [що/як]", "The flower smelt nice.", "Квітка пахла гарно.", "smell(s) + [що/як]", "I smell coffee.", "Я відчуваю запах кави.", "will smell + [що/як]", "The house will smell of cookies.", "Будинок буде пахнути печивом."],
+                ["speak", "spoke, spoken", "говорити", "spoke + [з ким]", "I spoke to the manager.", "Я розмовляв з менеджером.", "speak(s) + [якою мовою]", "She speaks English.", "Вона розмовляє англійською.", "will speak + [з ким]", "I will speak to him tomorrow.", "Я поговорю з ним завтра."],
+                ["spell", "spelt, spelt", "писати по буквах", "spelt + [що]", "He spelt his name.", "Він продиктував своє ім'я по буквах.", "spell(s) + [що/як]", "How do you spell this word?", "Як пишеться це слово?", "will spell + [що]", "I will spell it for you.", "Я продиктую це для тебе по буквах."],
+                ["spend", "spent, spent", "витрачати", "spent + [що]", "I spent all my money.", "Я витратив усі гроші.", "spend(s) + [що/з ким]", "I spend time with friends.", "Я проводжу час з друзями.", "will spend + [що/де]", "We will spend the weekend in Paris.", "Ми проведемо вихідні в Парижі."],
+                ["stand", "stood, stood", "стояти", "stood + [де]", "We stood in line.", "Ми стояли в черзі.", "stand(s) + [де]", "Stand up, please.", "Встаньте, будь ласка.", "will stand + [де]", "I will stand here.", "Я буду стояти тут."],
+                ["steal", "stole, stolen", "красти", "stole + [що]", "Someone stole my bag.", "Хтось вкрав мою сумку.", "steal(s) + [що]", "Bad people steal.", "Погані люди крадуть.", "will steal + [що]", "They will try to steal the car.", "Вони спробують вкрасти машину."],
+                ["swim", "swam, swum", "плавати", "swam + [де]", "I swam in the river.", "Я плавав у річці.", "swim(s) + [де]", "Fish swim in the sea.", "Риби плавають у морі.", "will swim + [де]", "We will swim in the pool.", "Ми будемо плавати в басейні."],
+                ["take", "took, taken", "брати", "took + [що]", "He took my umbrella.", "Він взяв мою парасольку.", "take(s) + [скільки часу]", "It takes a lot of time.", "Це займає багато часу.", "will take + [що]", "I will take this job.", "Я прийму цю роботу."],
+                ["teach", "taught, taught", "вчити", "taught + [кого/чому]", "She taught me math.", "Вона вчила мене математики.", "teach(es) + [що]", "He teaches English.", "Він викладає англійську.", "will teach + [кого/чому]", "I will teach you to swim.", "Я навчу тебе плавати."],
+                ["tear", "tore, torn", "рвати", "tore + [що]", "I tore the paper.", "Я порвав папір.", "tear(s) + [що]", "This fabric tears easily.", "Ця тканина легко рветься.", "will tear + [що]", "You will tear your shirt!", "Ти порвеш свою сорочку!"],
+                ["tell", "told, told", "розповідати", "told + [кому/що]", "He told me a secret.", "Він розповів мені секрет.", "tell(s) + [кому/що]", "Tell me the truth.", "Скажи мені правду.", "will tell + [кому/що]", "I will tell you later.", "Я розповім тобі пізніше."],
+                ["think", "thought, thought", "думати", "thought + [про що]", "I thought about you.", "Я думав про тебе.", "think(s) + [про що]", "I think it is a good idea.", "Я думаю, це гарна ідея.", "will think + [про що]", "I will think about it.", "Я подумаю про це."],
+                ["throw", "threw, thrown", "кидати", "threw + [що]", "He threw the ball.", "Він кинув м'яч.", "throw(s) + [що]", "Don't throw garbage here.", "Не кидай тут сміття.", "will throw + [що]", "I will throw it away.", "Я викину це."],
+                ["understand", "understood, understood", "розуміти", "understood + [кого/що]", "I understood the rule.", "Я зрозумів правило.", "understand(s) + [кого/що]", "Do you understand me?", "Ти мене розумієш?", "will understand + [кого/що]", "You will understand this later.", "Ти зрозумієш це пізніше."],
+                ["wake", "woke, woken", "прокидатися", "woke up + [коли]", "I woke up early.", "Я прокинувся рано.", "wake(s) up + [коли]", "I wake up at 7.", "Я прокидаюся о 7.", "will wake up + [коли]", "I will wake you up tomorrow.", "Я розбуджу тебе завтра."],
+                ["wear", "wore, worn", "носити (одяг)", "wore + [що]", "She wore a red dress.", "Вона була одягнена в червону сукню.", "wear(s) + [що]", "I wear glasses.", "Я ношу окуляри.", "will wear + [що]", "I will wear a suit to the wedding.", "Я одягну костюм на весілля."],
+                ["win", "won, won", "вигравати", "won + [що]", "Our team won the game.", "Наша команда виграла гру.", "win(s) + [що]", "He always wins.", "Він завжди виграє.", "will win + [що]", "We will win this match.", "Ми виграємо цей матч."],
+                ["write", "wrote, written", "писати", "wrote + [що]", "I wrote a letter.", "Я написав листа.", "write(s) + [що]", "He writes books.", "Він пише книги.", "will write + [що]", "I will write to you.", "Я напишу тобі."]
+            ].map(v => ({ word: v[0], translation: v[2], category: "Неправильні дієслова", examples: { past: { pattern: v[3], sentence: v[4], translation: v[5] }, present: { pattern: v[6], sentence: v[7], translation: v[8] }, future: { pattern: v[9], sentence: v[10], translation: v[11] } } })),
+
+            // 4. Дієслова + TO (Infinitive)
+            ...[
+                ["agree", "погоджуватися", "agreed to do + [щось]", "She agreed to help me.", "Вона погодилася допомогти мені.", "agree(s) to do + [щось]", "I agree to sign the paper.", "Я погоджуюся підписати документ.", "will agree to do + [щось]", "They will agree to wait.", "Вони погодяться почекати."],
+                ["appear", "здаватися", "appeared to be + [яким]", "He appeared to be tired.", "Він здавався втомленим.", "appear(s) to do + [щось]", "It appears to work fine.", "Здається, це працює нормально.", "will appear to know + [щось]", "She will appear to know everything.", "Буде здаватися, що вона знає все."],
+                ["arrange", "організовувати", "arranged to do + [щось]", "We arranged to meet at six.", "Ми домовилися зустрітися о шостій.", "arrange(s) to do + [щось]", "I arrange to deliver the goods.", "Я організовую доставку товарів.", "will arrange to do + [щось]", "They will arrange to fix the car.", "Вони організують ремонт машини."],
+                ["ask", "питати / просити", "asked to do + [щось]", "I asked him to leave.", "Я попросив його піти.", "ask(s) to do + [щось]", "I ask you to listen.", "Я прошу тебе послухати.", "will ask to do + [щось]", "She will ask me to pay.", "Вона попросить мене заплатити."],
+                ["attempt", "спробувати", "attempted to do + [щось]", "He attempted to escape.", "Він спробував втекти.", "attempt(s) to do + [щось]", "I attempt to learn Spanish.", "Я намагаюся вивчити іспанську.", "will attempt to do + [щось]", "They will attempt to win.", "Вони спробують виграти."],
+                ["beg", "благати", "begged to do + [щось]", "She begged him to stay.", "Вона благала його залишитися.", "beg(s) to do + [щось]", "I beg you to forgive me.", "Я благаю тебе пробачити мені.", "will beg to do + [щось]", "He will beg to come back.", "Він буде благати повернутися."],
+                ["choose", "вибирати", "chose to do + [щось]", "We chose to go by bus.", "Ми вирішили поїхати автобусом.", "choose(s) to do + [щось]", "I choose to be happy.", "Я вибираю бути щасливим.", "will choose to do + [щось]", "She will choose to stay home.", "Вона вибере залишитися вдома."],
+                ["claim", "стверджувати", "claimed to do/know + [щось]", "He claimed to know the boss.", "Він стверджував, що знає боса.", "claim(s) to be + [яким]", "She claims to be innocent.", "Вона стверджує, що невинна.", "will claim to do + [щось]", "They will claim to own this land.", "Вони будуть стверджувати, що володіють цією землею."],
+                ["decide", "вирішувати", "decided to do + [щось]", "I decided to buy a car.", "Я вирішив купити машину.", "decide(s) to do + [щось]", "I decide to do it now.", "Я вирішую зробити це зараз.", "will decide to do + [щось]", "We will decide to sell the house.", "Ми вирішимо продати будинок."],
+                ["demand", "вимагати", "demanded to do + [щось]", "He demanded to see the manager.", "Він вимагав побачити менеджера.", "demand(s) to do + [щось]", "I demand to know the truth.", "Я вимагаю знати правду.", "will demand to do + [щось]", "Workers will demand to increase the salary.", "Робітники вимагатимуть підвищити зарплату."],
+                ["deserve", "заслуговувати", "deserved to do/win + [щось]", "He deserved to win the prize.", "Він заслуговував виграти приз.", "deserve(s) to be + [яким]", "You deserve to be happy.", "Ти заслуговуєш бути щасливим.", "will deserve to get + [щось]", "She will deserve to get a promotion.", "Вона заслужила отримати підвищення."],
+                ["expect", "очікувати", "expected to do/see + [щось]", "I expected to see you there.", "Я очікував побачити тебе там.", "expect(s) to do + [щось]", "We expect to finish soon.", "Ми очікуємо закінчити скоро.", "will expect to do + [щось]", "They will expect to receive money.", "Вони очікуватимуть отримати гроші."],
+                ["fail", "зазнавати невдачі / не змогти", "failed to do + [щось]", "He failed to understand the rule.", "Він не зміг зрозуміти правило.", "fail(s) to do + [щось]", "Machines sometimes fail to work.", "Машини іноді перестають працювати.", "will fail to do + [щось]", "If you don't study, you will fail to pass.", "Якщо не вчитимешся, не зможеш здати."],
+                ["guarantee", "гарантувати", "guaranteed to do + [щось]", "They guaranteed to fix the phone.", "Вони гарантували полагодити телефон.", "guarantee(s) to do + [щось]", "I guarantee to deliver it today.", "Я гарантую доставити це сьогодні.", "will guarantee to do + [щось]", "The company will guarantee to return money.", "Компанія гарантує повернути гроші."],
+                ["hesitate", "вагатися", "hesitated to do + [щось]", "She hesitated to ask a question.", "Вона вагалася задати питання.", "hesitate(s) to do + [щось]", "Don't hesitate to call me.", "Не соромся / не вагайся дзвонити мені.", "will hesitate to do + [щось]", "He will hesitate to accept the offer.", "Він буде вагатися прийняти пропозицію."],
+                ["hope", "сподіватися", "hoped to do + [щось]", "I hoped to meet her.", "Я сподівався зустріти її.", "hope(s) to do + [щось]", "We hope to win the game.", "Ми сподіваємося виграти гру.", "will hope to do + [щось]", "I will hope to see you again.", "Я буду сподіватися побачити тебе знову."],
+                ["learn", "вчитися", "learnt to do + [щось]", "I learnt to swim last year.", "Я навчився плавати минулого року.", "learn(s) to do + [щось]", "Children learn to read quickly.", "Діти вчаться читати швидко.", "will learn to do + [щось]", "She will learn to drive.", "Вона навчиться водити."],
+                ["manage", "впоратися", "managed to do + [щось]", "I managed to fix the car.", "Я зумів полагодити машину.", "manage(s) to do + [щось]", "How do you manage to do everything?", "Як ти встигаєш робити все?", "will manage to do + [щось]", "We will manage to escape.", "Ми зуміємо втекти."],
+                ["need", "потребувати", "needed to do + [щось]", "I needed to sleep.", "Мені потрібно було поспати.", "need(s) to do + [щось]", "You need to rest.", "Тобі потрібно відпочити.", "will need to do + [щось]", "I will need to buy a new laptop.", "Мені потрібно буде купити новий ноутбук."],
+                ["offer", "пропонувати", "offered to do + [щось]", "He offered to help me.", "Він запропонував допомогти мені.", "offer(s) to do + [щось]", "They offer to pay for dinner.", "Вони пропонують заплатити за вечерю.", "will offer to do + [щось]", "She will offer to stay.", "Вона запропонує залишитися."],
+                ["plan", "планувати", "planned to do + [щось]", "We planned to go to Paris.", "Ми планували поїхати до Парижа.", "plan(s) to do + [щось]", "I plan to buy a house.", "Я планую купити будинок.", "will plan to do + [щось]", "They will plan to attack.", "Вони будуть планувати атаку."],
+                ["prepare", "готуватися", "prepared to do + [щось]", "She prepared to jump.", "Вона приготувалася стрибати.", "prepare(s) to do + [щось]", "I prepare to take the exam.", "Я готуюся складати іспит.", "will prepare to do + [щось]", "We will prepare to leave.", "Ми підготуємося до від'їзду."],
+                ["pretend", "вдавати", "pretended to be + [яким]", "He pretended to be asleep.", "Він вдав, що спить.", "pretend(s) to do + [щось]", "I pretend to work.", "Я вдаю, що працюю.", "will pretend to do + [щось]", "They will pretend to agree.", "Вони зроблять вигляд, що згодні."],
+                ["promise", "обіцяти", "promised to do + [щось]", "I promised to call you.", "Я обіцяв подзвонити тобі.", "promise(s) to do + [щось]", "I promise to be careful.", "Я обіцяю бути обережним.", "will promise to do + [щось]", "He will promise to change.", "Він пообіцяє змінитися."],
+                ["refuse", "відмовлятися", "refused to do + [щось]", "She refused to answer.", "Вона відмовилася відповідати.", "refuse(s) to do + [щось]", "I refuse to accept this.", "Я відмовляюся приймати це.", "will refuse to do + [щось]", "They will refuse to pay.", "Вони відмовляться платити."],
+                ["resolve", "вирішувати / наважуватися", "resolved to do + [щось]", "He resolved to quit smoking.", "Він твердо вирішив кинути палити.", "resolve(s) to do + [щось]", "I resolve to study harder.", "Я наважуюся вчитися старанніше.", "will resolve to do + [щось]", "She will resolve to leave.", "Вона вирішить піти."],
+                ["seem", "здаватися", "seemed to be + [яким]", "The task seemed to be easy.", "Завдання здавалося легким.", "seem(s) to do/know + [щось]", "You seem to know a lot.", "Здається, ти знаєш багато.", "will seem to be + [яким]", "It will seem to be a good idea.", "Це здаватиметься хорошою ідеєю."],
+                ["swear", "клястися", "swore to do + [щось]", "I swore to protect her.", "Я поклявся захищати її.", "swear(s) to do + [щось]", "I swear to tell the truth.", "Я клянуся казати правду.", "will swear to do + [щось]", "He will swear to revenge.", "Він поклянеться помститися."],
+                ["tend", "мати схильність", "tended to do + [щось]", "He tended to arrive late.", "Він мав схильність спізнюватися.", "tend(s) to do + [щось]", "I tend to forget things.", "У мене є тенденція забувати речі.", "will tend to do + [щось]", "Prices will tend to grow.", "Ціни матимуть тенденцію до зростання."],
+                ["threaten", "погрожувати", "threatened to do + [щось]", "He threatened to call the police.", "Він погрожував викликати поліцію.", "threaten(s) to do + [щось]", "They threaten to fire me.", "Вони погрожують звільнити мене.", "will threaten to do + [щось]", "She will threaten to leave him.", "Вона буде погрожувати піти від нього."],
+                ["volunteer", "викликатися добровільно", "volunteered to do + [щось]", "I volunteered to clean the room.", "Я зголосився прибрати кімнату.", "volunteer(s) to do + [щось]", "We volunteer to help animals.", "Ми добровільно допомагаємо тваринам.", "will volunteer to do + [щось]", "He will volunteer to work on weekend.", "Він зголоситься працювати на вихідних."],
+                ["wait", "чекати", "waited to do/see + [щось]", "I waited to see the doctor.", "Я чекав, щоб побачити лікаря.", "wait(s) to do/hear + [щось]", "I wait to hear your answer.", "Я чекаю почути твою відповідь.", "will wait to do/get + [щось]", "We will wait to get the results.", "Ми будемо чекати отримання результатів."],
+                ["want", "хотіти", "wanted to do + [щось]", "I wanted to sleep.", "Я хотів спати.", "want(s) to do + [щось]", "I want to eat.", "Я хочу їсти.", "will want to do + [щось]", "You will want to buy this.", "Ти захочеш купити це."],
+                ["wish", "бажати", "wished to do + [щось]", "I wished to speak to the manager.", "Я бажав поговорити з менеджером.", "wish(es) to do + [щось]", "I wish to travel more.", "Я бажаю більше подорожувати.", "will wish to do + [щось]", "He will wish to return home.", "Він захоче повернутися додому."],
+                ["afford", "дозволити собі", "could afford to do/buy + [щось]", "We couldn't afford to buy a car.", "Ми не могли дозволити собі купити машину.", "can afford to do/buy + [щось]", "I can afford to travel now.", "Я можу дозволити собі подорожувати зараз.", "will afford to do/buy + [щось]", "She will afford to rent an apartment.", "Вона зможе дозволити собі орендувати квартиру."],
+                ["aim", "мати на меті", "aimed to do + [щось]", "The project aimed to help poor people.", "Проєкт мав на меті допомогти бідним.", "aim(s) to do + [щось]", "I aim to become a doctor.", "Моя мета — стати лікарем.", "will aim to do + [щось]", "We will aim to finish it by Friday.", "Ми матимемо на меті закінчити це до п'ятниці."],
+                ["care", "піклуватися / хотіти", "didn't care to do + [щось]", "I didn't care to ask.", "Мені було байдуже / я не захотів питати.", "care(s) to do + [щось]", "Would you care to join us?", "Не хотіли б ви приєднатися до нас?", "will care to do + [щось]", "Nobody will care to read this.", "Ніхто не захоче це читати."],
+                ["consent", "давати згоду", "consented to do + [щось]", "She consented to marry him.", "Вона дала згоду вийти за нього заміж.", "consent(s) to do + [щось]", "I consent to sign the contract.", "Я даю згоду підписати контракт.", "will consent to do + [щось]", "They will consent to pay the fine.", "Вони погодяться сплатити штраф."],
+                ["dare", "наважуватися", "dared to do + [щось]", "I didn't dare to jump.", "Я не наважився стрибнути.", "dare(s) to do + [щось]", "How dare you to speak like that?", "Як ти смієш так говорити?", "will dare to do + [щось]", "Nobody will dare to touch it.", "Ніхто не наважиться торкнутися цього."],
+                ["decline", "відхиляти (пропозицію)", "declined to do + [щось]", "He declined to comment.", "Він відмовився давати коментарі.", "decline(s) to do + [щось]", "I decline to answer this question.", "Я відмовляюся відповідати на це запитання.", "will decline to do + [щось]", "She will decline to participate.", "Вона відмовиться брати участь."],
+                ["endeavor", "намагатися / зусилля", "endeavored to do + [щось]", "We endeavored to finish on time.", "Ми доклали зусиль, щоб закінчити вчасно.", "endeavor(s) to do + [щось]", "I endeavor to improve my English.", "Я намагаюся покращити свою англійську.", "will endeavor to do + [щось]", "The company will endeavor to grow.", "Компанія докладатиме зусиль для зростання."],
+                ["happen", "траплятися / виявлятися", "happened to be/see + [яким/щось]", "I happened to see him there.", "Так вийшло, що я побачив його там.", "happen(s) to do/know + [щось]", "Do you happen to know the time?", "Ти випадково не знаєш, котра година?", "will happen to be + [яким/де]", "I will happen to be in London.", "Так станеться, що я буду в Лондоні."],
+                ["intend", "мати намір", "intended to do + [щось]", "I intended to call you.", "Я мав намір подзвонити тобі.", "intend(s) to do + [щось]", "I intend to stay here.", "Я маю намір залишитися тут.", "will intend to do + [щось]", "They will intend to buy it later.", "Вони матимуть намір купити це пізніше."],
+                ["long", "палко бажати / прагнути", "longed to do + [щось]", "He longed to return home.", "Він палко бажав повернутися додому.", "long(s) to do/see + [щось]", "I long to see you again.", "Я прагну побачити тебе знову.", "will long to do + [щось]", "You will long to eat normal food.", "Ти будеш мріяти поїсти нормальну їжу."],
+                ["neglect", "нехтувати", "neglected to do + [щось]", "He neglected to lock the door.", "Він знехтував тим, щоб замкнути двері.", "neglect(s) to do + [щось]", "Don't neglect to pay taxes.", "Не нехтуйте сплатою податків.", "will neglect to do + [щось]", "She will neglect to take medicine.", "Вона знехтує прийомом ліків."],
+                ["proceed", "переходити до / продовжувати", "proceeded to do + [щось]", "He proceeded to explain the rules.", "Він перейшов до пояснення правил.", "proceed(s) to do + [щось]", "Let's proceed to read the text.", "Давайте перейдемо до читання тексту.", "will proceed to do + [щось]", "We will proceed to build the house.", "Ми перейдемо до будівництва будинку."],
+                ["strive", "прагнути", "strove to do + [щось]", "We strove to win.", "Ми докладали зусиль, щоб виграти.", "strive(s) to do + [щось]", "I strive to be the best.", "Я прагну бути найкращим.", "will strive to do + [щось]", "They will strive to achieve success.", "Вони прагнутимуть досягти успіху."],
+                ["struggle", "боротися", "struggled to do + [щось]", "He struggled to breathe.", "Він силкувався дихати.", "struggle(s) to do + [щось]", "I struggle to understand math.", "Мені важко / я борюся з розумінням математики.", "will struggle to do + [щось]", "You will struggle to survive.", "Ти будеш боротися за виживання."],
+                ["vow", "давати обітницю", "vowed to do + [щось]", "I vowed to love her forever.", "Я поклявся любити її вічно.", "vow(s) to do + [щось]", "I vow to protect you.", "Я клянуся захищати тебе.", "will vow to do + [щось]", "He will vow to never drink again.", "Він дасть обітницю більше ніколи не пити."],
+                ["yearn", "жадати / томитися", "yearned to do + [щось]", "She yearned to see the sea.", "Вона палко бажала побачити море.", "yearn(s) to do + [щось]", "I yearn to be free.", "Я жадаю бути вільним.", "will yearn to do + [щось]", "You will yearn to go back.", "Ти будеш жадати повернутися назад."]
+            ].map(v => ({ word: v[0], translation: v[1], category: "Дієслова + TO", examples: { past: { pattern: v[2], sentence: v[3], translation: v[4] }, present: { pattern: v[5], sentence: v[6], translation: v[7] }, future: { pattern: v[8], sentence: v[9], translation: v[10] } } })),
+
+            // 5. Дієслова + -ING (Gerund)
+            ...[
+                ["admit", "визнавати", "admitted doing + [щось]", "He admitted stealing the money.", "Він зізнався у крадіжці грошей.", "admit(s) doing + [щось]", "I admit making a mistake.", "Я визнаю, що зробив помилку.", "will admit doing + [щось]", "She will admit lying.", "Вона зізнається у брехні."],
+                ["advise", "радити", "advised doing + [щось]", "The doctor advised resting.", "Лікар порадив відпочивати.", "advise(s) doing + [щось]", "I advise buying this laptop.", "Я раджу купити цей ноутбук.", "will advise doing + [щось]", "He will advise leaving early.", "Він порадить виїти раніше."],
+                ["anticipate", "передбачати / очікувати", "anticipated doing + [щось]", "We anticipated winning the game.", "Ми передбачали перемогу в грі.", "anticipate(s) doing + [щось]", "I anticipate having problems.", "Я передбачаю виникнення проблем.", "will anticipate doing + [щось]", "They will anticipate losing money.", "Вони передбачатимуть втрату грошей."],
+                ["appreciate", "цінувати", "appreciated doing/getting + [щось]", "I appreciated getting your help.", "Я оцінив отримання твоєї допомоги.", "appreciate(s) doing + [щось]", "I appreciate working with you.", "Я ціную роботу з тобою.", "will appreciate doing/receiving + [щось]", "She will appreciate receiving flowers.", "Вона оцінить отримання квітів."],
+                ["avoid", "уникати", "avoided doing + [щось]", "I avoided meeting him.", "Я уникав зустрічі з ним.", "avoid(s) doing + [щось]", "He avoids answering questions.", "Він уникає відповідей на питання.", "will avoid doing + [щось]", "We will avoid paying extra.", "Ми уникнемо переплати."],
+                ["complete", "завершувати", "completed doing + [щось]", "I completed writing the report.", "Я закінчив писати звіт.", "complete(s) doing + [щось]", "She completes cleaning the room.", "Вона завершує прибирання кімнати.", "will complete doing + [щось]", "They will complete building the roof.", "Вони завершать будівництво даху."],
+                ["consider", "розглядати", "considered doing + [щось]", "We considered moving to London.", "Ми обдумували переїзд до Лондона.", "consider(s) doing + [щось]", "I consider buying a dog.", "Я розглядаю покупку собаки.", "will consider doing + [щось]", "He will consider changing jobs.", "Він обдумає зміну роботи."],
+                ["delay", "відкладати", "delayed doing + [щось]", "The flight delayed taking off.", "Рейс відклав зліт.", "delay(s) doing + [щось]", "Don't delay paying the bills.", "Не відкладай оплату рахунків.", "will delay doing + [щось]", "We will delay signing the contract.", "Ми відкладемо підписання контракту."],
+                ["deny", "заперечувати", "denied doing + [щось]", "He denied breaking the window.", "Він заперечував, що розбив вікно.", "deny/denies doing + [щось]", "She denies knowing him.", "Вона заперечує, що знає його.", "will deny doing + [щось]", "They will deny doing this.", "Вони заперечуватимуть, що зробили це."],
+                ["discuss", "обговорювати", "discussed doing + [щось]", "We discussed buying a new car.", "Ми обговорювали купівлю нової машини.", "discuss(es) doing + [щось]", "They discuss opening a business.", "Вони обговорюють відкриття бізнесу.", "will discuss doing + [щось]", "I will discuss traveling with my wife.", "Я обговорю подорож з дружиною."],
+                ["dislike", "не любити", "disliked doing + [щось]", "I disliked waking up early.", "Я не любив прокидатися рано.", "dislike(s) doing + [щось]", "She dislikes cooking.", "Вона не любить готувати.", "will dislike doing + [щось]", "He will dislike living there.", "Йому не сподобається там жити."],
+                ["enjoy", "насолоджуватися", "enjoyed doing + [щось]", "We enjoyed swimming.", "Ми насолоджувалися плаванням.", "enjoy(s) doing + [щось]", "I enjoy reading books.", "Я насолоджуюся читанням книг.", "will enjoy doing + [щось]", "You will enjoy playing this game.", "Тобі сподобається грати в цю гру."],
+                ["finish", "закінчувати", "finished doing + [щось]", "I finished eating.", "Я закінчив їсти.", "finish(es) doing + [щось]", "Finish doing your homework!", "Закінчи робити домашнє завдання!", "will finish doing + [щось]", "I will finish working at 6.", "Я закінчу працювати о 6."],
+                ["keep", "продовжувати", "kept doing + [щось]", "He kept talking.", "Він продовжував говорити.", "keep(s) doing + [щось]", "Keep smiling.", "Продовжуй посміхатися.", "will keep doing + [щось]", "I will keep trying.", "Я продовжу намагатися."],
+                ["mention", "згадувати", "mentioned doing + [щось]", "She mentioned seeing him.", "Вона згадала, що бачила його.", "mention(s) doing + [щось]", "He never mentions losing the game.", "Він ніколи не згадує про програш у грі.", "will mention doing + [щось]", "I will not mention buying this.", "Я не буду згадувати, що купив це."],
+                ["mind", "бути проти", "didn't mind doing + [щось]", "I didn't mind waiting.", "Я не був проти почекати.", "mind(s) doing + [щось]", "Do you mind closing the door?", "Ти не проти закрити двері?", "will not mind doing + [щось]", "I will not mind helping you.", "Я не буду проти допомогти тобі."],
+                ["miss", "сумувати / пропускати", "missed doing + [щось]", "I missed seeing my friends.", "Я сумував за зустрічами з друзями.", "miss(es) doing + [щось]", "He misses playing football.", "Він сумує за грою у футбол.", "will miss doing + [щось]", "You will miss living here.", "Ти будеш сумувати за життям тут."],
+                ["postpone", "відкладати", "postponed doing + [щось]", "We postponed traveling.", "Ми відклали подорож.", "postpone(s) doing + [щось]", "They postpone making a decision.", "Вони відкладають прийняття рішення.", "will postpone doing + [щось]", "I will postpone buying a car.", "Я відкладу купівлю машини."],
+                ["practice", "практикувати", "practiced doing + [щось]", "I practiced speaking English.", "Я практикував розмову англійською.", "practice(s) doing + [щось]", "She practices playing the piano.", "Вона практикується в грі на піаніно.", "will practice doing + [щось]", "We will practice driving tomorrow.", "Ми будемо практикуватися водінню завтра."],
+                ["quit", "кидати звичку", "quit doing + [щось]", "He quit smoking.", "Він кинув палити.", "quit(s) doing + [щось]", "Quit complaining!", "Припини скаржитися!", "will quit doing + [щось]", "I will quit working late.", "Я припиню працювати допізна."],
+                ["recall", "згадувати", "recalled doing/seeing + [щось]", "I recalled seeing her before.", "Я згадав, що бачив її раніше.", "recall(s) doing + [щось]", "I don't recall saying that.", "Я не пригадую, щоб казав це.", "will recall doing + [щось]", "He will recall visiting this place.", "Він згадає, як відвідував це місце."],
+                ["recommend", "рекомендувати", "recommended doing + [щось]", "She recommended visiting the museum.", "Вона порекомендувала відвідати музей.", "recommend(s) doing + [щось]", "I recommend trying this pizza.", "Я рекомендую спробувати цю піцу.", "will recommend doing + [щось]", "The doctor will recommend sleeping more.", "Лікар порекомендує більше спати."],
+                ["resent", "обурюватися", "resented doing + [щось]", "He resented working on weekends.", "Він обурювався роботі на вихідних.", "resent(s) doing + [щось]", "I resent paying such taxes.", "Я обурююся сплаті таких податків.", "will resent doing + [щось]", "They will resent doing extra work.", "Вони будуть обурюватися виконанню додаткової роботи."],
+                ["resist", "опиратися", "couldn't resist doing + [щось]", "I couldn't resist eating the cake.", "Я не міг втриматися, щоб не з'їсти торт.", "resist(s) doing + [щось]", "She resists buying new clothes.", "Вона стримується від покупки нового одягу.", "will not resist doing + [щось]", "He will not resist kissing her.", "Він не втримається, щоб не поцілувати її."],
+                ["risk", "ризикувати", "risked doing + [щось]", "We risked losing everything.", "Ми ризикували втратити все.", "risk(s) doing + [щось]", "I don't want to risk breaking it.", "Я не хочу ризикувати розбити це.", "will risk doing + [щось]", "You will risk getting sick.", "Ти ризикуватимеш захворіти."],
+                ["suggest", "пропонувати", "suggested doing + [щось]", "He suggested going to the cinema.", "Він запропонував піти в кіно.", "suggest(s) doing + [щось]", "I suggest calling the police.", "Я пропоную викликати поліцію.", "will suggest doing + [щось]", "She will suggest buying a new one.", "Вона запропонує купити новий."],
+                ["tolerate", "терпіти", "tolerated doing + [щось]", "I tolerated living in a small room.", "Я терпів життя в маленькій кімнаті.", "tolerate(s) doing + [щось]", "I won't tolerate cheating.", "Я не потерплю обману.", "will tolerate doing + [щось]", "We will not tolerate waiting so long.", "Ми не будемо терпіти таке довге очікування."],
+                ["understand", "розуміти", "understood doing + [щось]", "I understood leaving early was a bad idea.", "Я зрозумів, що піти рано було поганою ідеєю.", "understand(s) doing + [щось]", "I don't understand spending so much money.", "Я не розумію витрачання таких великих грошей.", "will understand doing + [щось]", "He will understand making this choice.", "Він зрозуміє здійснення цього вибору."],
+                ["acknowledge", "визнавати", "acknowledged doing + [щось]", "He acknowledged making a mistake.", "Він визнав, що зробив помилку.", "acknowledge(s) doing + [щось]", "They acknowledge receiving the letter.", "Вони підтверджують отримання листа.", "will acknowledge doing + [щось]", "She will acknowledge taking the money.", "Вона визнає, що взяла гроші."],
+                ["can't help", "не могти стриматися", "couldn't help doing + [щось]", "I couldn't help laughing.", "Я не міг стримати сміх.", "can't help doing + [щось]", "I can't help thinking about it.", "Я не можу не думати про це.", "won't be able to help doing + [щось]", "She won't be able to help crying.", "Вона не зможе стримати сліз."],
+                ["can't stand", "не терпіти", "couldn't stand doing/hearing + [щось]", "I couldn't stand hearing his voice.", "Я не міг терпіти його голос.", "can't stand doing + [щось]", "I can't stand waiting.", "Я терпіти не можу чекати.", "won't be able to stand doing + [щось]", "He won't be able to stand working there.", "Він не зможе терпіти роботу там."],
+                ["celebrate", "святкувати", "celebrated doing/winning + [щось]", "We celebrated winning the match.", "Ми відсвяткували перемогу в матчі.", "celebrate(s) doing/getting + [щось]", "They celebrate getting a new job.", "Вони святкують отримання нової роботи.", "will celebrate doing/finishing + [щось]", "I will celebrate finishing the project.", "Я буду святкувати завершення проєкту."],
+                ["confess", "зізнаватися", "confessed doing/to doing + [щось]", "He confessed stealing the car.", "Він зізнався у крадіжці машини.", "confess(es) doing + [щось]", "I confess eating your cake.", "Я зізнаюся, що з'їв твій торт.", "will confess doing + [щось]", "She will confess lying.", "Вона зізнається у брехні."],
+                ["defend", "захищати", "defended doing + [щось]", "He defended taking that risk.", "Він захищав рішення піти на той ризик.", "defend(s) doing + [щось]", "I defend protecting the environment.", "Я виступаю за захист навколишнього середовища.", "will defend doing + [щось]", "They will defend building the park.", "Вони будуть захищати ідею будівництва парку."],
+                ["defer", "відтерміновувати", "deferred doing/making + [щось]", "We deferred making a decision.", "Ми відтермінували прийняття рішення.", "defer(s) doing/paying + [щось]", "He defers paying his bills.", "Він відтерміновує оплату рахунків.", "will defer doing/traveling + [щось]", "I will defer traveling until summer.", "Я відкладу подорож до літа."],
+                ["detest", "ненавидіти / відчувати огиду", "detested doing/cleaning + [щось]", "I detested cleaning the house.", "Я ненавидів прибирати будинок.", "detest(s) doing/waking + [щось]", "She detests waking up early.", "Вона відчуває огиду до раннього пробудження.", "will detest doing/working + [щось]", "He will detest working for that boss.", "Він буде ненавидіти працювати на того боса."],
+                ["dread", "боятися / страшитися", "dreaded doing/going + [щось]", "I dreaded going to the dentist.", "Я боявся йти до стоматолога.", "dread(s) doing/taking + [щось]", "He dreads taking exams.", "Він страшиться здачі іспитів.", "will dread doing/hearing + [щось]", "You will dread hearing the news.", "Ти будеш боятися почути новини."],
+                ["endure", "витримувати (герундій)", "endured doing/listening + [щось]", "I endured listening to his complaints.", "Я витримав слухання його скарг.", "endure(s) doing/working + [щось]", "She endures working 12 hours a day.", "Вона зносить роботу по 12 годин на день.", "will endure doing/waiting + [щось]", "We will endure waiting in line.", "Ми витримаємо очікування в черзі."],
+                ["escape", "уникати / рятуватися", "escaped doing/being + [щось]", "He escaped being punished.", "Він уникнув покарання.", "escape(s) doing/paying + [щось]", "You can't escape paying taxes.", "Ти не можеш уникнути сплати податків.", "will escape doing + [щось]", "They will escape doing the chores.", "Вони уникнуть виконання хатніх справ."],
+                ["excuse", "вибачати", "excused doing/being + [щось]", "The teacher excused his being late.", "Вчитель вибачив його запізнення.", "excuse(s) doing + [щось]", "Please excuse my interrupting.", "Будь ласка, вибачте, що перебиваю.", "will excuse doing + [щось]", "I will excuse your forgetting the date.", "Я вибачу те, що ти забув дату."],
+                ["fancy", "хотіти / уявляти", "fancied doing/eating + [щось]", "I fancied eating an ice cream.", "Мені захотілося з'їсти морозиво.", "fancy/fancies doing/going + [щось]", "Do you fancy going to the cinema?", "Хочеш піти в кіно?", "will fancy doing + [щось]", "I don't think I will fancy swimming today.", "Не думаю, що мені захочеться плавати сьогодні."],
+                ["feel like", "хотітися", "felt like doing + [щось]", "I felt like crying.", "Мені хотілося плакати.", "feel(s) like doing + [щось]", "I feel like drinking coffee.", "Мені хочеться випити кави.", "will feel like doing + [щось]", "You will feel like sleeping after the trip.", "Тобі захочеться спати після поїздки."],
+                ["forgive", "прощати (герундій)", "forgave doing/saying + [щось]", "I forgave him saying those bad words.", "Я пробачив йому те, що він сказав ті погані слова.", "forgive(s) doing + [щось]", "Forgive my asking, but how old are you?", "Пробачте, що питаю, але скільки вам років?", "will forgive doing + [щось]", "She will forgive your breaking the vase.", "Вона пробачить те, що ти розбив вазу."],
+                ["imagine", "уявляти", "imagined doing/living + [щось]", "I imagined living in a big house.", "Я уявляв, як живу у великому будинку.", "imagine(s) doing + [щось]", "Can you imagine winning the lottery?", "Уявляєш, як виграєш в лотерею?", "will imagine doing + [щось]", "He will imagine traveling the world.", "Він буде уявляти, як подорожує світом."],
+                ["involve", "включати в себе", "involved doing/traveling + [щось]", "The job involved traveling a lot.", "Робота включала багато подорожей.", "involve(s) doing/managing + [щось]", "This project involves managing a team.", "Цей проєкт передбачає управління командою.", "will involve doing + [щось]", "The new plan will involve spending more money.", "Новий план вимагатиме великих витрат."],
+                ["justify", "виправдовувати", "justified doing/buying + [щось]", "He justified buying an expensive car.", "Він виправдав купівлю дорогої машини.", "justify/justifies doing/acting + [щось]", "Nothing justifies acting like that.", "Ніщо не виправдовує таку поведінку.", "will justify doing/spending + [щось]", "I will justify spending the budget.", "Я обґрунтую витрачання бюджету."],
+                ["prevent", "запобігати", "prevented doing/falling + [щось]", "The fence prevented the dog escaping.", "Паркан завадив собаці втекти.", "prevent(s) doing + [щось]", "This medicine prevents getting sick.", "Ці ліки запобігають хворобі.", "will prevent doing + [щось]", "We will prevent him making a mistake.", "Ми перешкодимо йому зробити помилку."],
+                ["report", "повідомляти", "reported doing/seeing + [щось]", "The neighbor reported seeing a stranger.", "Сусід повідомив, що бачив незнайомця.", "report(s) doing + [щось]", "The news reports closing the borders.", "Новини повідомляють про закриття кордонів.", "will report doing + [щось]", "I will report finding the lost bag.", "Я повідомлю про знахідку загубленої сумки."],
+                ["resume", "відновлювати", "resumed doing/working + [щось]", "We resumed working after lunch.", "Ми відновили роботу після обіду.", "resume(s) doing/playing + [щось]", "They resume playing the game.", "Вони продовжують грати в гру.", "will resume doing/broadcasting + [щось]", "The channel will resume broadcasting.", "Канал відновить мовлення."],
+                ["urge", "спонукати", "urged doing/taking + [щось]", "He urged taking immediate action.", "Він наполягав на негайному вжитті заходів.", "urge(s) doing/buying + [щось]", "I urge buying tickets now.", "Я настійно рекомендую купувати квитки зараз.", "will urge doing/voting + [щось]", "The leader will urge voting for him.", "Лідер закликатиме голосувати за нього."]
+            ].map(v => ({ word: v[0], translation: v[1], category: "Дієслова + ING", examples: { past: { pattern: v[2], sentence: v[3], translation: v[4] }, present: { pattern: v[5], sentence: v[6], translation: v[7] }, future: { pattern: v[8], sentence: v[9], translation: v[10] } } })),
+
+            // 6. Дополнительные слова
+            {
+                word: "Care", translation: "піклуватися / хотіти", category: "Додаткові слова",
+                examples: {
+                    past: { pattern: "cared about + [що/хто]", sentence: "I cared about her feelings.", translation: "Я дбав про її почуття." },
+                    present: { pattern: "care(s) about + [що/хто]", sentence: "I don't care about the rules.", translation: "Мене не хвилюють правила." },
+                    future: { pattern: "will care about + [що/хто]", sentence: "Nobody will care about this tomorrow.", translation: "Завтра нікого це не хвилюватиме." }
+                }
+            }
+        ];
+
+        let currentTopic = 'topic1';
+        let currentCategory = 'Усі';
+        let searchQuery = '';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setupSidebar();
+            renderCards();
+            setupSearch();
+            setupKeyboardShortcuts();
+        });
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderCards();
+            });
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault(); 
+                    document.getElementById('searchInput').focus();
+                }
+            });
+        }
+
+        function switchTopic(topicId) {
+            currentTopic = topicId;
+            currentCategory = 'Усі'; 
+            
+            const tabs = ['topic1', 'topic12', 'topicOther'];
+            tabs.forEach(tab => {
+                const btn = document.getElementById(`btn-${tab}`);
+                if (tab === topicId) {
+                    btn.className = "border-b-2 border-blue-400 text-white font-medium px-1 py-5 transition-colors";
+                } else {
+                    btn.className = "border-b-2 border-transparent text-gray-300 hover:text-white hover:border-gray-400 font-medium px-1 py-5 transition-colors";
+                }
+            });
+
+            const sidebar = document.getElementById('sidebar');
+            const emptyState = document.getElementById('empty-state');
+            const cardsContainer = document.getElementById('cards-container');
+
+            if (topicId === 'topic1') {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('md:block');
+                emptyState.classList.add('hidden');
+                cardsContainer.classList.remove('hidden');
+                setupSidebar();
+                renderCards();
+            } else {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('md:block');
+                emptyState.classList.remove('hidden');
+                cardsContainer.classList.add('hidden');
+            }
+        }
+
+        function setupSidebar() {
+            const sidebarNav = document.getElementById('sidebar-nav');
+            const categories = ['Усі', ...new Set(vocabularyData.map(item => item.category))];
+            
+            sidebarNav.innerHTML = categories.map(category => `
+                <button onclick="setCategory('${category}')" 
+                        class="w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors 
+                        ${currentCategory === category ? 'bg-[#4d4d4d] text-white shadow-inner border border-gray-500' : 'text-gray-300 hover:bg-[#5c5c5c]'}">
+                    ${category}
+                </button>
+            `).join('');
+        }
+
+        window.setCategory = function(category) {
+            currentCategory = category;
+            setupSidebar(); 
+            renderCards();
+        }
+        
+        function renderCards() {
+            if (currentTopic !== 'topic1') return;
+
+            const container = document.getElementById('cards-container');
+            const noResults = document.getElementById('no-results');
+            
+            const filteredData = vocabularyData.filter(item => {
+                const matchCategory = currentCategory === 'Усі' || item.category === currentCategory;
+                const searchStr = `${item.word} ${item.translation} ${item.examples.past.sentence} ${item.examples.present.sentence} ${item.examples.future.sentence}`.toLowerCase();
+                const matchSearch = searchStr.includes(searchQuery);
+                return matchCategory && matchSearch;
+            });
+
+            if (filteredData.length === 0) {
+                container.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            // Генеруємо картки
+            container.innerHTML = filteredData.map(item => `
+                <div class="bg-[#4d4d4d] rounded-[2rem] shadow-lg border-2 border-[#6b6b6b] overflow-hidden p-6 md:p-10">
+                    
+                    <div class="mb-8 flex flex-wrap items-baseline gap-3">
+                        <h2 class="text-4xl font-extrabold text-white tracking-wide">${item.word}</h2>
+                        <span class="text-xl text-gray-300 italic">(${item.translation})</span>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        ${renderExample('PAST', 'bg-red-100 text-red-700', item.examples.past, item.word)}
+                        ${renderExample('PRESENT', 'bg-green-100 text-green-700', item.examples.present, item.word)}
+                        ${renderExample('FUTURE', 'bg-blue-100 text-blue-700', item.examples.future, item.word)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderExample(timeName, badgeColor, data, targetWord) {
+            // Екрануємо спецсимволи слова
+            const safeWord = targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${safeWord})`, 'gi');
+            
+            // Робимо слово жирним і підкресленим у реченні
+            const highlightedSentence = data.sentence.replace(regex, `<span class="font-bold underline decoration-2 underline-offset-4 text-white">$1</span>`);
+
+            return `
+                <div class="flex items-start gap-4">
+                    <!-- Бадж часу -->
+                    <div class="shrink-0 w-24 pt-0.5">
+                        <span class="inline-flex w-full justify-center px-2 py-1.5 rounded text-[13px] font-bold uppercase tracking-wider ${badgeColor}">
+                            ${timeName}
+                        </span>
+                    </div>
+                    
+                    <!-- Блок контенту з перенесенням рядків (text-wrap) -->
+                    <div class="flex-1 text-[17px] leading-relaxed">
+                        <span class="text-gray-100 font-medium tracking-wide">${data.pattern}</span>
+                        <span class="text-gray-400 mx-2 font-bold">→</span>
+                        <span class="text-white">${highlightedSentence}</span>
+                        <span class="text-gray-300 ml-1 italic">(${data.translation})</span>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

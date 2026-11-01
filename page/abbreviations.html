@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marine English & Navigation Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .guide-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .card-header {
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        /* Custom scrollbar for long lists */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f8fafc; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Tree structure styles */
+        .tree-container {
+            padding: 1rem;
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .tree-node {
+            background: white;
+            border: 2px solid #334155;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .tree-node-title {
+            font-weight: bold;
+            color: #1e293b;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tree-node-desc {
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .tree-children {
+            margin-left: 2rem;
+            padding-left: 1rem;
+            border-left: 2px solid #94a3b8;
+            position: relative;
+        }
+
+        /* Connector lines */
+        .tree-child-node {
+            position: relative;
+        }
+        
+        .tree-child-node::before {
+            content: '';
+            position: absolute;
+            left: -1rem;
+            top: 1.25rem;
+            width: 1rem;
+            height: 2px;
+            background-color: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 p-4 md:p-8">
+<a href="../index.html" style="position:fixed; top:15px; left:15px; background:#2563eb; color:white; padding:10px 15px; text-decoration:none; border-radius:8px; font-family:sans-serif; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index:9999;">⬅ На главную</a>
+
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-900 mb-3 tracking-tight">
+                <i class="fa-solid fa-anchor mr-3"></i>Marine English & Navigation
+            </h1>
+            <p class="text-lg text-slate-600 font-medium">Короткий візуальний довідник для судноводителів</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Left Column -->
+            <div class="flex flex-col">
+                
+                <!-- Section 1: Abbreviations (Comprehensive) -->
+                <div class="guide-card">
+                    <div class="card-header bg-gradient-to-br from-blue-800 to-blue-500">
+                        <i class="fa-solid fa-list"></i>
+                        Abbreviations (Абревіатури)
+                    </div>
+                    <!-- Added max height and custom scrollbar -->
+                    <div class="p-4 max-h-[600px] overflow-y-auto custom-scrollbar">
+                        <div class="grid grid-cols-1 gap-1">
+                            
+                            <div class="flex border-b border-slate-100 pb-2 pt-1">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">AIS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Automatic Identification System</span>
+                                    <span class="text-slate-500 text-sm">автоматична система розпізнавання</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">ARPA</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Automatic Radar Plotting Aid</span>
+                                    <span class="text-slate-500 text-sm">засоби автоматичного радіолокаційного прокладання курсу (САРП)</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">COG</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Course Over Ground</span>
+                                    <span class="text-slate-500 text-sm">курс відносно ґрунту</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">Comms</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Communications</span>
+                                    <span class="text-slate-500 text-sm">засоби зв’язку</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">CVS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Clear View Screen</span>
+                                    <span class="text-slate-500 text-sm">екран для бачення на містку</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">DG</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Dangerous Goods</span>
+                                    <span class="text-slate-500 text-sm">небезпечні вантажі</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">DGPS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Differential Global Positioning System</span>
+                                    <span class="text-slate-500 text-sm">супутникова система навигації високої точності</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">ECDIS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Electronic Chart Display and Information System</span>
+                                    <span class="text-slate-500 text-sm">електронна картографічна навігаційна система інформування</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">EPIRB</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Emergency Position-Indicating Radio Beacon</span>
+                                    <span class="text-slate-500 text-sm">аварійний радіобуй</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">ETA</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Estimated Time of Arrival</span>
+                                    <span class="text-slate-500 text-sm">очікуваний час прибуття</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">GMDSS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Global Maritime Distress and Safety System</span>
+                                    <span class="text-slate-500 text-sm">глобальна морська система зв’язку при аварії</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">GPS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Global Positioning System</span>
+                                    <span class="text-slate-500 text-sm">система глобального позиціювання</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">HF</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">High Frequency</span>
+                                    <span class="text-slate-500 text-sm">висока частота</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">IMO</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">International Maritime Organization</span>
+                                    <span class="text-slate-500 text-sm">Міжнародна Морська Організація</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">Loran-C</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Long Range Navigation</span>
+                                    <span class="text-slate-500 text-sm">радіонавігаційна система дальної дії</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">MARS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Mariners’ Alerting and Reporting Scheme</span>
+                                    <span class="text-slate-500 text-sm">система попередження та звітності моряків</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">MF</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Medium Frequency</span>
+                                    <span class="text-slate-500 text-sm">середня частота</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">Mic</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Microphone</span>
+                                    <span class="text-slate-500 text-sm">мікрофон / передавач</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">OOW</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Officer on Watch</span>
+                                    <span class="text-slate-500 text-sm">вахтовий офіцер</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">PA System</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Public Address System</span>
+                                    <span class="text-slate-500 text-sm">гучномовна система</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">PSC</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Port State Control</span>
+                                    <span class="text-slate-500 text-sm">контроль з боку держави порту</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">PSCO</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Port State Control Officer</span>
+                                    <span class="text-slate-500 text-sm">офіцер контролю держави порту</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">ROTI (ROT)</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Rate of Turn indicator</span>
+                                    <span class="text-slate-500 text-sm">показчик швидкості розвороту судна</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">RPM</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Revolutions per Minute</span>
+                                    <span class="text-slate-500 text-sm">показчик швидкості обертання вала (тахометр)</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">SART</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Search and Rescue Radar Transponder</span>
+                                    <span class="text-slate-500 text-sm">радіолокаційний рятувальний відповідач</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">SMCP</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Standard Marine Communication Phrases</span>
+                                    <span class="text-slate-500 text-sm">стандартні фрази морського зв'язку</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">SOG</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Speed Over Ground</span>
+                                    <span class="text-slate-500 text-sm">швидкість відносно ґрунту</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">TSS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Traffic Separation Scheme</span>
+                                    <span class="text-slate-500 text-sm">система розподілу руху</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">UHF</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Ultra-High Frequency</span>
+                                    <span class="text-slate-500 text-sm">ультрависока частота (портативні пристрої)</span>
+                                </div>
+                            </div>
+
+                            <div class="flex border-b border-slate-100 pb-2 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">VHF</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Very High Frequency</span>
+                                    <span class="text-slate-500 text-sm">ультракороткі хвилі</span>
+                                </div>
+                            </div>
+
+                            <div class="flex pb-1 pt-2">
+                                <span class="font-bold text-blue-900 w-28 shrink-0">VTS</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-800">Vessel Traffic Service</span>
+                                    <span class="text-slate-500 text-sm">служба керування руху суден</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Coordinates (Updated with English terms) -->
+                <div class="guide-card">
+                    <div class="card-header bg-gradient-to-br from-purple-800 to-purple-500">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        Coordinates (Координати)
+                    </div>
+                    <div class="p-5">
+                        <div class="text-center p-3 bg-purple-50 rounded-lg mb-4 font-mono text-xl text-purple-900 font-bold border border-purple-200 shadow-inner">
+                            48<span class="text-red-500">°</span> 31<span class="text-red-500">.</span>2<span class="text-red-500">'</span> N ; 78<span class="text-red-500">°</span> 24<span class="text-red-500">.</span>7<span class="text-red-500">'</span> E
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+                            <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                                <h4 class="font-bold text-purple-900 text-lg">Latitude</h4>
+                                <p class="text-sm text-slate-500">Широта (N / S)</p>
+                            </div>
+                            <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                                <h4 class="font-bold text-purple-900 text-lg">Longitude</h4>
+                                <p class="text-sm text-slate-500">Довгота (E / W)</p>
+                            </div>
+                        </div>
+                        
+                        <h4 class="font-bold text-slate-800 mb-3 border-b pb-1">Symbols in English:</h4>
+                        <div class="space-y-3 bg-white border border-slate-200 rounded-lg p-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-3xl font-black text-red-500 w-8 text-center">°</span> 
+                                <div>
+                                    <span class="font-bold text-lg text-slate-800 block">Degrees</span>
+                                    <span class="text-slate-500 text-sm">градуси</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-3xl font-black text-red-500 w-8 text-center leading-none">'</span> 
+                                <div>
+                                    <span class="font-bold text-lg text-slate-800 block">Minutes</span>
+                                    <span class="text-slate-500 text-sm">хвилини</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-3xl font-black text-red-500 w-8 text-center transform -translate-y-2">.</span> 
+                                <div>
+                                    <span class="font-bold text-lg text-slate-800 block">Decimal point</span>
+                                    <span class="text-slate-500 text-sm">десяткова крапка (морська крапка)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="flex flex-col">
+
+                <!-- Section 3: Equipment (Hierarchical Structure) -->
+                <div class="guide-card">
+                    <div class="card-header bg-gradient-to-br from-amber-700 to-amber-500">
+                        <i class="fa-solid fa-sitemap"></i>
+                        Radar Systems Structure
+                    </div>
+                    <div class="p-5">
+                        
+                        <div class="tree-container">
+                            <!-- Main Node: RADAR -->
+                            <div class="tree-node bg-amber-50 border-amber-800">
+                                <div class="tree-node-title text-amber-900">RADAR</div>
+                                <div class="tree-node-desc">
+                                    <span class="font-medium">Radio Detection and Ranging</span>
+                                    <br><span class="text-xs text-slate-500">Радіолокаційна станція (РЛС)</span>
+                                </div>
+                            </div>
+
+                            <div class="tree-children">
+                                
+                                <!-- Branch 1: ARPA -->
+                                <div class="tree-child-node">
+                                    <div class="tree-node">
+                                        <div class="tree-node-title">ARPA</div>
+                                        <div class="tree-node-desc">
+                                            <span class="font-medium">Automatic Radar Plotting Aid</span>
+                                            <br><span class="text-xs text-slate-500">Засіб автом. радіолокаційної прокладки (ЗАРП)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- ARPA Sub-branches -->
+                                    <div class="tree-children">
+                                        <div class="tree-child-node">
+                                            <div class="tree-node">
+                                                <div class="tree-node-title">CPA</div>
+                                                <div class="tree-node-desc">
+                                                    <span class="font-medium">Closest Point of Approach</span>
+                                                    <br><span class="text-xs text-slate-500">Найкоротша відстань зближення</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tree-child-node">
+                                            <div class="tree-node">
+                                                <div class="tree-node-title">TCPA</div>
+                                                <div class="tree-node-desc">
+                                                    <span class="font-medium">Time to Closest Point of Approach</span>
+                                                    <br><span class="text-xs text-slate-500">Час до найкоротшої точки зближення</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Branch 2: Bands -->
+                                <div class="tree-child-node mt-4">
+                                    <div class="tree-node">
+                                        <div class="tree-node-title">Radar Bands</div>
+                                        <div class="tree-node-desc">
+                                            <span class="font-medium">Діапазони частот РЛС</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Band Sub-branches -->
+                                    <div class="tree-children">
+                                        <div class="tree-child-node">
+                                            <div class="tree-node border-slate-400">
+                                                <div class="tree-node-title text-slate-700">X-Band</div>
+                                                <div class="tree-node-desc">
+                                                    <span class="font-medium">3 cm wave</span>
+                                                    <br><span class="text-xs text-slate-500">Висока роздільна здатність</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tree-child-node">
+                                            <div class="tree-node border-slate-400">
+                                                <div class="tree-node-title text-slate-700">S-Band</div>
+                                                <div class="tree-node-desc">
+                                                    <span class="font-medium">10 cm wave</span>
+                                                    <br><span class="text-xs text-slate-500">Краще в дощ/сніг/хвилі</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Section 2: Terms & Definitions -->
+                <div class="guide-card">
+                    <div class="card-header bg-gradient-to-br from-teal-700 to-teal-500">
+                        <i class="fa-solid fa-book-open"></i>
+                        Terms (Терміни)
+                    </div>
+                    <div class="p-5 flex flex-col gap-4">
+                        <div class="border-l-4 border-teal-500 pl-3">
+                            <h4 class="font-bold text-slate-800 text-lg">Sight of land</h4>
+                            <p class="text-slate-600">Area where land is visible.</p>
+                        </div>
+                        <div class="border-l-4 border-teal-500 pl-3">
+                            <h4 class="font-bold text-slate-800 text-lg">Piloting / Coastal navigation</h4>
+                            <p class="text-slate-600">Navigating in coastal waters using landmarks.</p>
+                        </div>
+                        <div class="border-l-4 border-teal-500 pl-3">
+                            <h4 class="font-bold text-slate-800 text-lg">Pilotage</h4>
+                            <p class="text-slate-600">The act of guiding a ship by a pilot.</p>
+                        </div>
+                        
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 mt-2">
+                            <h4 class="font-bold text-slate-800 text-lg">Bearing</h4>
+                            <p class="text-slate-600">The horizontal angle between an object and a reference point.</p>
+                            
+                            <div class="mt-3 pl-4 border-l-2 border-slate-300">
+                                <h5 class="font-bold text-slate-700">Cross bearing</h5>
+                                <p class="text-slate-600 text-sm">When two or more bearings intersect.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                            <div class="bg-teal-50 p-3 rounded border border-teal-100">
+                                <h4 class="font-bold text-teal-900">Soundings</h4>
+                                <p class="text-sm text-teal-700">Measurements of depth. Made by <strong>Echo sounder</strong>.</p>
+                            </div>
+                            <div class="bg-teal-50 p-3 rounded border border-teal-100">
+                                <h4 class="font-bold text-teal-900">Buoys</h4>
+                                <p class="text-sm text-teal-700">Floating navigational aids.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <footer class="mt-8 mb-8 text-center text-sm text-slate-400">
+            Структурований візуальний довідник.
+        </footer>
+    </div>
+
+</body>
+</html>

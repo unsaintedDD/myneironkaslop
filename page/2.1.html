@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marine English & Navigation Complete Guide</title>
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #334155;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .main-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .main-title h1 {
+            color: #1e3a8a;
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .main-title p {
+            color: #64748b;
+            margin: 0;
+            font-size: 16px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .card-header {
+            padding: 15px 20px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-orange { background-color: #d97706; }
+        .header-green { background-color: #0f766e; }
+        .header-blue { background-color: #2563eb; }
+        .header-purple { background-color: #9333ea; }
+        
+        .card-body {
+            padding: 25px;
+            flex-grow: 1;
+        }
+        
+        /* Box Style (For Methods) */
+        .outline-box {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fafafa;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .outline-box:hover {
+            border-color: #d97706;
+            box-shadow: 0 2px 4px rgba(217, 119, 6, 0.1);
+        }
+        .outline-box:last-child { margin-bottom: 0; }
+        
+        .box-title {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .box-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .box-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #334155;
+            margin: 0 0 8px 0;
+        }
+        .box-text-ukr {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #475569;
+            margin: 0;
+        }
+
+        /* Line Style (For Terms) */
+        .term-item {
+            border-left: 3px solid #cbd5e1;
+            padding-left: 15px;
+            margin-bottom: 25px;
+            transition: border-color 0.2s;
+        }
+        .term-item:last-child { margin-bottom: 0; }
+        
+        /* Hover colors for different cards */
+        .term-item.green-hover:hover { border-left-color: #0f766e; }
+        .term-item.blue-hover:hover { border-left-color: #2563eb; }
+        .term-item.purple-hover:hover { border-left-color: #9333ea; }
+        
+        .term-title {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .term-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+        .term-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0 0 6px 0;
+            color: #1e293b;
+        }
+        .term-text-ukr {
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+            color: #475569;
+        }
+        
+        /* Sub-list for pyrotechnics & fire gear */
+        .sub-list {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+        .sub-list li {
+            font-size: 14px;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+        .sub-list li span { color: #64748b; }
+        
+        .correction-note {
+            display: inline-block;
+            background: #fef3c7;
+            color: #b45309;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed; top:15px; left:15px; background:#2563eb; color:white; padding:10px 15px; text-decoration:none; border-radius:8px; font-family:sans-serif; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index:9999;">⬅ На главную</a>
+
+
+<div class="container">
+    <div class="main-title">
+        <h1>⚓ Marine English & Navigation</h1>
+        <p>Повний візуальний довідник для судноводіїв (Методи, Терміни, Геометрія, Обладнання)</p>
+    </div>
+
+    <div class="grid">
+        
+        <!-- Card 1: Navigation Methods -->
+        <div class="card">
+            <div class="card-header header-orange">
+                🧭 The Four Basic Methods of Navigation
+            </div>
+            <div class="card-body">
+                <div class="outline-box">
+                    <div class="box-title">Piloting</div>
+                    <div class="box-subtitle">Лоцманська проводка / Навігація за орієнтирами</div>
+                    <p class="box-text">In piloting, the navigator directs a vessel from one place to another by observing
+such landmarks on the Earth's surface as lighthouses, beacons, buoys, and prominent rocks
+and cliffs, and by measurements, called soundings, of water depths.</p>
+                    <p class="box-text-ukr">Направлення судна з одного місця в інше шляхом спостереження за береговими орієнтирами, вимірювання глибини води та використання пеленгів. В основному використовується у прибережних водах.</p>
+                </div>
+                <div class="outline-box">
+                    <div class="box-title">Dead Reckoning</div>
+                    <div class="box-subtitle">Числення шляху</div>
+                    <p class="box-text">Determining a ship's position by keeping a careful account (or reckoning) of the distance and direction traveled from a known starting position, which is called the point of departure.</p>
+                    <p class="box-text-ukr">Визначення місця розташування судна шляхом ретельного обліку пройденої відстані та напрямку руху від відомої початкової позиції (точки відправлення).</p>
+                </div>
+                <div class="outline-box">
+                    <div class="box-title">Electronic Navigation</div>
+                    <div class="box-subtitle">Електронна навігація</div>
+                    <p class="box-text">Determining a ship's position using electronic devices, such as radar.</p>
+                    <p class="box-text-ukr">Визначення позиції судна за допомогою спеціальних приладів, таких як радар та інші електронні пристрої.</p>
+                </div>
+                <div class="outline-box">
+                    <div class="box-title">Celestial Navigation</div>
+                    <div class="box-subtitle">Астрономічна навігація</div>
+                    <p class="box-text">Finding a ship's position by observing celestial bodies, specifically the sun, the moon, planets, and stars.</p>
+                    <p class="box-text-ukr">Визначення місця розташування судна шляхом спостереження за небесними тілами: сонцем, місяцем, планетами та зірками.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Navigational Terms -->
+        <div class="card">
+            <div class="card-header header-green">
+                📖 Navigational Terms
+            </div>
+            <div class="card-body">
+                <div class="term-item green-hover">
+                    <div class="term-title">Landmarks</div>
+                    <div class="term-subtitle">Берегові орієнтири</div>
+                    <p class="term-text">Conspicuous features or structures on the Earth's surface used to guide a ship. Examples include lighthouses, beacons, buoys, prominent rocks and cliffs, and church spires.</p>
+                    <p class="term-text-ukr">Помітні об'єкти на поверхні Землі, які використовуються для навігації. До них належать маяки, знаки, буї, видатні скелі та кручі, а також шпилі церков.</p>
+                </div>
+                <div class="term-item green-hover">
+                    <div class="term-title">Soundings</div>
+                    <div class="term-subtitle">Заміри глибини / Ехолотування</div>
+                    <p class="term-text">Measurements of water depths used to help safely direct a vessel.</p>
+                    <p class="term-text-ukr">Вимірювання глибини води, які допомагають штурману орієнтуватися під час методу "Piloting".</p>
+                </div>
+                <div class="term-item green-hover">
+                    <div class="term-title">Bearing</div>
+                    <div class="term-subtitle">Пеленг</div>
+                    <p class="term-text">The horizontal angle between an object (like a landmark) and a reference point. When drawn on a chart, it forms a "line of position".</p>
+                    <p class="term-text-ukr">Горизонтальний кут між об'єктом та контрольною точкою відліку. Нанесений на карту пеленг утворює лінію позиції, на якій має знаходитися судно.</p>
+                </div>
+                <div class="term-item green-hover">
+                    <div class="term-title">Cross-bearings</div>
+                    <div class="term-subtitle">Перехресні пеленги / Крюйс-пеленг</div>
+                    <p class="term-text">The point where two or more bearings intersect on a chart. This intersection represents the ship's exact location (a "fix").</p>
+                    <p class="term-text-ukr">Точка перетину двох або більше пеленгів. Це перехрестя ліній на карті точно вказує на поточне місцезнаходження судна.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Ship Geometry & Stability -->
+        <div class="card">
+            <div class="card-header header-blue">
+                📐 Ship Geometry & Stability
+            </div>
+            <div class="card-body">
+                <div class="term-item blue-hover">
+                    <div class="term-title">Longitudinal / Longitudinally</div>
+                    <div class="term-subtitle">Поздовжній напрямок / Поздовжньо</div>
+                    <p class="term-text">The horizontal direction along the length of a ship.</p>
+                    <p class="term-text-ukr">Горизонтальний напрямок уздовж довжини судна (від носа до корми).</p>
+                </div>
+                <div class="term-item blue-hover">
+                    <div class="term-title">Transverse / Transversely</div>
+                    <div class="term-subtitle">Поперечний напрямок / Поперечно</div>
+                    <p class="term-text">The horizontal direction across the beam of a ship.</p>
+                    <p class="term-text-ukr">Горизонтальний напрямок поперек судна (від борту до борту / по ширині).</p>
+                </div>
+                <div class="term-item blue-hover">
+                    <div class="term-title">Vertical / Vertically</div>
+                    <div class="term-subtitle">Вертикальний напрямок / Вертикально</div>
+                    <p class="term-text">Vertical distances are measured upward from the baseline or the lowest point of the keel.</p>
+                    <p class="term-text-ukr">Вертикальні відстані вимірюються вгору від основної площини або найнижчої точки кіля.</p>
+                </div>
+                <div class="term-item blue-hover">
+                    <div class="term-title">The Plimsoll Line</div>
+                    <div class="term-subtitle">Вантажна марка (Лінія Плімсоля)</div>
+                    <p class="term-text">The reference mark on a ship's hull that indicates the maximum depth to which a vessel may be safely loaded with cargo.</p>
+                    <p class="term-text-ukr">Контрольна позначка на корпусі судна, що вказує максимальну осадку, до якої судно може бути безпечно завантажене.</p>
+                </div>
+                <div class="term-item blue-hover">
+                    <div class="term-title">List (vs. Heel)</div>
+                    <div class="term-subtitle">Крен (статичний)</div>
+                    <p class="term-text">The degree to which a vessel leans to either port or starboard side. <strong>List</strong> occurs due to internal weight distribution (cargo shifting), while <strong>Heel</strong> occurs due to external forces (winds, waves).</p>
+                    <p class="term-text-ukr">Нахил судна на лівий або правий борт. Наприклад: <em>"List of 10 degrees to port/starboard"</em>.</p>
+                    <div class="correction-note">Виправлення: List - внутрішні сили (вантаж), Heel - зовнішні (вітер/хвилі)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Bridge & Safety Equipment -->
+        <div class="card">
+            <div class="card-header header-purple">
+                🛟 Bridge & Safety Equipment
+            </div>
+            <div class="card-body">
+                <div class="term-item purple-hover">
+                    <div class="term-title">Gyro repeater & Azimuth ring</div>
+                    <div class="term-subtitle">Гірокомпасний репітер з пеленгаторним кільцем</div>
+                    <p class="term-text">Used in conjunction for taking bearings of objects and celestial bodies.</p>
+                    <p class="term-text-ukr">Використовуються разом для взяття пеленгів берегових об'єктів та небесних тіл.</p>
+                </div>
+                <div class="term-item purple-hover">
+                    <div class="term-title">Clear view screen</div>
+                    <div class="term-subtitle">Відцентровий склоочисник (Вікно штормового огляду)</div>
+                    <p class="term-text">A rotating glass disk on the bridge window that throws off rain and spray.</p>
+                    <p class="term-text-ukr">Обертовий скляний диск на вікні ходового містка, що забезпечує чітку видимість відкидаючи воду під час дощу чи шторму.</p>
+                </div>
+                <div class="term-item purple-hover">
+                    <div class="term-title">Firefighting Equipment</div>
+                    <div class="term-subtitle">Пожежне обладнання</div>
+                    <ul class="sub-list">
+                        <li><strong>Fire hose with couplings</strong> — Пожежний рукав зі з'єднувальною арматурою</li>
+                        <li><strong>Coupling key</strong> — Ключ для з'єднувальних гайок</li>
+                        <li><strong>Jet / Spray nozzle</strong> — Пожежний ствол (суцільний струмінь / розпилення)</li>
+                    </ul>
+                </div>
+                <div class="term-item purple-hover">
+                    <div class="term-title">Pyrotechnics (Visual signals)</div>
+                    <div class="term-subtitle">Піротехніка (Візуальні сигнали лиха)</div>
+                    <ul class="sub-list">
+                        <li><strong>Rocket parachute flare</strong> <span>(4 - red)</span> — Парашутна ракета <span>(4 шт. червоного кольору)</span></li>
+                        <li><strong>Handflare</strong> <span>(6 - red)</span> — Фальшфаєр <span>(6 шт. червоного кольору)</span></li>
+                        <li><strong>Buoyant smoke signal</strong> <span>(2 - orange)</span> — Плавуча димова шашка <span>(2 шт. помаранчевого кольору)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧭 Directions & Orientation — Напрямки та орієнтація</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #334155;
+            --accent: #2563eb;
+            --accent-light: #dbeafe;
+            --accent-warm: #f59e0b;
+            --success: #10b981;
+            --light-bg: #f8fafc;
+            --border: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 20px 12px;
+        }
+
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+            background: white;
+            padding: 36px 32px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 2.1rem;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 1.15rem;
+            margin-top: 0;
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+
+        h2 {
+            color: var(--secondary);
+            margin-top: 42px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.35rem;
+            border-left: 4px solid var(--accent);
+            padding-left: 12px;
+        }
+
+        /* SVG Map Container */
+        .map-container {
+            width: 100%;
+            overflow: hidden;
+            margin: 24px 0 32px 0;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            background: #e8f5e9;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Tables styling */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 24px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 13px 16px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        td {
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+
+        tr:hover {
+            background-color: #eff6ff;
+        }
+
+        .term-en {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1.02rem;
+        }
+
+        .term-ua {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .flag-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+            font-weight: normal;
+        }
+
+        /* Example blocks */
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .example-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        .example-en {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .example-ua {
+            color: #64748b;
+            font-size: 0.92rem;
+        }
+
+        /* Formula card */
+        .formula-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+            border: 1.5px dashed #6366f1;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 18px 0 24px 0;
+            text-align: center;
+        }
+
+        .formula-title {
+            font-weight: 700;
+            color: #4338ca;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.8px;
+        }
+
+        .formula-text {
+            font-family: monospace;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #1e1b4b;
+        }
+
+        /* Compass Card */
+        .compass-box {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 16px 0 24px 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .compass-visual {
+            font-family: monospace;
+            white-space: pre;
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 14px 20px;
+            border-radius: 10px;
+            line-height: 1.35;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .compass-legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Step-by-step route */
+        .route-stepper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .route-step {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 18px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .step-num {
+            background: var(--accent);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+
+        .step-en {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .step-ua {
+            color: #059669;
+            font-size: 0.9rem;
+        }
+
+        /* Full Dialogue Callout */
+        .dialogue-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0 28px 0;
+        }
+
+        .dialogue-q {
+            color: #0369a1;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .dialogue-a {
+            color: #166534;
+            font-weight: 600;
+            margin-top: 14px;
+        }
+
+        .dialogue-trans {
+            color: #475569;
+            font-size: 0.92rem;
+            margin-top: 4px;
+        }
+
+        /* Badge pill */
+        .pill {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-right: 6px;
+        }
+    </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed; top:15px; left:15px; background:#2563eb; color:white; padding:10px 15px; text-decoration:none; border-radius:8px; font-family:sans-serif; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index:9999;">⬅ На главную</a>
+
+<div class="container">
+    <h1>🧭 DIRECTIONS &amp; ORIENTATION</h1>
+    <div class="subtitle">Напрямки та орієнтація у місті: повний практичний конспект</div>
+
+    <h2>🗺️ Наочна карта-схема (Visual Road Map)</h2>
+    <div class="map-container">
+        <svg viewBox="0 0 920 420" width="100%" height="100%" style="display: block;">
+            <!-- Background / Park Area -->
+            <rect x="0" y="0" width="920" height="420" fill="#e8f5e9" />
+            
+            <!-- Roads -->
+            <rect x="0" y="170" width="920" height="90" fill="#475569" /> <!-- Horizontal road -->
+            <rect x="250" y="0" width="90" height="420" fill="#475569" /> <!-- Vertical road -->
+            
+            <!-- Roundabout -->
+            <circle cx="760" cy="215" r="75" fill="#475569" />
+            <circle cx="760" cy="215" r="38" fill="#81c784" /> <!-- Island -->
+            
+            <!-- Dashed center lines -->
+            <line x1="0" y1="215" x2="250" y2="215" stroke="white" stroke-width="4" stroke-dasharray="14,10" />
+            <line x1="340" y1="215" x2="685" y2="215" stroke="white" stroke-width="4" stroke-dasharray="14,10" />
+            <line x1="295" y1="0" x2="295" y2="170" stroke="white" stroke-width="4" stroke-dasharray="14,10" />
+            <line x1="295" y1="260" x2="295" y2="420" stroke="white" stroke-width="4" stroke-dasharray="14,10" />
+            
+            <!-- Sidewalks -->
+            <rect x="0" y="152" width="250" height="18" fill="#cbd5e1" />
+            <rect x="0" y="260" width="250" height="18" fill="#cbd5e1" />
+            
+            <!-- Crosswalk / Zebra -->
+            <g fill="white">
+                <rect x="180" y="176" width="14" height="78" />
+                <rect x="202" y="176" width="14" height="78" />
+                <rect x="224" y="176" width="14" height="78" />
+            </g>
+            
+            <!-- Buildings -->
+            <!-- Bank -->
+            <rect x="50" y="35" width="130" height="85" fill="#f59e0b" rx="8" />
+            <text x="115" y="75" font-family="sans-serif" font-weight="bold" fill="white" text-anchor="middle" font-size="16">🏦 BANK</text>
+            <text x="115" y="95" font-family="sans-serif" fill="#fef3c7" text-anchor="middle" font-size="11">Банк</text>
+            
+            <!-- Hospital -->
+            <rect x="420" y="35" width="140" height="85" fill="#ef4444" rx="8" />
+            <text x="490" y="75" font-family="sans-serif" font-weight="bold" fill="white" text-anchor="middle" font-size="16">🏥 HOSPITAL</text>
+            <text x="490" y="95" font-family="sans-serif" fill="#fee2e2" text-anchor="middle" font-size="11">Лікарня</text>
+
+            <!-- Supermarket -->
+            <rect x="50" y="305" width="130" height="85" fill="#10b981" rx="8" />
+            <text x="115" y="345" font-family="sans-serif" font-weight="bold" fill="white" text-anchor="middle" font-size="15">🛒 SUPERMARKET</text>
+            <text x="115" y="365" font-family="sans-serif" fill="#d1fae5" text-anchor="middle" font-size="11">Супермаркет</text>
+            
+            <!-- Traffic Light -->
+            <rect x="350" y="105" width="22" height="56" fill="#1e293b" rx="4" />
+            <circle cx="361" cy="117" r="6" fill="#ef4444" />
+            <circle cx="361" cy="133" r="6" fill="#f59e0b" />
+            <circle cx="361" cy="149" r="6" fill="#10b981" />
+            
+            <!-- Labels & Pointers -->
+            <g font-family="sans-serif" font-size="13" font-weight="bold">
+                <!-- Intersection -->
+                <line x1="420" y1="295" x2="295" y2="215" stroke="#1e293b" stroke-width="2" />
+                <circle cx="295" cy="215" r="5" fill="#2563eb" />
+                <rect x="420" y="280" width="220" height="28" fill="white" rx="4" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.1))" />
+                <text x="430" y="299" fill="#1e293b">Intersection / Перехрестя</text>
+                
+                <!-- Zebra -->
+                <line x1="80" y1="230" x2="202" y2="215" stroke="#1e293b" stroke-width="2" />
+                <circle cx="202" cy="215" r="5" fill="#2563eb" />
+                <rect x="15" y="225" width="145" height="28" fill="white" rx="4" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.1))" />
+                <text x="25" y="244" fill="#1e293b">Zebra crossing</text>
+                
+                <!-- Traffic Light Pointer -->
+                <line x1="430" y1="133" x2="375" y2="133" stroke="#1e293b" stroke-width="2" />
+                <rect x="430" y="119" width="180" height="28" fill="white" rx="4" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.1))" />
+                <text x="440" y="138" fill="#1e293b">Traffic lights / Світлофор</text>
+                
+                <!-- Corner -->
+                <line x1="200" y1="135" x2="250" y2="170" stroke="#1e293b" stroke-width="2" />
+                <circle cx="250" cy="170" r="5" fill="#2563eb" />
+                <rect x="135" y="115" width="105" height="26" fill="white" rx="4" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.1))" />
+                <text x="145" y="133" fill="#1e293b">Corner / Ріг</text>
+                
+                <!-- Roundabout -->
+                <line x1="620" y1="95" x2="735" y2="185" stroke="#1e293b" stroke-width="2" />
+                <circle cx="735" cy="185" r="5" fill="#2563eb" />
+                <rect x="580" y="80" width="180" height="28" fill="white" rx="4" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.1))" />
+                <text x="590" y="99" fill="#1e293b">Roundabout / Кільце</text>
+            </g>
+        </svg>
+    </div>
+
+    <h2>1. 🧭 BASIC DIRECTIONS — ОСНОВНІ НАПРЯМКИ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="45%">English</th>
+                    <th width="55%">Українська</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="term-en">left ⬅️</td><td class="term-ua">ліворуч / зліва</td></tr>
+                <tr><td class="term-en">right ➡️</td><td class="term-ua">праворуч / справа</td></tr>
+                <tr><td class="term-en">straight ⬆️</td><td class="term-ua">прямо</td></tr>
+                <tr><td class="term-en">forward 🚶‍♂️</td><td class="term-ua">уперед</td></tr>
+                <tr><td class="term-en">back / backward 🔙</td><td class="term-ua">назад</td></tr>
+                <tr><td class="term-en">north 🧭</td><td class="term-ua">північ</td></tr>
+                <tr><td class="term-en">south 🧭</td><td class="term-ua">південь</td></tr>
+                <tr><td class="term-en">east 🧭</td><td class="term-ua">схід</td></tr>
+                <tr><td class="term-en">west 🧭</td><td class="term-ua">захід</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-en">Turn left.</div>
+            <div class="example-ua">Поверніть ліворуч.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">The bank is on your right.</div>
+            <div class="example-ua">Банк праворуч від вас.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Go straight.</div>
+            <div class="example-ua">Ідіть прямо.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Move forward.</div>
+            <div class="example-ua">Рухайтеся вперед.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Go back.</div>
+            <div class="example-ua">Ідіть назад.</div>
+        </div>
+    </div>
+
+    <!-- Compass Box -->
+    <div class="compass-box">
+        <div class="compass-visual">                 NORTH (N)
+                     ↑
+                     |
+WEST (W) ←───────────┼───────────→ EAST (E)
+                     |
+                     ↓
+                 SOUTH (S)</div>
+        <div class="compass-legend">
+            <div>🧭 <strong>north</strong> → північ</div>
+            <div>🧭 <strong>south</strong> → південь</div>
+            <div>🧭 <strong>east</strong> → схід</div>
+            <div>🧭 <strong>west</strong> → захід</div>
+        </div>
+    </div>
+
+    <h2>2. 🔄 TURNING — ПОВОРОТИ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="35%">Фраза (English)</th>
+                    <th width="30%">Українська</th>
+                    <th width="35%">Приклад</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="term-en">Turn left</td>
+                    <td class="term-ua">повернути ліворуч</td>
+                    <td><strong>Turn left</strong> at the traffic lights.<br><span class="example-ua">Поверніть ліворуч на світлофорі.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Turn right</td>
+                    <td class="term-ua">повернути праворуч</td>
+                    <td><strong>Turn right</strong> after the gas station.<br><span class="example-ua">Поверніть праворуч після заправки.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Go straight</td>
+                    <td class="term-ua">йти прямо</td>
+                    <td><strong>Go straight</strong> until you reach the park.<br><span class="example-ua">Ідіть прямо, доки не дійдете до парку.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Turn around ↩️</td>
+                    <td class="term-ua">розвернутися</td>
+                    <td>You're going the wrong way. <strong>Turn around</strong>.<br><span class="example-ua">Ви йдете не в тому напрямку. Розверніться.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="formula-box">
+        <div class="formula-title">🔢 ФОРМУЛА ПОВОРОТІВ: FIRST / SECOND / THIRD</div>
+        <div class="formula-text">take + the + first/second/third + left/right</div>
+    </div>
+
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-en">Take the first left</div>
+            <div class="example-ua">Поверніть на першому повороті ліворуч.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Take the second left</div>
+            <div class="example-ua">Поверніть на другому повороті ліворуч.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Take the first right</div>
+            <div class="example-ua">Поверніть на першому повороті праворуч.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Take the second right</div>
+            <div class="example-ua">Поверніть на другому повороті праворуч.</div>
+        </div>
+        <div class="example-card" style="grid-column: 1 / -1;">
+            <div class="example-en">Take the second right after the bank.</div>
+            <div class="example-ua">Поверніть на другому повороті праворуч після банку.</div>
+        </div>
+    </div>
+
+    <h2>3. 🚶 MOVING ALONG THE STREET — РУХ ВУЛИЦЕЮ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="35%">Фраза (English)</th>
+                    <th width="30%">Значення (Українська)</th>
+                    <th width="35%">Приклад (Example)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="term-en">Go straight ahead</td>
+                    <td class="term-ua">Ідіть прямо</td>
+                    <td><strong>Go straight ahead</strong> until the traffic lights.<br><span class="example-ua">Ідіть прямо до світлофора.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Go straight on</td>
+                    <td class="term-ua">Продовжуйте йти прямо</td>
+                    <td><strong>Go straight on</strong> for two blocks.<br><span class="example-ua">Ідіть прямо протягом двох кварталів.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Go along + [street]</td>
+                    <td class="term-ua">Ідіть вулицею</td>
+                    <td><strong>Go along</strong> Main Street.<br><span class="example-ua">Ідіть вулицею Main Street.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Go up/down + [street]</td>
+                    <td class="term-ua">Рухайтеся вулицею вгору/вниз</td>
+                    <td><strong>Go down</strong> Elm Street.<br><span class="example-ua">Ідіть вулицею Elm Street.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Go past + [place]</td>
+                    <td class="term-ua">Пройдіть повз</td>
+                    <td><strong>Go past</strong> the supermarket.<br><span class="example-ua">Пройдіть повз супермаркет.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Walk across + [place]</td>
+                    <td class="term-ua">Перейдіть через (міст тощо)</td>
+                    <td><strong>Walk across</strong> the bridge.<br><span class="example-ua">Перейдіть через міст.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Go through + [place]</td>
+                    <td class="term-ua">Пройдіть через / крізь</td>
+                    <td><strong>Go through</strong> the tunnel.<br><span class="example-ua">Пройдіть через тунель.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Cross + [street]</td>
+                    <td class="term-ua">Перейдіть вулицю</td>
+                    <td><strong>Cross the street</strong> at the zebra crossing.<br><span class="example-ua">Перейдіть вулицю на пішохідному переході.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Stay on + [road/street]</td>
+                    <td class="term-ua">Продовжуйте рухатися цією дорогою</td>
+                    <td><strong>Stay on this road</strong> until the roundabout.<br><span class="example-ua">Залишайтеся на цій дорозі до кільця.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Go to the end of + [street]</td>
+                    <td class="term-ua">Ідіть до кінця вулиці</td>
+                    <td><strong>Go to the end of</strong> the street.<br><span class="example-ua">Ідіть до кінця вулиці.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>4. 📍 POSITION — РОЗТАШУВАННЯ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="35%">English</th>
+                    <th width="30%">Українська</th>
+                    <th width="35%">Приклад (Example)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="term-en">on the left</td>
+                    <td class="term-ua">ліворуч / зліва</td>
+                    <td>The pharmacy is <strong>on the left</strong>.<br><span class="example-ua">Аптека ліворуч.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">on the right</td>
+                    <td class="term-ua">праворуч / справа</td>
+                    <td>The bank is <strong>on the right</strong>.<br><span class="example-ua">Банк праворуч.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">on your left</td>
+                    <td class="term-ua">ліворуч від вас</td>
+                    <td>The shop will be <strong>on your left</strong>.<br><span class="example-ua">Магазин буде ліворуч від вас.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">on your right</td>
+                    <td class="term-ua">праворуч від вас</td>
+                    <td>You'll see the museum <strong>on your right</strong>.<br><span class="example-ua">Ви побачите музей праворуч від вас.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">next to</td>
+                    <td class="term-ua">поруч із</td>
+                    <td>The café is <strong>next to</strong> the bank.<br><span class="example-ua">Кафе знаходиться поруч із банком.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">near</td>
+                    <td class="term-ua">біля / поблизу</td>
+                    <td>The museum is <strong>near</strong> the park.<br><span class="example-ua">Музей поблизу парку.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">between</td>
+                    <td class="term-ua">між (двома об'єктами)</td>
+                    <td>The café is <strong>between</strong> the bank and the hotel.<br><span class="example-ua">Кафе знаходиться між банком і готелем.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">in front of</td>
+                    <td class="term-ua">перед</td>
+                    <td>The hotel is <strong>in front of</strong> the park.<br><span class="example-ua">Готель знаходиться перед парком.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">behind</td>
+                    <td class="term-ua">позаду / за</td>
+                    <td>The parking lot is <strong>behind</strong> the building.<br><span class="example-ua">Паркінг знаходиться за будівлею.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">opposite / across from</td>
+                    <td class="term-ua">навпроти</td>
+                    <td>The bank is <strong>opposite</strong> the supermarket.<br><span class="example-ua">Банк знаходиться навпроти супермаркету.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">at the corner</td>
+                    <td class="term-ua">на розі</td>
+                    <td>Turn left <strong>at the corner</strong>.<br><span class="example-ua">Поверніть ліворуч на розі.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>5. 🛣️ ROAD ELEMENTS — ЕЛЕМЕНТИ ДОРОГИ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="45%">English</th>
+                    <th width="55%">Українська</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="term-en">traffic lights</td><td class="term-ua">світлофор</td></tr>
+                <tr><td class="term-en">roundabout</td><td class="term-ua">кільце / круговий рух</td></tr>
+                <tr><td class="term-en">intersection / crossroads</td><td class="term-ua">перехрестя</td></tr>
+                <tr><td class="term-en">corner</td><td class="term-ua">ріг / кут</td></tr>
+                <tr><td class="term-en">bridge</td><td class="term-ua">міст</td></tr>
+                <tr><td class="term-en">tunnel</td><td class="term-ua">тунель</td></tr>
+                <tr><td class="term-en">sidewalk <span class="flag-tag">🇺🇸</span> / pavement <span class="flag-tag">🇬🇧</span></td><td class="term-ua">тротуар</td></tr>
+                <tr><td class="term-en">zebra crossing <span class="flag-tag">🇬🇧</span> / crosswalk <span class="flag-tag">🇺🇸</span></td><td class="term-ua">пішохідний перехід</td></tr>
+                <tr><td class="term-en">block</td><td class="term-ua">квартал</td></tr>
+                <tr><td class="term-en">highway <span class="flag-tag">🇺🇸</span> / motorway <span class="flag-tag">🇬🇧</span></td><td class="term-ua">автомагістраль / шосе</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>6. 📏 DISTANCE — ВІДСТАНЬ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="35%">Фраза</th>
+                    <th width="30%">Українська</th>
+                    <th width="35%">Приклад (Example)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="term-en">near / close</td>
+                    <td class="term-ua">близько / поруч</td>
+                    <td>The station is <strong>near</strong> here.<br><span class="example-ua">Станція знаходиться неподалік.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">far</td>
+                    <td class="term-ua">далеко</td>
+                    <td>Is it <strong>far</strong> from here?<br><span class="example-ua">Це далеко звідси?</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">It's about 5 minutes away</td>
+                    <td class="term-ua">Це приблизно за 5 хвилин</td>
+                    <td>The hotel is <strong>about 5 minutes away</strong>.<br><span class="example-ua">Готель приблизно за 5 хвилин звідси.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">It's two blocks from here</td>
+                    <td class="term-ua">Це за два квартали звідси</td>
+                    <td>The bank is <strong>two blocks from here</strong>.<br><span class="example-ua">Банк за два квартали звідси.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">It's a short walk</td>
+                    <td class="term-ua">Це недалеко пішки</td>
+                    <td>It's just <strong>a short walk</strong>.<br><span class="example-ua">Це зовсім недалеко пішки.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">It's a long way</td>
+                    <td class="term-ua">Це далеко</td>
+                    <td>The airport is <strong>a long way</strong> from here.<br><span class="example-ua">Аеропорт далеко звідси.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>7. 🗣️ ASKING FOR DIRECTIONS — ЯК ЗАПИТАТИ ДОРОГУ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="45%">English</th>
+                    <th width="55%">Українська</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background-color: #f1f5f9;"><td colspan="2"><strong>🤝 Ввічливий початок (Polite opening)</strong></td></tr>
+                <tr>
+                    <td class="term-en">Excuse me, could you help me?</td>
+                    <td class="term-ua">Вибачте, чи могли б ви мені допомогти?</td>
+                </tr>
+                <tr>
+                    <td class="term-en">Hello, can you help me, please?</td>
+                    <td class="term-ua">Добрий день, чи можете ви мені допомогти?</td>
+                </tr>
+                <tr style="background-color: #f1f5f9;"><td colspan="2"><strong>❓ Запитати, як пройти (How to get there)</strong></td></tr>
+                <tr>
+                    <td class="term-en">How can I get to the airport?</td>
+                    <td class="term-ua">Як дістатися до аеропорту?</td>
+                </tr>
+                <tr>
+                    <td class="term-en">How do I get to the train station?</td>
+                    <td class="term-ua">Як дістатися до вокзалу?</td>
+                </tr>
+                <tr>
+                    <td class="term-en">Could you tell me how to get to the museum?</td>
+                    <td class="term-ua">Чи могли б ви сказати, як дістатися до музею?</td>
+                </tr>
+                <tr>
+                    <td class="term-en">Which way is the subway station?</td>
+                    <td class="term-ua">У якому напрямку знаходиться станція метро?</td>
+                </tr>
+                <tr>
+                    <td class="term-en">What's the best way to get to the airport?</td>
+                    <td class="term-ua">Як найкраще дістатися до аеропорту?</td>
+                </tr>
+                <tr style="background-color: #f1f5f9;"><td colspan="2"><strong>📍 Запитати, де знаходиться місце (Location)</strong></td></tr>
+                <tr>
+                    <td class="term-en">Where is the nearest pharmacy?</td>
+                    <td class="term-ua">Де найближча аптека?</td>
+                </tr>
+                <tr>
+                    <td class="term-en">Is there a supermarket near here?</td>
+                    <td class="term-ua">Чи є тут поблизу супермаркет?</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>8. ❓ CHECKING DIRECTIONS — ПЕРЕВІРКА НАПРЯМКУ</h2>
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-en">Am I going the right way?</div>
+            <div class="example-ua">Я йду в правильному напрямку?</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Is this the way to the airport?</div>
+            <div class="example-ua">Це дорога до аеропорту?</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Are we on the right road to the city center?</div>
+            <div class="example-ua">Ми на правильній дорозі до центру міста?</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Is it far from here?</div>
+            <div class="example-ua">Це далеко звідси?</div>
+        </div>
+    </div>
+
+    <h2>9. 👀 USEFUL PHRASES — КОРИСНІ ФРАЗИ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="35%">Фраза (English)</th>
+                    <th width="30%">Українська</th>
+                    <th width="35%">Приклад (Example)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="term-en">You'll see it on your left</td>
+                    <td class="term-ua">Ви побачите це ліворуч від вас</td>
+                    <td>After the bridge, <strong>you'll see it on your left</strong>.<br><span class="example-ua">Після мосту ви побачите це ліворуч.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">It's just around the corner</td>
+                    <td class="term-ua">Це зовсім поруч, за рогом</td>
+                    <td>The café <strong>is just around the corner</strong>.<br><span class="example-ua">Кафе зовсім поруч, за рогом.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">You can't miss it</td>
+                    <td class="term-ua">Ви точно не пройдете повз</td>
+                    <td>It's a huge building. <strong>You can't miss it</strong>.<br><span class="example-ua">Це велика будівля. Ви точно не пройдете повз.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">You're going the wrong way</td>
+                    <td class="term-ua">Ви йдете не в тому напрямку</td>
+                    <td>Actually, <strong>you're going the wrong way</strong>. Turn around.<br><span class="example-ua">Насправді ви йдете не туди. Розверніться.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Until you get to...</td>
+                    <td class="term-ua">Доки не дійдете до...</td>
+                    <td>Go straight <strong>until you get to</strong> the hospital.<br><span class="example-ua">Ідіть прямо, доки не дійдете до лікарні.</span></td>
+                </tr>
+                <tr>
+                    <td class="term-en">Until you reach...</td>
+                    <td class="term-ua">Доки не дійдете / доїдете до...</td>
+                    <td>Go straight <strong>until you reach</strong> the traffic lights.<br><span class="example-ua">Ідіть прямо, доки не дійдете до світлофора.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>10. 🏙️ PLACES IN THE CITY — МІСЦЯ В МІСТІ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="30%">English</th>
+                    <th width="30%">Українська</th>
+                    <th width="40%">Значення</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="term-en">bank</td><td class="term-ua">банк</td><td>Financial institution</td></tr>
+                <tr><td class="term-en">post office</td><td class="term-ua">пошта</td><td>Send letters and parcels</td></tr>
+                <tr><td class="term-en">pharmacy</td><td class="term-ua">аптека</td><td>Buy medicine and health items</td></tr>
+                <tr><td class="term-en">supermarket / grocery store</td><td class="term-ua">супермаркет / продуктовий</td><td>Food &amp; groceries</td></tr>
+                <tr><td class="term-en">gas station <span class="flag-tag">🇺🇸</span> / petrol station <span class="flag-tag">🇬🇧</span></td><td class="term-ua">заправка (АЗС)</td><td>Buy vehicle fuel</td></tr>
+                <tr><td class="term-en">train station</td><td class="term-ua">вокзал (залізничний)</td><td>Catch a train</td></tr>
+                <tr><td class="term-en">subway station</td><td class="term-ua">станція метро</td><td>Underground transport</td></tr>
+                <tr><td class="term-en">bus stop</td><td class="term-ua">автобусна зупинка</td><td>Wait for public bus</td></tr>
+                <tr><td class="term-en">airport</td><td class="term-ua">аеропорт</td><td>Air travel &amp; flights</td></tr>
+                <tr><td class="term-en">hospital</td><td class="term-ua">лікарня</td><td>Medical care facility</td></tr>
+                <tr><td class="term-en">park</td><td class="term-ua">парк</td><td>Recreational green area</td></tr>
+                <tr><td class="term-en">museum</td><td class="term-ua">музей</td><td>Exhibitions &amp; culture</td></tr>
+                <tr><td class="term-en">library</td><td class="term-ua">бібліотека</td><td>Borrow books &amp; study</td></tr>
+                <tr><td class="term-en">cinema</td><td class="term-ua">кінотеатр</td><td>Watch movies</td></tr>
+                <tr><td class="term-en">mall / shopping center</td><td class="term-ua">торговий центр</td><td>Shopping, food court &amp; shops</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>11. ✈️ AIRPORT DIRECTIONS — ОРІЄНТАЦІЯ В АЕРОПОРТУ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="45%">Локація в аеропорту</th>
+                    <th width="55%">Українська</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="term-en">entrance</td><td class="term-ua">вхід</td></tr>
+                <tr><td class="term-en">exit</td><td class="term-ua">вихід</td></tr>
+                <tr><td class="term-en">check-in desk</td><td class="term-ua">стійка реєстрації</td></tr>
+                <tr><td class="term-en">security check</td><td class="term-ua">контроль безпеки / огляд</td></tr>
+                <tr><td class="term-en">passport control</td><td class="term-ua">паспортний контроль</td></tr>
+                <tr><td class="term-en">gate</td><td class="term-ua">вихід на посадку (гейт)</td></tr>
+                <tr><td class="term-en">baggage claim</td><td class="term-ua">зона отримання багажу</td></tr>
+                <tr><td class="term-en">information desk</td><td class="term-ua">інформаційна стійка</td></tr>
+                <tr><td class="term-en">terminal</td><td class="term-ua">термінал</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-en">Where is the check-in desk?</div>
+            <div class="example-ua">Де стійка реєстрації?</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">How do I get to Gate 15?</div>
+            <div class="example-ua">Як дістатися до виходу 15?</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Where is passport control?</div>
+            <div class="example-ua">Де паспортний контроль?</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Where is the baggage claim?</div>
+            <div class="example-ua">Де зона отримання багажу?</div>
+        </div>
+        <div class="example-card">
+            <div class="example-en">Is this the way to Gate 15?</div>
+            <div class="example-ua">Це дорога до виходу 15?</div>
+        </div>
+    </div>
+
+    <div class="dialogue-box">
+        <div class="dialogue-q">🗣️ Airport Response Example (Приклад відповіді):</div>
+        <div class="dialogue-a">"Go straight ahead, turn right at the information desk, and follow the signs to Gate 15."</div>
+        <div class="dialogue-trans">Ідіть прямо, поверніть праворуч біля інформаційної стійки та слідуйте за вказівниками до виходу 15.</div>
+    </div>
+
+    <h2>12. 🧩 HOW TO DESCRIBE A ROUTE — ЯК ОПИСАТИ МАРШРУТ</h2>
+    <p>Найзручніша універсальна схема побудови маршруту:</p>
+    
+    <div class="route-stepper">
+        <div class="route-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">START</div>
+                <div class="step-en">Start here.</div>
+                <div class="step-ua">Почніть звідси.</div>
+            </div>
+        </div>
+        <div class="route-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">GO</div>
+                <div class="step-en">Go straight.</div>
+                <div class="step-ua">Ідіть прямо.</div>
+            </div>
+        </div>
+        <div class="route-step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">LANDMARK</div>
+                <div class="step-en">Go past the supermarket.</div>
+                <div class="step-ua">Пройдіть повз супермаркет.</div>
+            </div>
+        </div>
+        <div class="route-step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <div class="step-title">TURN</div>
+                <div class="step-en">Turn left at the traffic lights.</div>
+                <div class="step-ua">Поверніть ліворуч на світлофорі.</div>
+            </div>
+        </div>
+        <div class="route-step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <div class="step-title">CONTINUE</div>
+                <div class="step-en">Go straight for two blocks.</div>
+                <div class="step-ua">Ідіть прямо два квартали.</div>
+            </div>
+        </div>
+        <div class="route-step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+                <div class="step-title">DESTINATION</div>
+                <div class="step-en">The bank is on your right.</div>
+                <div class="step-ua">Банк буде праворуч від вас.</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>13. 🗺️ FULL EXAMPLE — ПОВНИЙ МАРШРУТ</h2>
+    <div class="dialogue-box">
+        <div class="dialogue-q">❓ Question:</div>
+        <div style="font-weight: 600; color: #1e293b;">Excuse me, how can I get to the train station?</div>
+        <div class="dialogue-trans">Вибачте, як дістатися до вокзалу?</div>
+
+        <div class="dialogue-a">💬 Answer:</div>
+        <div style="font-weight: 600; color: #166534; line-height: 1.5; margin-top: 4px;">
+            Go straight ahead for two blocks. Then take the second right. Go past the supermarket and cross the street. The train station is on your left, next to the bank.
+        </div>
+        <div class="dialogue-trans" style="margin-top: 8px;">
+            <strong>Переклад:</strong> Ідіть прямо два квартали. Потім поверніть на другому повороті праворуч. Пройдіть повз супермаркет і перейдіть вулицю. Вокзал буде ліворуч від вас, поруч із банком.
+        </div>
+    </div>
+
+    <h2>⭐ 14. CORE PHRASES — ГОЛОВНІ ФРАЗИ</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th width="10%">№</th>
+                    <th width="45%">Phrase (English)</th>
+                    <th width="45%">Українська</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td class="term-en">Go straight.</td><td class="term-ua">Ідіть прямо.</td></tr>
+                <tr><td>2</td><td class="term-en">Turn left.</td><td class="term-ua">Поверніть ліворуч.</td></tr>
+                <tr><td>3</td><td class="term-en">Turn right.</td><td class="term-ua">Поверніть праворуч.</td></tr>
+                <tr><td>4</td><td class="term-en">Turn around.</td><td class="term-ua">Розверніться.</td></tr>
+                <tr><td>5</td><td class="term-en">Take the first left.</td><td class="term-ua">Поверніть на першому повороті ліворуч.</td></tr>
+                <tr><td>6</td><td class="term-en">Take the second right.</td><td class="term-ua">Поверніть на другому повороті праворуч.</td></tr>
+                <tr><td>7</td><td class="term-en">Go past the bank.</td><td class="term-ua">Пройдіть повз банк.</td></tr>
+                <tr><td>8</td><td class="term-en">Cross the street.</td><td class="term-ua">Перейдіть вулицю.</td></tr>
+                <tr><td>9</td><td class="term-en">Go through the tunnel.</td><td class="term-ua">Пройдіть через тунель.</td></tr>
+                <tr><td>10</td><td class="term-en">Go to the end of the street.</td><td class="term-ua">Ідіть до кінця вулиці.</td></tr>
+                <tr><td>11</td><td class="term-en">It's on your left.</td><td class="term-ua">Це ліворуч від вас.</td></tr>
+                <tr><td>12</td><td class="term-en">It's next to the bank.</td><td class="term-ua">Це поруч із банком.</td></tr>
+                <tr><td>13</td><td class="term-en">It's opposite the supermarket.</td><td class="term-ua">Це навпроти супермаркету.</td></tr>
+                <tr><td>14</td><td class="term-en">How can I get to...?</td><td class="term-ua">Як дістатися до...?</td></tr>
+                <tr><td>15</td><td class="term-en">Am I going the right way?</td><td class="term-ua">Я йду в правильному напрямку?</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>🧠 15. ГОЛОВНА ФОРМУЛА ТЕМИ</h2>
+    <div class="formula-box" style="text-align: left; padding: 22px;">
+        <div style="font-size: 1.15rem; font-weight: bold; color: #1e1b4b; margin-bottom: 14px; text-align: center;">
+            ASK → GO → TURN → LANDMARK → DESTINATION
+        </div>
+        <div style="background: white; border-radius: 8px; padding: 14px 18px; border: 1px solid #c7d2fe; margin-bottom: 14px; font-family: monospace; font-size: 0.98rem; line-height: 1.7;">
+            <strong>How can I get to the airport?</strong><br>
+            ↓ <strong>Go straight.</strong> — Ідіть прямо.<br>
+            ↓ <strong>Turn right.</strong> — Поверніть праворуч.<br>
+            ↓ <strong>Go past the bank.</strong> — Пройдіть повз банк.<br>
+            ↓ <strong>Cross the street.</strong> — Перейдіть вулицю.<br>
+            ↓ <strong>The airport is on your left.</strong> — Аеропорт буде ліворуч від вас.
+        </div>
+        <div style="font-size: 0.95rem; color: #312e81;">
+            🔑 <strong>Тобто більшість маршрутів можна будувати за простою схемою:</strong><br>
+            <span style="font-weight: 700; color: #4338ca;">GO + TURN + LANDMARK + POSITION</span><br>
+            <em>"Go straight → turn right → go past the bank → the hotel is on your left."</em><br>
+            <span style="color: #64748b;">(Ідіть прямо → поверніть праворуч → пройдіть повз банк → готель буде ліворуч від вас.)</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

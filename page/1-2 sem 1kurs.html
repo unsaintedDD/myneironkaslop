@@ -1,0 +1,2149 @@
+const PART_2_TABS = window.PART_2_TABS || [];<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime English (Modules 1–5) — Повний інтерактивний конспект</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Плавное размытие для режима самопроверки (переводы и ответы) */
+        .ua-trans, .qa-ans {
+            transition: filter 0.25s ease, opacity 0.25s ease;
+        }
+        body.hide-ua .ua-trans {
+            filter: blur(6px);
+            opacity: 0.6;
+            user-select: none;
+            cursor: pointer;
+        }
+        body.hide-ua .ua-trans:hover,
+        body.hide-ua .ua-trans.revealed {
+            filter: blur(0px);
+            opacity: 1;
+        }
+        body.hide-qa .qa-ans {
+            filter: blur(7px);
+            opacity: 0.55;
+            user-select: none;
+            cursor: pointer;
+        }
+        body.hide-qa .qa-ans:hover,
+        body.hide-qa .qa-ans.revealed {
+            filter: blur(0px);
+            opacity: 1;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.8); }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<a href="../index.html" style="position:fixed; top:15px; left:15px; background:#2563eb; color:white; padding:8px 13px; text-decoration:none; border-radius:8px; font-family:sans-serif; font-weight:bold; font-size:12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index:9999;">⬅ На главную</a>
+
+    <!-- Верхняя панель (Header) -->
+    <header class="bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3 pl-32 sm:pl-36">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-extrabold text-lg shadow-lg shadow-blue-600/30">
+                    ⚓
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight">
+                        Maritime English (Теми 1–5) — Повний конспект
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Теорія • Словники • Безпека (PPE/LSA/Fire) • Судна та Розміри • Монологи • Q&A Самоперевірка
+                    </p>
+                </div>
+            </div>
+
+            <!-- Панель управления и поиска -->
+            <div class="flex flex-wrap items-center gap-2">
+                <div class="relative">
+                    <input id="searchInput" type="text" oninput="handleSearch(this.value)" placeholder="🔍 Пошук слова або терміна..." class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 w-48 sm:w-56"/>
+                </div>
+
+                <button onclick="toggleTranslation()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 transition">
+                    <span id="eyeIcon">👁️</span>
+                    <span id="eyeText">Приховати переклад</span>
+                </button>
+
+                <button onclick="toggleQaBlur()" class="flex items-center gap-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 px-3 py-1.5 rounded-lg text-xs font-semibold border border-amber-500/30 transition">
+                    <span id="qaIcon">🎯</span>
+                    <span id="qaText">Приховати відповіді Q&A</span>
+                </button>
+
+                <button onclick="toggleTheme()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 transition">
+                    <span id="themeIcon">☀️</span>
+                    <span id="themeText">Світла</span>
+                </button>
+
+                <button id="btnViewAll" onclick="toggleViewAll()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                    📋 Усі вкладки підряд
+                </button>
+            </div>
+        </div>
+
+        <!-- Навигационные вкладки -->
+        <div class="max-w-7xl mx-auto px-4 pb-2 overflow-x-auto">
+            <div class="flex items-center gap-1.5 min-w-max" id="navTabs"></div>
+        </div>
+    </header>
+
+    <!-- Основной контейнер -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-8" id="mainContainer"></main>
+
+    <!-- Подвал -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 py-4 text-center text-xs text-slate-500 dark:text-slate-400">
+        Maritime English Study Hub • Повна база знань (Modules 1–5) • Клікніть на розмитий текст для перевірки себе
+    </footer>
+
+    <script>
+        // =========================================================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ РЕНДЕРИНГА БЛОКОВ
+        // =========================================================================
+        // Парсер словаря из компактных строк "en | ua"
+        function parseVocab(rawStr) {
+            return rawStr.trim().split('\n').map(line => {
+                const parts = line.split('|');
+                return { en: (parts[0] || '').trim(), ua: (parts[1] || '').trim() };
+            }).filter(x => x.en);
+        }
+
+        function renderVocabGrid(title, badge, rawStr) {
+            const items = parseVocab(rawStr);
+            return {
+                type: 'vocab',
+                title,
+                badge: badge || `${items.length} термінів`,
+                items
+            };
+        }
+
+        // =========================================================================
+        // ЧАСТЬ 1: ДАННЫЕ ВКЛАДОК 1, 2, 3
+        // =========================================================================
+        const PART_1_TABS = [
+            // =====================================================================
+            // ВКЛАДКА 1: SHIP'S ORGANIZATION & CREW
+            // =====================================================================
+            {
+                id: 'org',
+                tabName: "🚢 1. Ship's Organization & Crew",
+                title: "Тема 1: Ship's Organization, Duties & Deck Maintenance",
+                subtitle: "Організація суднової служби, департаменти, обов'язки офіцерів та рядових, розклад вахт і палубні роботи",
+                sections: [
+                    {
+                        type: 'cards',
+                        title: "Ship's Organization Summary & Main Ship Departments",
+                        badge: "Загальна структура екіпажу",
+                        introEn: "Every vessel requires a team of well-qualified and experienced seafarers to navigate from one point to another. The ship's crew generally consists of officers and ratings. The crew is divided into three main departments:",
+                        introUa: "Кожне судно потребує команди висококваліфікованих і досвідчених моряків для переходу з однієї точки в іншу. Екіпаж судна зазвичай складається з офіцерів та рядового складу і поділяється на три основні служби (відділення):",
+                        table: {
+                            headers: ["Department (Відділення)", "Main Functions (Основні функції)"],
+                            rows: [
+                                [
+                                    "Deck Department (Палубне відділення)",
+                                    "Steers the ship. Provides proper watchkeeping and maintenance of the ship's hull, cargo gear, life-saving appliances (LSA), and fire-fighting equipment (FFE).",
+                                    "Керує судном. Забезпечує належне несення вахти та технічне обслуговування корпусу судна, вантажного пристрою, рятувальних засобів (LSA) та протипожежного обладнання (FFE)."
+                                ],
+                                [
+                                    "Engine Room Department (Машинне відділення)",
+                                    "Operates, maintains, and repairs the ship's engines and all machinery.",
+                                    "Експлуатує, обслуговує та ремонтує суднові двигуни і всі механізми."
+                                ],
+                                [
+                                    "Catering Department (Служба побуту / обслуговування)",
+                                    "Provides service to the crew. Prepares meals and ensures general housekeeping for the crew and passengers.",
+                                    "Обслуговує екіпаж. Готує їжу та забезпечує загальне прибирання і побут для екіпажу та пасажирів."
+                                ]
+                            ]
+                        }
+                    },
+                    {
+                        type: 'duties',
+                        title: "Deck Department Duties (Обов'язки палубних офіцерів)",
+                        badge: "Master & Mates",
+                        roles: [
+                            {
+                                roleEn: "Master (Captain)",
+                                roleUa: "Капітан",
+                                descEn: "The Master is the head of the vessel and the person in command. He stands no watch but is always on call. The Master is responsible for:",
+                                descUa: "Капітан — голова судна та особа, яка здійснює командування. Він не стоїть на вахті, але завжди на зв'язку (за викликом). Капітан відповідає за:",
+                                bullets: [
+                                    { en: "Safety of the ship, her crew, her cargo, and the environment.", ua: "Безпеку судна, екіпажу, вантажу та навколишнього середовища." },
+                                    { en: "Onboard discipline of all crewmembers.", ua: "Дисципліну всіх членів екіпажу на борту." },
+                                    { en: "Safe navigation of the vessel and communications.", ua: "Безпечну навігацію судна та зв'язок." },
+                                    { en: "Paperwork and reporting of any accident or damage.", ua: "Роботу з документами та звітування про будь-які аварії чи пошкодження." }
+                                ]
+                            },
+                            {
+                                roleEn: "Chief Officer (1st Mate)",
+                                roleUa: "Старший помічник капітана (Старпом)",
+                                descEn: "The Chief Officer is the second in command, the head of the deck department, and the ship's safety officer. Responsibilities include:",
+                                descUa: "Старший помічник — друга особа після капітана, керівник палубної команди та офіцер з безпеки судна. Обов'язки включають:",
+                                bullets: [
+                                    { en: "Safety inspections and drills.", ua: "Інспекції з безпеки та проведення навчальних тривог." },
+                                    { en: "Supervision of mooring, anchoring, and cargo operations.", ua: "Керівництво швартовними, якірними та вантажними операціями." }
+                                ]
+                            },
+                            {
+                                roleEn: "Second Officer (2nd Mate)",
+                                roleUa: "Другий помічник капітана (Штурман)",
+                                descEn: "The Second Officer is the watchkeeping officer and the ship's navigator. Responsibilities include:",
+                                descUa: "Другий помічник — вахтовий офіцер та судновий штурман. Обов'язки включають:",
+                                bullets: [
+                                    { en: "All aspects of navigation and passage planning.", ua: "Усі аспекти навігації та планування переходу." },
+                                    { en: "Maintenance and correction of all charts and publications.", ua: "Ведення та коректуру всіх навігаційних карт і публікацій." },
+                                    { en: "Upkeep of bridge equipment.", ua: "Обслуговування та підтримку в робочому стані обладнання містка." }
+                                ]
+                            },
+                            {
+                                roleEn: "Third Officer (3rd Mate)",
+                                roleUa: "Третій помічник капітана",
+                                descEn: "The Third Officer is a watchkeeping officer in charge of:",
+                                descUa: "Третій помічник — вахтовий офіцер, який відповідає за:",
+                                bullets: [
+                                    { en: "Upkeep and maintenance of LSA and FFA.", ua: "Утримання та технічне обслуговування рятувальних (LSA) та протипожежних (FFA) засобів." },
+                                    { en: "The bonded store.", ua: "Склад митних товарів (bonded store)." },
+                                    { en: "Note: Depending on company regulations, either the Second or Third Officer may be designated as the medical officer.", ua: "Примітка: Залежно від правил компанії, другий або третій помічник може бути призначений медичним офіцером." }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        type: 'cards',
+                        title: "Officers' Navigational Watch Schedule (Розклад ходових і стояночних вахт)",
+                        badge: "Watch Schedule",
+                        table: {
+                            headers: ["Officer (Офіцер)", "Watch at Sea (Вахта в морі)", "Watch in Port (Вахта в порту)"],
+                            rows: [
+                                ["Chief Officer (Старпом)", "04.00 - 08.00 and 16.00 - 20.00", "Supervision of cargo operations (Керівництво вантажними операціями)"],
+                                ["Second Officer (2-й помічник)", "00.00 - 04.00 and 12.00 - 16.00", "00.00 - 06.00 and 12.00 - 18.00"],
+                                ["Third Officer (3-й помічник)", "08.00 - 12.00 and 20.00 - 00.00", "06.00 - 12.00 and 18.00 - 00.00"]
+                            ]
+                        }
+                    },
+                    {
+                        type: 'duties',
+                        title: "Ratings and Trainees (Рядовий склад та практиканти)",
+                        badge: "Bosun, AB, OS, Cadet",
+                        roles: [
+                            {
+                                roleEn: "Bosun (Boatswain)",
+                                roleUa: "Боцман",
+                                descEn: "The Bosun is the foreman of deck ratings. His duties are:",
+                                descUa: "Боцман — старшина палубної команди (рядового складу). Його обов'язки:",
+                                bullets: [
+                                    { en: "Assigning tasks worked out by the Chief Officer to the deck crew and ensuring safe work on deck.", ua: "Розподіл завдань, розроблених старпомом, між палубною командою та забезпечення безпечної роботи на палубі." },
+                                    { en: "Controlling and distributing deck stores.", ua: "Контроль та видача палубних запасів (інструментів, фарби тощо)." },
+                                    { en: "Assisting in cargo, mooring, and anchoring operations.", ua: "Допомога під час вантажних, швартовних та якірних операцій." }
+                                ]
+                            },
+                            {
+                                roleEn: "Able-bodied Seaman (AB) & Ordinary Seaman (OS)",
+                                roleUa: "Матрос 1-го класу (AB) та Матрос 2-го класу (OS)",
+                                descEn: "AB and OS are deck ratings responsible for:",
+                                descUa: "AB та OS — матроси палубної команди, відповідальні за:",
+                                bullets: [
+                                    { en: "Carrying out deck works and cleaning the holds.", ua: "Виконання палубних робіт та зачищення вантажних трюмів." },
+                                    { en: "Taking part in mooring, anchoring, and cargo operations.", ua: "Участь у швартовних, якірних та вантажних операціях." },
+                                    { en: "Standing gangway and anchor watches.", ua: "Несення вахти біля трапа та якірної вахти." },
+                                    { en: "Note: The AB specifically keeps watch as a helmsman and a lookout on the bridge.", ua: "Примітка: Матрос 1-го класу (AB) окремо несе вахту як стерновий (рульовий) та впередзорець на містку." }
+                                ]
+                            },
+                            {
+                                roleEn: "Deck Cadet",
+                                roleUa: "Палубний кадет (практикант)",
+                                descEn: "The deck cadet is a trainee who learns and performs navigational and deck duties under the supervision of senior officers. Main tasks include:",
+                                descUa: "Палубний кадет — практикант, який вивчає та виконує навігаційні й палубні обов'язки під наглядом старших офіцерів. Основні завдання:",
+                                bullets: [
+                                    { en: "Learning to steer the vessel, correcting charts, making entries in the logbook, and participating in pilotage operations on the bridge.", ua: "Навчання управлінню судном (на кермі), коректура карт, внесення записів до суднового журналу та участь у лоцманському проведенні на містку." },
+                                    { en: "Keeping gangway watch in port, which involves meeting port officials and keeping records of visitors.", ua: "Несення вахти біля трапа в порту: зустріч представників портової влади та ведення обліку відвідувачів." },
+                                    { en: "Note: Upon successful completion of shipboard training, the cadet is promoted to Third Officer.", ua: "Примітка: Після успішного завершення плавальної практики кадет отримує підвищення до третього помічника капітана." }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        type: 'duties',
+                        title: "Deck Works and Maintenance (Палубні роботи та технічне обслуговування)",
+                        badge: "Surface Prep & Hold Cleaning",
+                        roles: [
+                            {
+                                roleEn: "Surface Preparation and Painting Steps",
+                                roleUa: "Етапи підготовки поверхні та фарбування",
+                                descEn: "The day-to-day operation of a vessel involves a great deal of maintenance, including painting, chipping, cleaning, washing, and lubricating. Because the ship's hull is made of steel, it is sensitive to rusting from the damaging effects of salt water and weather conditions.",
+                                descUa: "Повсякденна експлуатація судна включає значний обсяг техобслуговування: фарбування, відбивання іржі, чищення, миття та змащування. Оскільки корпус судна сталевий, він схильний до іржавіння через солону воду та погоду.",
+                                bullets: [
+                                    { en: "1. Salt, dirt, and oil are washed and cleaned off with a special solution.", ua: "1. Сіль, бруд та мастило змиваються й очищуються спеціальним розчином." },
+                                    { en: "2. Loose paint and scale are removed with a scraper.", ua: "2. Фарба, що відлущилася, та окалина видаляються шкребком." },
+                                    { en: "3. Rust is chipped off using a chipping hammer or grinder.", ua: "3. Іржа відбивається відбійним молотком або шліфувальною машинкою (турбінкою)." },
+                                    { en: "4. The surface is cleaned with a wire brush.", ua: "4. Поверхня зачищається дротяною щіткою." },
+                                    { en: "5. The Bosun supplies paint cans, rollers, brushes, and paint thinner (solvent) to thin the paint if necessary.", ua: "5. Боцман видає банки з фарбою, валики, пензлі та розчинник (solvent) для розведення густої фарби за потреби." }
+                                ]
+                            },
+                            {
+                                roleEn: "Additional Deck Works (Hold Cleaning & Deck Operations)",
+                                roleUa: "Додаткові палубні роботи (Зачищення трюмів та операції на палубі)",
+                                descEn: "Routine operations performed by the deck party:",
+                                descUa: "Повсякденні роботи, що виконуються палубною командою:",
+                                bullets: [
+                                    { en: "Hold Cleaning: After discharging cargo, seamen shovel and sweep dirt, then clean, wash, dry, and ventilate the holds.", ua: "Зачищення трюмів: Після вивантаження моряки згортають лопатами і вимітають бруд, потім чистять, миють, сушать і вентилюють трюми." },
+                                    { en: "Deck Operations: The deck party works on mooring lines, secures cargo with ropes, swabs the decks with mops, lubricates deck equipment, and removes oil spills.", ua: "Палубні операції: Палубна команда працює зі швартовними кінцями, кріпить вантаж тросами, миє палубу швабрами, змащує палубне обладнання та прибирає розливи нафтопродуктів." }
+                                ]
+                            }
+                        ]
+                    },
+                    renderVocabGrid("Vocabulary 1 (Словник 1: Екіпаж та відділення)", "Vocab 1", `
+rank | ранг, посада
+to navigate / steer a ship | управляти (керувати) судном
+navigation | навігація, судноводіння
+well-qualified team | кваліфікована команда
+experienced seafarer | досвідчений моряк
+to carry out responsibilities / orders | виконувати обов'язки / команди
+crewmember | член екіпажу
+to ensure safe and efficient operation of a ship | забезпечувати безпечну та ефективну експлуатацію (управління) судна
+ratings | рядовий склад (рядові)
+deck department | палубне відділення (палубна команда)
+engine room department | машинне відділення
+catering department | відділ обслуговування
+to maintain the engine / machinery / cargo gear / ship's hull | (технічно) обслуговувати двигун / механізми / вантажний пристрій / корпус судна
+to provide service | надавати послуги (обслуговування)
+Captain (Master) | капітан
+to be headed by | очолюватися (бути під керівництвом)
+Chief Officer (1st Mate) | старший помічник капітана (старпом)
+to be in command of the vessel | командувати судном
+organizational unit | організаційний підрозділ
+merchant ship | торгове судно
+to provide proper watchkeeping | забезпечувати належне несення вахти
+life-saving appliances (LSA) | рятувальні засоби (обладнання)
+fire-fighting equipment/appliances (FFE/FFA) | протипожежне обладнання
+Second Officer (2nd Mate) | другий помічник капітана
+Third Officer (3rd Mate) | третій помічник капітана
+Bosun (Boatswain) | боцман
+AB (Able-bodied seaman) | матрос 1-го класу
+OS (Ordinary seaman) | матрос 2-го класу
+to operate the engine | експлуатувати двигун
+to repair the machinery | ремонтувати механізми
+Chief Engineer | старший механік
+Electrical Officer | електромеханік
+Fitter | моторист-зварювальник (токар)
+Motorman | моторист
+Oiler | мастильник (моторист 1-го класу)
+Wiper | моторист 2-го класу
+preparation of meals | приготування їжі
+housekeeping | підтримання чистоти (прибирання)
+Steward | стюард
+Messman (messboy) | буфетник
+trainee | практикант
+                    `),
+                    renderVocabGrid("Vocabulary 2 (Словник 2: Вахта та обов'язки)", "Vocab 2", `
+head of the vessel | голова (керівник) судна
+to stand / keep the watch | нести вахту
+to hand over / take over the watch | здавати / приймати вахту
+to relieve of watch | змінювати з вахти
+to stand gangway / anchor watch | нести вахту біля трапа / на якорі
+to be on call | бути на зв'язку (за викликом)
+to be responsible for environment / crew / cargo / paperwork / safe navigation | бути відповідальним за навколишнє середовище / екіпаж / вантаж / роботу з документами / безпечне плавання
+to report of accident / damage | доповідати про нещасний випадок / пошкодження
+to supervise mooring / anchoring / cargo operations | керувати швартуванням / постановкою на якір / вантажними операціями
+at sea | у морі, у плаванні
+navigational watch | ходова вахта
+navigator | штурман, судноводій
+watchkeeping officer | вахтовий офіцер
+correction of charts / publications | коректура карт / публікацій
+passage planning | планування переходу
+upkeep of bridge equipment | утримання (обслуговування) обладнання містка
+safety officer | офіцер, відповідальний за безпеку
+to be in charge of safety inspections / drills | бути відповідальним за проведення інспекцій з безпеки / навчальних тривог
+bonded store | склад митних товарів
+to depend on company regulations | залежати від правил компанії
+to designate as a medical officer | призначати судновим лікарем (медичним працівником)
+foreman of deck ratings | старшина палубної команди (рядового складу)
+to assign tasks | призначати (розподіляти) завдання
+to ensure safe work | забезпечувати безпечну роботу
+to distribute deck stores | розподіляти палубні запаси
+to carry out deck works / duties | виконувати палубні роботи / обов'язки
+to clean the holds | зачищати трюми
+helmsman | кермовий (рульовий)
+lookout | впередзорець (спостерігач)
+                    `),
+                    renderVocabGrid("Vocabulary 3 (Словник 3: Практика кадета і місток)", "Vocab 3", `
+to perform navigational / deck duties | виконувати навігаційні / палубні обов'язки
+completion of shipboard training | завершення плавальної практики
+to promote | підвищувати (на посаді)
+under supervision of senior officers | під керівництвом старших офіцерів
+to assist in operation of a ship | допомагати (брати участь) в управлінні судном
+navigation bridge | навігаційний (ходовий) місток
+pilotage operations | лоцманське проведення
+to keep daily record | вести щоденні записи
+to make entries in the logbook | робити записи в судновому журналі
+to arrive at port | прибувати в порт
+port officials | представники порту (портова влада)
+deck routine | повсякденна робота на палубі
+to observe discipline | дотримуватися дисципліни
+                    `),
+                    renderVocabGrid("Vocabulary 4 (Словник 4: Палубні та малярні роботи)", "Vocab 4", `
+to chip off rust | відбивати іржу
+to lubricate equipment | змащувати обладнання
+to be exposed to damaging effects / weather conditions | піддаватися руйнівному впливу / погодним умовам
+to be sensitive to rusting | бути схильним до іржавіння (утворення іржі)
+to protect from rust | захищати від іржі
+to prepare the surface | готувати поверхню
+to remove oil spills | прибирати розливи нафтопродуктів (мастила)
+solution | розчин
+to remove loose paint / scale with a scraper | видаляти фарбу, що відлущилася / окалину шкребком
+chipping hammer | відбійний молоток
+grinder | шліфувальна машина (турбінка)
+to clean with a wire brush | зачищати дротяною щіткою
+to supply with paint cans | постачати банки з фарбою
+roller | валик
+paint thinner (solvent) | розчинник для фарби
+to shovel / sweep the dirt | згортати лопатою / вимітати бруд
+to dry / ventilate the hold | сушити / провітрювати трюм
+deck party | палубна команда
+to work on mooring lines | працювати зі швартовими кінцями (тросами)
+to secure cargo | кріпити вантаж
+to swab the deck with a mop | мити палубу шваброю
+to thin the thick paint | розбавити густу фарбу
+rope | мотузка, трос, канат
+to work overtime | працювати понаднормово
+mess-room | кают-компанія
+to stand at the helm | стояти за кермом
+to keep smth in the paint locker | зберігати щось у малярній коморі
+to apply a layer of primer | наносити шар ґрунтовки
+subordinate | підлеглий
+officer of the watch (OOW) | вахтовий офіцер
+                    `)
+                ]
+            },
+
+            // =====================================================================
+            // ВКЛАДКА 2: SHIP'S ARRANGEMENT & EQUIPMENT
+            // =====================================================================
+            {
+                id: 'arr',
+                tabName: "⚓ 2. Ship's Arrangement & Hull",
+                title: "Тема 2: Ship's Arrangement, Dimensions, Machinery & Equipment",
+                subtitle: "Будова корпусу, головні розмірення, внутрішні приміщення, машинне відділення, надбудова та палубні пристрої",
+                sections: [
+                    {
+                        type: 'duties',
+                        title: "1–5. Ship's Structure, Hull Contents, Propulsion, Superstructure & Deck Gear",
+                        badge: "Повна теорія будови судна",
+                        roles: [
+                            {
+                                roleEn: "1. The Hull and Ship Dimensions",
+                                roleUa: "1. Корпус та головні розмірення судна",
+                                descEn: "The hull is the main body of a ship, representing the area between the main deck, the sides, and the bottom.",
+                                descUa: "Корпус — це основне тіло судна, що охоплює простір між головною палубою, бортами та днищем.",
+                                bullets: [
+                                    { en: "Structure: Made up of frames (ribs that form the ship's skeleton) covered with shell plating. These frames are attached to the keel, which acts as the backbone of the vessel.", ua: "Конструкція: Складається зі шпангоутів (ребер, що формують каркас судна), вкритих зовнішньою обшивкою. Шпангоути кріпляться до кіля, який слугує хребтом судна." },
+                                    { en: "Divisions: Divided into the fore (forward) and aft parts by an imaginary line called midship. The extreme fore end is the bow, and the extreme rear end is the stern.", ua: "Поділ: Поділяється на носову (fore) та кормову (aft) частини уявною лінією — міделем (midship). Крайня передня частина — ніс (bow), крайня задня — корма (stern)." },
+                                    { en: "Centerline: The fore-and-aft line that runs from bow to stern, dividing the hull into the starboard side (right) and port side (left).", ua: "Діаметральна площина (Centerline): Поздовжня лінія від носа до корми, що ділить корпус на правий борт (starboard side) і лівий борт (port side)." },
+                                    { en: "Decks: Horizontal surfaces on board. The weather deck (main deck) runs from bow to stern, is exposed to the weather, and covers the cargo holds. The forecastle is a partial deck at the bow, and the poop deck is at the after end.", ua: "Палуби: Горизонтальні поверхні на борту. Відкрита (головна) палуба простягається від носа до корми, піддається впливу погоди і накриває вантажні трюми. Бак (forecastle) — часткова палуба на носі, ют (poop deck) — у кормовій частині." },
+                                    { en: "Bulbous Bow: Located just below the waterline, it helps the ship cut smoothly through the water, increasing speed.", ua: "Бульбоподібний ніс: Розташований нижче ватерлінії, допомагає судну плавно розрізати воду, зменшуючи опір і збільшуючи швидкість." },
+                                    { en: "Length Overall (LOA): The maximum length of a ship from the extreme fore end to the extreme rear end.", ua: "Найбільша довжина (LOA): Максимальна довжина судна від крайньої носової до крайньої кормової точки." },
+                                    { en: "Draft (Draught): The distance from the waterline to the keel.", ua: "Осадка (Draft): Відстань від ватерлінії до кіля (дна судна)." },
+                                    { en: "Waterline (WL): The line where the hull meets the water surface.", ua: "Ватерлінія (WL): Лінія зіткнення корпусу судна з поверхнею води." },
+                                    { en: "Freeboard: The distance from the waterline to the deck line.", ua: "Висота надводного борту (Freeboard): Відстань від ватерлінії до лінії головної палуби." },
+                                    { en: "Beam: The maximum breadth of the ship.", ua: "Ширина судна (Beam): Максимальна ширина корпусу судна." },
+                                    { en: "Air draft: The distance from the waterline to the vessel's highest point.", ua: "Повітряна осадка / висота надводного габариту (Air draft): Відстань від ватерлінії до найвищої точки судна." }
+                                ]
+                            },
+                            {
+                                roleEn: "2. Hull Contents and Spaces",
+                                roleUa: "2. Внутрішні приміщення корпусу, трюми та танки",
+                                descEn: "The hull contains the engine room, cargo space, and various tanks.",
+                                descUa: "Корпус вміщує машинне відділення, вантажні приміщення та різноманітні танки (цистерни).",
+                                bullets: [
+                                    { en: "Compartments: Portions of space formed by decks and bulkheads (vertical walls). They are fitted with watertight doors to resist water, prevent flooding during an accident, and allow the ship to remain afloat.", ua: "Відсіки: Частини простору, утворені палубами та перебірками (вертикальними стінками). Обладнані водонепроникними дверима для захисту від води, запобігання затопленню під час аварії та збереження плавучості." },
+                                    { en: "Cargo Spaces: Cargo is stowed in the hold. Access to the hold is provided by a hatch (an opening in the weather deck), which is closed by a hatch cover. The lower deck is the tank top. Tweendecks may be installed between the weather deck and the tank top to separate different cargoes.", ua: "Вантажні приміщення: Вантаж укладається в трюмі (hold). Доступ до трюму забезпечується через люк (hatch) у головній палубі, що закривається люковою кришкою (hatch cover). Нижній настил трюму — це дедвейт/настил подвійного дна (tank top). Між головною палубою і настилом подвійного дна можуть встановлюватися твіндеки (tweendecks) для розділення різних вантажів." },
+                                    { en: "Double bottom: Located between the tank top and the keel to protect the hull and maintain stability. It contains tanks for fuel, ballast water, fresh water, and lubricating oils.", ua: "Подвійне дно: Розташоване між настилом трюму (tank top) та кілем для захисту корпусу й підтримки остійності. Містить танки для палива, баластної води, прісної води та мастил." },
+                                    { en: "Fore/After peak tanks: Located in the bow and stern compartments, mainly used for ballast and fresh water.", ua: "Форпіковий та ахтерпіковий танки: Розташовані в носовому і кормовому відсіках, використовуються переважно для баласту і прісної води (диферентування)." },
+                                    { en: "Ballast: Extra weight (usually seawater) pumped in or out to increase stability and avoid rolling (starboard to port motion) or pitching (bow to stern motion).", ua: "Баласт: Додаткова вага (зазвичай забортна вода), що закачується або відкачується для підвищення остійності та зменшення бортової (rolling) чи кільової (pitching) хитавиці." }
+                                ]
+                            },
+                            {
+                                roleEn: "3. Machinery and Propulsion",
+                                roleUa: "3. Машинне відділення та рушійна установка",
+                                descEn: "The engine room is typically located near the bottom in the ship's after end.",
+                                descUa: "Машинне відділення зазвичай розташоване внизу в кормовій частині судна.",
+                                bullets: [
+                                    { en: "Main Equipment: Includes engines, generators, pumps, boilers, steering gear, and control panels.", ua: "Основне обладнання: Включає двигуни, генератори, насоси (помпи), котли, рульовий пристрій та панелі управління (ГРЩ)." },
+                                    { en: "Propulsion: The main engine rotates the shaft (running through the shaft tunnel), which connects to the propeller (a large fan with blades that moves the ship through the water).", ua: "Рушійна установка: Головний двигун обертає гребний вал (що проходить через тунель гребного вала), з'єднаний із гребним гвинтом (пропелером із лопатями, що рухає судно у воді)." },
+                                    { en: "Steering: The rudder is a flat piece of metal right behind the propeller used to change the vessel's direction. The propeller's thrust is directed onto the rudder, which is connected to the helm (steering wheel) on the navigation bridge.", ua: "Керування: Перо руля (rudder) — плоска металева конструкція одразу за гвинтом для зміни напрямку руху судна. Напір води від гвинта спрямовується на перо руля, пов'язане зі штурвалом (helm) на містку." },
+                                    { en: "Auxiliary Machinery: Auxiliary engines provide electricity. Bow or stern thrusters (additional propellers) make the ship more maneuverable in congested waters.", ua: "Допоміжні механізми: Допоміжні двигуни виробляють електроенергію. Носовий або кормовий підрулюючі пристрої (thrusters) роблять судно більш маневреним у стиснених водах." }
+                                ]
+                            },
+                            {
+                                roleEn: "4. Superstructure and Accommodation",
+                                roleUa: "4. Надбудова та житлові приміщення",
+                                descEn: "The superstructure is the construction above the weather deck.",
+                                descUa: "Надбудова — це конструкція, розташована вище відкритої (головної) палуби.",
+                                bullets: [
+                                    { en: "Monkey Island (Compass Deck): The uppermost deck above the bridge, housing the main mast, radar scanners, and antennas.", ua: "Компасна (пеленгаторна) палуба (Monkey Island): Найвища палуба над містком, де розміщені грот-щогла, радари та антени." },
+                                    { en: "Navigation Bridge: The ship's command center, containing important navigation equipment and the helm.", ua: "Навігаційний місток: Командний центр судна, що містить навігаційне обладнання та штурвал." },
+                                    { en: "Funnel (Smokestack): Located behind the bridge; it discharges exhaust fumes, steam, and smoke from the engine room.", ua: "Димова труба (Funnel): Розташована позаду містка; виводить вихлопні гази, пару та дим із машинного відділення." },
+                                    { en: "Accommodation: Includes cabins (living quarters), portholes (windows), the galley (kitchen operated by the Chief Cook), mess-rooms (dining areas), recreation rooms, laundry and drying rooms, a bonded store (for dutiable goods), and emergency headquarters (to store LSA and FFA).", ua: "Житлова зона: Включає каюти, ілюмінатори (portholes), камбуз (кухню під керівництвом шеф-кухаря), кают-компанії/їдальні (mess-rooms), кімнати відпочинку, пральню і сушильню, митну комору (bonded store) та аварійний штаб (де зберігаються LSA і FFA)." }
+                                ]
+                            },
+                            {
+                                roleEn: "5. Deck Equipment and Life-Saving Appliances (LSA)",
+                                roleUa: "5. Палубне обладнання та рятувальні засоби (LSA)",
+                                descEn: "Deck equipment consists of cargo-handling, anchoring, and mooring arrangements.",
+                                descUa: "Палубне обладнання складається з вантажного, якірного та швартовного пристроїв.",
+                                bullets: [
+                                    { en: "Mooring Gear: Located on the forecastle/poop, it includes mooring lines (to secure the ship to a berth), winches (to pull the lines), bitts and bollards (to make the lines fast), fairleads (to lead lines between the winch and the chock), and chocks (to guide lines to the shore).", ua: "Швартовний пристрій: Включає швартовні кінці (для кріплення судна до причалу), лебідки (для натягування кінців), кнехти (bitts/bollards — для закріплення кінців), роульси (fairleads — для спрямування тросів) та кіпові планки/клюзи (chocks — для виведення кінців на берег)." },
+                                    { en: "Anchoring Gear: The anchor secures the ship to the seabed to prevent drifting. It is connected to the anchor chain/cable, operated by a windlass, and stored in the chain locker.", ua: "Якірний пристрій: Якір утримує судно на ґрунті, запобігаючи дрейфу. Він з'єднаний з якірним ланцюгом, керується брашпилем (windlass) і зберігається в ланцюговому ящику (chain locker)." },
+                                    { en: "Cargo Gear: Cranes fitted with derricks or jibs are used to load and discharge cargo.", ua: "Вантажний пристрій: Крани, оснащені вантажними стрілами (derricks/jibs), використовуються для навантаження та вивантаження вантажу." },
+                                    { en: "LSA: Every vessel must be equipped with lifeboats, life rafts, rescue boats, life jackets, and life buoys.", ua: "Рятувальні засоби (LSA): Кожне судно має бути оснащене рятувальними шлюпками, рятувальними плотами, черговими шлюпками, рятувальними жилетами та кругами." }
+                                ]
+                            }
+                        ]
+                    },
+                    renderVocabGrid("Vocabulary 1: The Hull (Корпус судна та розмірення)", "Hull Vocab", `
+hull | корпус
+watertight shell of a ship | водонепроникна оболонка судна
+bottom of a ship | дно судна
+to be made up of | складатися з
+frames covered with shell plating | шпангоути, вкриті обшивкою
+ribs | ребра жорсткості
+to form skeleton | формувати каркас
+to be attached to | бути прикріпленим до
+keel | кіль
+backbone of a vessel | поздовжній брус (кіль) судна
+fore (forward) | носова частина судна
+aft | кормова частина судна
+imaginary line | уявна лінія
+midship | мідель
+extreme front / rear end | крайня передня / задня частина
+bow | ніс
+stern | корма
+centerline (fore-and-aft line) | діаметральна площина
+port side | лівий борт
+starboard side | правий борт
+respectively | відповідно
+to be exposed to weather | піддаватися впливу погодних умов
+main deck (weather deck) | головна палуба
+horizontal surface | горизонтальна поверхня
+to stow cargo | укладати вантаж
+forecastle | палуба бака (півбак)
+structure | конструкція, будова
+superstructure | надбудова
+Length Overall (LOA) | загальна (найбільша) довжина судна
+draft (draught) | осадка
+waterline (WL) | ватерлінія
+freeboard | висота надводного борту
+beam | максимальна ширина судна
+air draft | повітряна осадка (максимальна висота)
+                    `),
+                    renderVocabGrid("Vocabulary 2: Hull Contents (Внутрішній устрій, трюми і танки)", "Hull Contents", `
+tweendeck (intermediate deck to divide the hold into two parts) | твіндек (проміжна палуба для розділення трюму та укладання різних видів вантажу, напр. ящиків і мішків)
+engine room | машинне відділення
+cargo space | вантажне приміщення
+watertight door / compartment | водонепроникні двері / відсік
+bulkhead | перебірка
+to prevent flooding | запобігати затопленню
+to remain afloat | залишатися на плаву
+in case of an accident | у разі аварії (нещасного випадку)
+hold | трюм
+to give access to the hold | давати доступ до трюму
+hatch | люк
+hatch cover | кришка люка
+tank top | палубне перекриття над танками подвійного дна (внутрішнє дно)
+double bottom tanks | танки подвійного дна
+to maintain stability | підтримувати остійність
+fresh water | прісна вода
+to carry fuel | перевозити паливо
+lubricating oils | мастильні матеріали (масла)
+fore peak tanks | форпікові танки
+after peak tanks | ахтерпікові танки
+to increase ship's stability | збільшувати остійність судна
+to pump in / out ballast / water | закачувати / відкачувати баласт / воду
+ship's motion | коливання судна (качка)
+rolling | бортова качка
+pitching | кільова качка
+to be equipped with | бути оснащеним чимось
+                    `),
+                    renderVocabGrid("Vocabulary 3: Machinery (Машинне відділення та рушій)", "Machinery", `
+main engine | головний двигун
+generator | генератор
+pump | насос (помпа)
+boiler | котел
+steering gear | рульовий пристрій
+control panel | панель управління (головного розподільного щита)
+to rotate a shaft | обертати вал
+shaft tunnel | тунель гребного вала
+propeller | гребний гвинт
+to propel a ship | приводити судно в рух
+blades | лопаті
+rudder | перо руля
+to steer a vessel | управляти судном
+to change direction | змінювати напрямок
+to produce a thrust of water | створювати напір води
+to direct water onto the rudder | направляти потік води на перо руля
+helm (steering wheel) | штурвал
+to enable a vessel to maintain a course | давати змогу судну дотримуватися курсу
+auxiliary engine | допоміжний двигун
+to provide electricity | забезпечувати електроенергією
+additional | додатковий
+to depend on smth | залежати від чогось
+bow / stern thruster | носовий / кормовий підрулюючий пристрій
+to make a ship more maneuverable | робити судно більш маневреним
+congested waters | води інтенсивного судноплавства
+                    `),
+                    renderVocabGrid("Vocabulary 4: Superstructure & Deck Equipment (Надбудова та палубне обладнання)", "Deck & LSA", `
+living quarter | житлове приміщення
+monkey island (compass deck) | компасний майданчик (пеленгаторна палуба)
+main mast | грот-мачта
+radar scanner | скануючий пристрій антени РЛС (радара)
+antenna / aerial | антена
+navigation equipment | навігаційне обладнання (обладнання містка)
+funnel | димова труба
+to discharge exhaust fumes, steam and smoke | викидати вихлопні гази, пару та дим
+cabin | каюта
+porthole | ілюмінатор
+galley | камбуз
+recreation room | кімната для відпочинку
+laundry | пральня
+drying room | сушильна кімната
+bonded store | склад митних товарів (опечатується митницею)
+to keep dutiable goods | зберігати товари, що обкладаються митом
+emergency headquarters | штаб реагування (в аварійних ситуаціях)
+pantry | буфетна (комора для провізії)
+cargo-handling arrangement / gear | вантажний пристрій
+anchoring arrangement / gear | якірний пристрій
+mooring arrangement / gear | швартовний пристрій
+fore mast | фок-щогла
+mooring lines | швартовні кінці (троси)
+to secure the ship to her berth | кріпити судно до причалу
+winch | лебідка
+to pull the mooring lines | вибирати (натягувати) швартовні кінці
+bitt / bollard | кнехт
+to make fast the lines | кріпити кінці
+fairlead | направляючий роульс (кіпова планка)
+to lead a line | заводити кінець
+chock | клюз (швартовний)
+to guide the lines to the shore | направляти кінці на берег
+anchor | якір
+anchor chain (cable) | якірний ланцюг
+to prevent a ship from drifting | запобігати дрейфу судна
+windlass | брашпиль
+chain locker | ланцюговий ящик
+to load / discharge the cargo | вантажити / вивантажувати вантаж
+derrick (jib) | вантажна стріла
+lights | вогні (суднові)
+appropriate equipment | відповідне обладнання
+lifeboat | рятувальна шлюпка
+life raft | рятувальний пліт
+rescue boat | чергова шлюпка
+life jacket | рятувальний жилет
+life buoy | рятувальний круг
+                    `),
+                    renderVocabGrid("Vocabulary 5: Video Tour Elements (Елементи відео-екскурсії судном)", "Video Tour", `
+to show around | проводити екскурсію
+danger / hazard | небезпека / ризик
+voltage | електрична напруга
+to head (for, towards, upwards, etc.) | направлятися, рухатися (до чогось, вгору тощо)
+computer system | комп'ютерна система
+essential machinery | основне машинне обладнання
+to connect | з'єднувати
+to haul (over) = to turn a ship | міняти курс (напрямок)
+command center | командний центр
+elevator = lift | ліфт (підйомник)
+stairs | сходи
+high-ranking officer | старший офіцер
+Owner | судновласник
+Pilot | лоцман
+battery room | акумуляторна
+facilities | зручності, приміщення, обладнання
+wash basin | умивальник
+junior / senior officer | молодший / старший офіцер
+hospital | лазарет (судновий шпиталь)
+gymnasium (gym) | спортивний зал
+garbage | сміття
+changing room | роздягальня
+to launch a lifeboat | спускати рятувальну шлюпку на воду
+helmet | каска
+1st aid box | аптечка першої допомоги
+breathing apparatus | дихальний апарат
+fire extinguisher | вогнегасник
+oxygen cylinder | кисневий балон
+alarm | тривога, сигнал тривоги
+drum | барабан (лебідки)
+normal walking speed | середня швидкість ходьби
+it takes... minutes to get... | щоб дістатися, потрібно... хвилин
+even though | незважаючи на те що
+spare anchor | запасний становий якір
+hawse pipe | труба якірного клюза
+hawse | клюз
+hawser | перлінь (товстий трос)
+shackle | з'єднувальна скоба якірного ланцюга
+lashing | найтов (кріплення)
+lashing bridge | кріпильний місток
+to stow / store securely | безпечно / надійно укладати та зберігати
+storage | зберігання
+stowage | укладання (вантажу)
+passageway | прохід
+underneath | під, внизу
+switchboard | розподільний щит
+hydraulic | гідравлічний
+wrap up | завершувати
+emergency telephone | телефон для екстреного зв'язку
+cupboard | шафка (рундук)
+chart table | штурманський (прокладальний) стіл
+immersion suit | гідрокостюм
+                    `)
+                ]
+            },
+
+            // =====================================================================
+            // ВКЛАДКА 3: CARGO OPERATIONS, SHIP TYPES & SIZES
+            // =====================================================================
+            {
+                id: 'ships',
+                tabName: "⛴️ 3. Ship Types, Sizes & Abbreviations",
+                title: "Тема 3: Types of Vessels, Cargo Operations, Ship Sizes & Abbreviations",
+                subtitle: "Лінійне і трампове судноплавство, класифікація всіх типів суден, розміри (Handymax — ULCC) та морські абревіатури",
+                sections: [
+                    {
+                        type: 'duties',
+                        title: "Liner Service vs. Tramp Shipping & Short Formulae (UPD)",
+                        badge: "Базові визначення + Формули для іспиту",
+                        roles: [
+                            {
+                                roleEn: "Liner Service vs. Tramp Shipping",
+                                roleUa: "Лінійні перевезення проти Трампового судноплавства",
+                                descEn: "Two main modes of merchant shipping operation:",
+                                descUa: "Два основні режими роботи торговельного флоту:",
+                                bullets: [
+                                    { en: "Liner service implies regular sailings between designated ports on a fixed trade route according to a published schedule.", ua: "Лінійні перевезення передбачають регулярні рейси між призначеними портами за фіксованим маршрутом згідно з опублікованим розкладом." },
+                                    { en: "In tramp shipping each voyage is scheduled individually... vessels operate as taxicabs.", ua: "У трамповому судноплавстві кожен рейс планується індивідуально... судна працюють як таксі." }
+                                ]
+                            },
+                            {
+                                roleEn: "UPD: Concise Exam Formulas ('is designated to...') — Categories 1 to 7",
+                                roleUa: "UPD: Чіткі формули для усного опитування за категоріями 1–7",
+                                descEn: "Ready-to-use definitions structured with 'is designated to transport / is designed to / is capable of':",
+                                descUa: "Готові чіткі визначення для швидкої відповіді на іспиті:",
+                                bullets: [
+                                    { en: "[1. General & Dry Cargo] Merchant vessel is designated to transport cargo or passengers.", ua: "Торговельне судно призначене для перевезення вантажів або пасажирів." },
+                                    { en: "Cargo ship (Freighter) is designated to transport goods and no more than 12 passengers.", ua: "Вантажне судно призначене для перевезення товарів і не більше 12 пасажирів." },
+                                    { en: "Dry bulk carrier (Bulker) is designated to transport unpacked, loose cargo (grain, coal, ore). They are usually gearless. Cargo must be trimmed to avoid shifting.", ua: "Балкер для насипних вантажів. Без власних кранів. Вантаж треба штивкати, щоб не змістився." },
+                                    { en: "General cargo ship is designated to transport packed goods. They are normally geared and use tweendecks to minimize broken stowage.", ua: "Для генеральних вантажів. Має крани (geared, 4+ derrick cranes) та твіндеки для зменшення втрати простору." },
+                                    { en: "Coaster is a small vessel designated to transport cargo along the coast. Livestock carrier is designated to transport live animals.", ua: "Костер — невелике прибережне вантажне судно. Livestock carrier — судно для живих тварин." },
+                                    { en: "[2. Tankers] Tanker is designed to carry liquid cargoes in bulk, requiring special construction.", ua: "Танкер призначений для наливних вантажів і вимагає спеціальної конструкції." },
+                                    { en: "Crude carrier (Crude tanker) is designated to transport crude oil directly from oilfields to refineries.", ua: "Танкер для сирої нафти везе її безпосередньо від родовища до нафтопереробного заводу." },
+                                    { en: "Product tanker is designated to transport refined products (gasoline, diesel) from refineries to consumers.", ua: "Танкер-продуктовоз для очищених нафтопродуктів (бензину/дизеля) від заводів до споживачів." },
+                                    { en: "LNG / LPG carrier is a gas carrier designed to transport Liquefied Natural / Petroleum Gas (refrigerated or pressurized).", ua: "Газовоз для скрапленого природного або нафтового газу (охолодженого або стисненого)." },
+                                    { en: "Chemical tanker is designated to transport flammable and toxic liquid chemicals. It has heating coils to maintain cargo viscosity.", ua: "Хімовоз. Має нагрівальні змійовики (heating coils) для підтримки в'язкості вантажу." },
+                                    { en: "[3. Specialized] Container ship (Cellular ship) is designated to transport cargo in TEU or FEU containers. Holds are equipped with cell guides. Containers are stowed in rows (abeam), bays (fore to aft), and tiers (horizontal).", ua: "Контейнеровоз. Трюми мають напрямні (cell guides). Контейнери ставлять рядами (впоперек), секціями (уздовж) та ярусами (по висоті)." },
+                                    { en: "Ro-Ro (Roll-on/Roll-off) is designated to transport wheeled cargo driven on and off via a wide stern ramp.", ua: "Ролкер для колісної техніки, заїзд через широку кормову апарель." },
+                                    { en: "Pure Car Carrier (PCC) is a Ro-Ro designated to transport cars. It has a high freeboard, making it sensitive to side winds.", ua: "Автомобілевоз із дуже високим надводним бортом, чутливий до бокового вітру." },
+                                    { en: "Refrigerated ship (Reefer) is designated to transport perishable goods (meat, fruit, dairy) at high speeds with temperature control.", ua: "Рефрижератор для продуктів, що швидко псуються, має високу швидкість і температурний контроль." },
+                                    { en: "Heavy-lift ship is designated to transport extremely large and heavy cargo.", ua: "Судно для надважких та великогабаритних вантажів." },
+                                    { en: "Semi-submersible ship (Flo-Flo) uses flooded ballast tanks to lower its deck underwater to load buoyant cargo like oil rigs.", ua: "Напівзанурювальне судно: затоплює баластні танки і опускає палубу під воду для завантаження плавучих нафтових вишок." },
+                                    { en: "Project cargo vessel is a non-submersible ship that loads large items (wind turbine blades) using its own heavy-duty cranes.", ua: "Судно для проєктних вантажів: незанурювальне, вантажить великі об'єкти власними потужними кранами." },
+                                    { en: "Multipurpose vessel is designated to transport different types of cargo at the same time.", ua: "Багатоцільове судно: перевозить різні види вантажу одночасно." },
+                                    { en: "[4. Passenger] Passenger ship carries more than 12 passengers. Ocean liner is designed for intercontinental travel with thousands of passengers. Cruise ship serves shorter routes with many ports of call.", ua: "Пасажирське судно (>12 пасажирів). Океанський лайнер — для міжконтинентальних рейсів. Круїзне судно — коротші маршрути з багатьма портами заходу." },
+                                    { en: "Ferry transports passengers and vehicles on fixed short routes. Double-ended ferry has interchangeable bows and sterns to shuttle without turning around. Yacht is a sail- or power-driven vessel for pleasure or racing.", ua: "Пором — фіксовані короткі маршрути. Двосторонній пором має взаємозамінні ніс і корму (ходить без розвороту). Яхта — для відпочинку чи перегонів." },
+                                    { en: "[5. High-Speed Craft] HSC reaches speeds over 30 knots. Hovercraft (ACV) travels over water, land, mud, and ice on a cushion of air. Hydrofoil uses underwater wings to lift the hull and reduce resistance. Catamaran is a multi-hulled watercraft. WIG (Wing-in-Ground) operates just above the water surface.", ua: "HSC (>30 вузлів). Судно на повітряній подушці (Hovercraft), судно на підводних крилах (Hydrofoil), багатокорпусний катамаран, екраноплан (WIG)." },
+                                    { en: "[6. Special Purpose] Tugboat (Ocean-going, Harbor, River tug) is a powerful, manoeuvrable vessel designed to tow (push/pull) large ships during berthing; fitted with fenders. Icebreaker clears routes in northern ice areas. Pilot boat delivers pilots. Dredger excavates the seabed (mud, sludge, gravel, rocks) to keep waterways navigable. Fireboat fights shoreline/shipboard fires. Lightship is a non-propelled vessel serving as an aid to navigation. Cable/Pipe-laying vessel lays underwater cables/pipes. Research vessel collects marine data for nautical charts and weather maps.", ua: "Буксир (океанський, портовий, річковий; має кранці), криголам, лоцманський катер, земснаряд (дреджер), пожежне судно, плавучий маяк (несамохідний), кабеле-/трубоукладач, науково-дослідне судно." }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        type: 'cards',
+                        title: "7. Ship Size Classifications (Класифікація суден за розмірами та каналами)",
+                        badge: "Handymax ➔ ULCC / Chinamax",
+                        introEn: "Cargo ships are classified partly by capacity and partly by dimensions to determine the areas of operation and which canal locks they can travel through:",
+                        introUa: "Вантажні судна класифікуються частково за вантажопідйомністю, а частково за розмірами, щоб визначити райони плавання та шлюзи каналів, через які вони можуть проходити:",
+                        table: {
+                            headers: ["Size Class (Клас розміру)", "Features (Англійською)", "Переклад та особливості (Українською)"],
+                            rows: [
+                                ["Handy / Handymax", "Small vessels with 5 cargo holds and 4 cranes; their shallow draft allows them to operate in most ports across the world.", "Невеликі судна з 5 вантажними трюмами та 4 кранами; їхня мала осадка дозволяє їм працювати в більшості портів світу."],
+                                ["Aframax", "Medium-sized oil tankers (AFRA = Average Freight Rate Assessment), most common in small harbours with limited port facilities.", "Нафтові танкери середнього розміру, найпоширеніші в невеликих гаванях з обмеженими портовими можливостями."],
+                                ["Panamax & New Panamax", "Vessels designed with the maximum acceptable size to pass through the locks of the Panama Canal (expanded in 2016).", "Судна з максимально допустимими розмірами для проходження через шлюзи Панамського каналу (розширеного у 2016 р.)."],
+                                ["Suezmax", "The largest vessels (tankers, bulk carriers, container ships) that can pass through the Suez Canal fully laden.", "Найбільші судна, які можуть проходити через Суецький канал у повному вантажі (fully laden)."],
+                                ["Capesize", "Bulk carriers too large for the Panama and Suez canals; they must transit via Cape Horn or the Cape of Good Hope.", "Балкери, завеликі для Панамського і Суецького каналів; проходять через мис Горн або мис Доброї Надії."],
+                                ["Malaccamax", "The largest ships capable of passing through the Strait of Malacca, often associated with VLCCs and Maersk's Triple E Class.", "Найбільші судна, здатні пройти через Малаккську протоку (часто асоціюються з VLCC та класом Triple E компанії Maersk)."],
+                                ["VLCC (Very Large Crude Carrier)", "Huge supertankers providing greater flexibility and suitable for areas like the Mediterranean, West Africa, and the North Sea.", "Величезні супертанкери для сирої нафти, що забезпечують більшу гнучкість і підходять для Середземного та Північного морів."],
+                                ["ULCC (Ultra Large Crude Carrier)", "Huge supertankers used for extensive routes from the Middle East to Europe, East Asia, and North America via the Cape of Good Hope.", "Ультравеликі супертанкери для довгих маршрутів із Близького Сходу до Європи, Азії та Америки через мис Доброї Надії."],
+                                ["Q-Max (Qatar Max)", "The largest LNG carrier class in the world, designed to dock at the Ras Laffan terminal in Qatar.", "Найбільший у світі клас газовозів СПГ (LNG), спроєктований для швартування в терміналі Рас-Лаффан у Катарі."],
+                                ["Seawaymax", "Maximum size of vessels capable of passing through the canal locks of the St. Lawrence Seaway between the US and Canada.", "Максимальний розмір суден, здатних проходити через шлюзи морського шляху Святого Лаврентія між США та Канадою."],
+                                ["Chinamax", "One of the largest bulk carriers in the world, initially built to ply between Chinese ports and Brazil.", "Одні з найбільших балкерів у світі, спочатку побудовані для регулярних рейсів між портами Китаю та Бразилією."],
+                                ["Kamsarmax", "A specific size class of bulk carriers (maximum size to enter Port Kamsar).", "Специфічний клас розміру для балкерів (адаптований під порт Камсар)."]
+                            ]
+                        }
+                    },
+                    {
+                        type: 'cards',
+                        title: "Maritime Abbreviations Table (Таблиця морських абревіатур)",
+                        badge: "26 абревіатур",
+                        table: {
+                            headers: ["Abbreviation", "Full Designation (English)", "Translation (Ukrainian)"],
+                            rows: [
+                                ["AB", "Able-bodied Seaman", "Матрос 1-го класу"],
+                                ["OS", "Ordinary Seaman", "Матрос 2-го класу"],
+                                ["PPE", "Personal Protective Equipment", "Засоби індивідуального захисту (ЗІЗ)"],
+                                ["LSA", "Life-Saving Appliances", "Рятувальні засоби"],
+                                ["FFA / FFE", "Fire-Fighting Appliances / Equipment", "Протипожежне обладнання"],
+                                ["LOA", "Length Overall", "Найбільша довжина судна"],
+                                ["WL", "Waterline", "Ватерлінія"],
+                                ["OOW", "Officer of the Watch", "Вахтовий офіцер"],
+                                ["EEBD", "Emergency Escape Breathing Device", "Аварійний дихальний апарат для евакуації"],
+                                ["SCBA", "Self-Contained Breathing Apparatus", "Автономний дихальний апарат (для гасіння пожеж)"],
+                                ["ETA", "Estimated Time of Arrival", "Розрахунковий час прибуття"],
+                                ["ETD", "Estimated Time of Departure", "Розрахунковий час відходу"],
+                                ["LNG", "Liquefied Natural Gas", "Скраплений природний газ (СПГ)"],
+                                ["LPG", "Liquefied Petroleum Gas", "Скраплений нафтовий газ (СНГ)"],
+                                ["TEU", "Twenty-foot Equivalent Unit", "Двадцятифутовий еквівалент (стандартний контейнер)"],
+                                ["FEU", "Forty-foot Equivalent Unit", "Сорокафутовий еквівалент"],
+                                ["Ro-Ro", "Roll-on / Roll-off", "Ролкер (судно з горизонтальним завантаженням)"],
+                                ["PCC", "Pure Car Carrier", "Спеціалізований автомобілевоз"],
+                                ["Flo-Flo", "Float-on / Float-off", "Метод навантаження напівзанурювальних суден"],
+                                ["HSC", "High-Speed Craft", "Високошвидкісне судно"],
+                                ["ACV", "Air-Cushion Vehicle", "Судно на повітряній подушці (Hovercraft)"],
+                                ["WIG", "Wing-in-Ground", "Екраноплан"],
+                                ["AFRA", "Average Freight Rate Assessment", "Оцінка середньої фрахтової ставки"],
+                                ["VLCC", "Very Large Crude Carrier", "Супертанкер (дуже великий)"],
+                                ["ULCC", "Ultra Large Crude Carrier", "Супертанкер (ультра великий)"],
+                                ["MARS", "Mariners' Alerting and Reporting Scheme", "Система оповіщення та звітності моряків"]
+                            ]
+                        }
+                    },
+                    renderVocabGrid("1.1–4.1 Vocabularies: Cargo Operations, Specialized Ships & Sizes", "Cargo & Ships Vocab", `
+Maritime industry | Морська індустрія / судноплавство
+To transport produce and raw commodities | Перевозити сільськогосподарські продукти та сировину
+Merchant vessel | Торговельне судно
+To carry cargo (freight) | Перевозити вантаж
+Liner service / Tramp shipping | Лінійні перевезення / Трампове судноплавство
+Designated port / Fixed trade route | Призначений порт / Фіксований торговельний шлях
+Published schedule | Опублікований розклад руху
+Prearranged ETA / ETD | Заздалегідь узгоджений час прибуття (ETA) / відходу (ETD)
+Cargo handling gear (equipment) | Вантажне обладнання (пристрій)
+Dry bulk cargo (loose cargo) | Насипний (навалочний) вантаж
+Homogeneous cargo | Однорідний вантаж
+Grain / Ore / Coal / Fertilizer / Scrap metal / Sulphur | Зерно / Руда / Вугілля / Добрива / Металобрухт / Сірка
+To trim the cargo | Рівномірно розміщувати (штивкати) вантаж
+To avoid shifting / To affect ship's stability | Уникати зміщення / Впливати на остійність судна
+To be liable to combustion | Бути схильним до самозаймання
+Gearless vessel | Безкранове судно (без власного вантажного пристрою)
+Liquid cargo in bulk | Наливний вантаж
+Crude oil / Oil products / Liquefied gases | Сира нафта / Нафтопродукти / Скраплені гази
+Carrying capacity | Вантажопідйомність (місткість)
+Refined product / Gasoline | Продукт нафтопереробки / Бензин (пальне)
+LNG / LPG | СПГ (скраплений природний газ) / СНГ (скраплений нафтовий газ)
+Heating coil / To maintain viscosity | Нагрівальний змійовик / Підтримувати в'язкість
+General cargo (break bulk cargo) | Генеральний (штучний) вантаж
+Crate / Drum / Barrel | Ящик / Бочка (різної ємності)
+Uneconomic stowage / Broken stowage | Неекономічне укладання / Неповне завантаження (втрачений простір)
+Tweendeck | Твіндек (міжпалубний простір)
+Containerization / Cellular ship | Контейнеризація / Судно коміркового типу
+TEU / FEU | Двадцятифутовий / Сорокафутовий еквівалент
+To seal / To lash properly | Опломбувати / Надійно закріпити (занайтувати)
+Cell guides / To slot into place | Вертикальні напрямні / Ставати на своє місце (у паз)
+Row / Bay / Tier | Ряд / Секція / Ярус
+To run abeam (athwartship) | Розташовуватися по траверзу (впоперек судна)
+Dockside gantry crane | Портовий портальний кран
+Ro-Ro / Pure Car Carrier (PCC) | Ролкер (судно з горизонт. завантаженням) / Автомобілевоз
+To load via a ramp | Завантажувати через апарель
+To be sensitive to side wind | Бути чутливим до бокового вітру
+Refrigerated ship (reefer) / Perishable goods | Рефрижераторне судно / Товари, що швидко псуються
+To require temperature-controlled transportation | Потребувати перевезення з температурним режимом
+Heavy lift ship / Project cargo vessel | Судно для великовагових / проєктних вантажів
+Semi-submersible ship (Flo-Flo) | Напівзанурювальне судно
+Ferry / Double-ended ferry | Пором / Двосторонній пором
+High-Speed Craft (HSC) / Yacht | Високошвидкісне судно / Яхта
+Interchangeable bow and stern | Взаємозамінні ніс та корма
+Hovercraft (ACV) | Судно на повітряній подушці
+Hydrofoil / Wing-in-Ground (WIG) | Судно на підводних крилах / Екраноплан
+To reduce resistance | Зменшувати опір
+Tugboat (tug) / To tow (push/pull) | Буксир / Буксирувати (штовхати/тягнути)
+Fenders / Bollard | Кранці / Кнехт
+Icebreaker / Pilot boat / Fireboat | Криголам / Лоцманський катер / Пожежне судно
+Dredger / To keep waterways navigable | Земснаряд / Підтримувати судноплавність водних шляхів
+To remove mud/sludge/gravel/rocks | Видаляти мул/осад/гравій/каміння з дна
+Lightships / Lighthouse | Плавучий маяк / Стаціонарний маяк
+Research vessel | Науково-дослідне судно
+To classify by capacity / dimensions | Класифікувати за вантажопідйомністю / розмірами
+To travel through canal locks | Проходити через шлюзи каналів
+Shallow draught ship | Судно з малою осадкою
+AFRA (Average Freight Rate Assessment) | Оцінка середнього тарифу танкерного перевезення
+Fully laden vessel | Повністю завантажене судно
+VLCC / ULCC | Супертанкери для сирої нафти (Very / Ultra Large)
+                    `)
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // МЕСТО ДЛЯ ВСТАВКИ ЧАСТИ 2 (ВКЛАДКИ 4, 5, 6):
+        // Скопируй код из Части 2 и вставь прямо вместо следующей строки:
+        // =========================================================================
+        // Парсер вопросов и ответов из строк "Вопрос | Ответ"
+        function parseQA(title, rawStr) {
+            const items = rawStr.trim().split('\n').map(line => {
+                const parts = line.split('|');
+                return { q: (parts[0] || '').trim(), a: (parts[1] || '').trim() };
+            }).filter(x => x.q);
+            return { type: 'qa', title, items };
+        }
+
+        const PART_2_TABS = [
+            // =====================================================================
+            // ВКЛАДКА 4: SAFETY, PPE, EMERGENCIES, FIRE, LSA & DOORS
+            // =====================================================================
+            {
+                id: 'safety',
+                tabName: "🦺 4. Safety, PPE, Fire, LSA & Doors",
+                title: "Тема 4: Personal Safety, Alarms, Fire Fighting, PPE, LSA & Ship's Doors",
+                subtitle: "Правила безпеки (DO'S & DON'TS), сигнали тривог, класи пожеж і вогнегасники, ЗІЗ (PPE), рятувальні засоби (LSA) та суднові двері",
+                sections: [
+                    {
+                        type: 'cards',
+                        title: "🛑 PART 2: Personal Safety On Board (Правила особистої безпеки)",
+                        badge: "DO'S & DON'TS",
+                        table: {
+                            headers: ["Area (Зона / Ситуація)", "DO'S (Що робити)", "DON'TS (Чого уникати)"],
+                            rows: [
+                                [
+                                    "Weather Deck (Відкрита палуба)",
+                                    "Walk carefully, hold on to railings, wear PPE (Ходити обережно, триматися за поручні, носити ЗІЗ).",
+                                    "Do not run (Не бігати)."
+                                ],
+                                [
+                                    "Accommodation (Житлова зона)",
+                                    "Disconnect the plugs of electrical equipment (Відключати електроприлади).",
+                                    "Do not keep inflammable materials in your cabin. Never smoke in your bunk (Не тримати легкозаймисті речовини в каюті. Ніколи не палити в ліжку)."
+                                ],
+                                [
+                                    "Engine Room (Машинне відділення)",
+                                    "Use proper tools. Beware of hot water, running machinery, and inflammable liquids (Використовувати правильні інструменти. Остерігатися гарячої води, механізмів та палива).",
+                                    "Never wear loose overall (Не носити мішкуватий одяг)."
+                                ],
+                                [
+                                    "Cargo Hold (Вантажний трюм)",
+                                    "Inform your department. Ensure that it is well ventilated (Повідомити свій відділ. Переконатися, що приміщення добре провітрюється).",
+                                    "Do not enter without permission (Не заходити без дозволу)."
+                                ],
+                                [
+                                    "Lifting loads (Підйом вантажів)",
+                                    "Legs should take the weight (Піднімати вагу ногами, а не спиною), to prevent strain (щоб уникнути розтягнення).",
+                                    "Do not lift with an incorrect posture (Не піднімати вантажі з неправильною поставою)."
+                                ],
+                                [
+                                    "Working Aloft (Робота на висоті)",
+                                    "Inspect portable ladders and ropes for wear-and-tear (Оглядати переносні драбини та перевіряти мотузки на зношеність).",
+                                    "Do not work without safety harness (Не працювати без страховки)."
+                                ],
+                                [
+                                    "Cleaning & Painting (Малярні роботи)",
+                                    "Work in well-ventilated conditions. Protect eyes, hands, and breathing passages (Працювати в провітрюваних умовах. Захищати очі, руки та дихальні шляхи).",
+                                    "Never smoke when painting (Ніколи не палити під час фарбування)."
+                                ],
+                                [
+                                    "Throughout the ship (Загальні правила)",
+                                    "Remove any spillage immediately. Keep escape routes clear of obstructions (Негайно прибирати розливи. Тримати шляхи евакуації вільними).",
+                                    "Do not block emergency exits (Не блокувати аварійні виходи)."
+                                ]
+                            ]
+                        }
+                    },
+                    {
+                        type: 'cards',
+                        title: "🚨 PART 3: Alarm Signals (Тривоги та Сигнали)",
+                        badge: "Muster & Alarms",
+                        introEn: "Fire at sea is one of the greatest hazards. If you find a fire or see smoke: Raise the alarm -> Inform the bridge -> Isolate the fire by closing doors -> Leave it to the trained fire-fighting teams (if the fire is large).",
+                        introUa: "Пожежа на морі — одна з найбільших загроз. Якщо ви виявили пожежу або дим: Підніміть тривогу -> Повідомте місток -> Ізолюйте вогонь, закривши двері -> Залиште гасіння навченій команді (якщо пожежа велика).",
+                        table: {
+                            headers: ["Alarm Signal (Тип тривоги)", "Description (Звуковий сигнал)", "Actions to be taken (Дії екіпажу)"],
+                            rows: [
+                                [
+                                    "General Emergency Alarm (Загальносуднова тривога)",
+                                    "7 short blasts + 1 long blast (7 коротких + 1 довгий гудок)",
+                                    "Proceed to your designated muster station. (Прямувати до призначеного місця збору)."
+                                ],
+                                [
+                                    "Fire Alarm (Пожежна тривога)",
+                                    "Continuous sound of alarm (Безперервний сигнал)",
+                                    "Proceed to the muster station with a portable fire extinguisher. (Прямувати до місця збору з переносним вогнегасником)."
+                                ],
+                                [
+                                    "Man Over Board Alarm (Людина за бортом)",
+                                    "3 long blasts (3 довгих гудки)",
+                                    "Shout 'Man Overboard!'. Release a smoke float and throw a lifebuoy. (Кричати 'Людина за бортом!'. Скинути димовий буйок та рятувальний круг)."
+                                ],
+                                [
+                                    "Abandon Ship Alarm (Покинути судно)",
+                                    "Verbal command by the master + General emergency alarm (Усна команда капітана + Загальна тривога)",
+                                    "Collect the first aid kit, warm clothes and blanket to the muster station; assist in launching of life rafts. (Взяти аптечку, теплий одяг, ковдру та прямувати до місця збору; допомагати спускати рятувальні плоти)."
+                                ]
+                            ]
+                        }
+                    },
+                    {
+                        type: 'duties',
+                        title: "🔥 Fire Fighting: Classes of Fire (A–F), Extinguishers, PASS & FIRE Rules",
+                        badge: "Пожежна безпека",
+                        roles: [
+                            {
+                                roleEn: "Fire Classes (Класи пожеж A, B, C, D, E, F)",
+                                roleUa: "Класифікація пожеж за типом горючої речовини",
+                                descEn: "To choose the right fire extinguisher, we must know the six classes of fire:",
+                                descUa: "Щоб обрати правильний вогнегасник, необхідно знати 6 класів пожеж:",
+                                bullets: [
+                                    { en: "Class A = Combustible solid materials: wood, paper, textile, rubber, plastic, cardboard.", ua: "Клас A = Горючі тверді матеріали: дерево, папір, текстиль, гума, пластик, картон." },
+                                    { en: "Class B = Flammable liquids: diesel fuel, paints, solvent, lubricating oil, kerosene.", ua: "Клас B = Легкозаймисті рідини: дизельне паливо, фарби, розчинники, мастило, гас." },
+                                    { en: "Class C = Flammable gases: methane, butane, propane, natural gas.", ua: "Клас C = Легкозаймисті гази: метан, бутан, пропан, природний газ." },
+                                    { en: "Class D = Combustible metals: magnesium, aluminium, lithium, sodium, zinc, titanium.", ua: "Клас D = Горючі метали: магній, алюміній, літій, натрій, цинк, титан." },
+                                    { en: "Class E = Electrical equipment: computer, kettle, phone, charger, laptop.", ua: "Клас E = Електричне обладнання під напругою: комп'ютер, чайник, телефон, зарядний пристрій, ноутбук." },
+                                    { en: "Class F = Cooking oils and fats: vegetable oils, animal fats, deep fryers.", ua: "Клас F = Кулінарні олії та жири: рослинні олії, тваринні жири, фритюрниці." }
+                                ]
+                            },
+                            {
+                                roleEn: "FIRE Procedure & PASS Method",
+                                roleUa: "Алгоритм дій при пожежі (FIRE) та правила користування вогнегасником (PASS)",
+                                descEn: "Standard maritime fire response and extinguisher operation:",
+                                descUa: "Стандартні процедури виявлення та гасіння пожежі:",
+                                bullets: [
+                                    { en: "F — Find the fire (Знайти осередок займання).", ua: "I — Isolate the fire: close the fire doors, ventilation (Ізолювати вогонь: зачинити протипожежні двері)." },
+                                    { en: "R — Report the fire: raise the alarm, inform the bridge (Доповісти про пожежу на місток).", ua: "E — Extinguish the fire OR Escape if the fire is spreading (Гасити або евакуюватися, якщо вогонь поширюється)." },
+                                    { en: "P — Pull the pin (Висмикнути запобіжну чеку).", ua: "A — Aim at the base of the fire (Спрямувати розтруб на основу полум'я)." },
+                                    { en: "S — Squeeze the lever (Натиснути на важіль).", ua: "S — Sweep from side to side (Водити струменем з боку в бік до повного згасання)." }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        type: 'cards',
+                        title: "🧯 Types of Fire Extinguishers & Colour Bands (Типи вогнегасників)",
+                        badge: "Colour Codes",
+                        table: {
+                            headers: ["Type (Тип вогнегасника)", "Colour Band (Колір маркування)", "Suitable for Classes (Для яких класів підходить)"],
+                            rows: [
+                                ["Water (Водяний)", "Red band (Червона смуга)", "Class A only (Тільки тверді горючі матеріали)"],
+                                ["Foam (Пінний)", "Cream band (Кремова смуга)", "Classes A, B (Тверді матеріали та рідке паливо)"],
+                                ["Dry powder / ABC powder (Порошковий — універсальний)*", "Blue band (Синя смуга)", "Classes A, B, C, D, E (Multi-purpose extinguisher — універсальний)"],
+                                ["CO2 / Carbon Dioxide (Вуглекислотний)", "Black band (Чорна смуга)", "Classes B, E (Рідини та електрообладнання)"],
+                                ["Wet chemicals (Хімічний / водно-емульсійний)", "Yellow band (Жовта смуга)", "Classes A, F (Тверді матеріали та кулінарні жири на камбузі)"]
+                            ]
+                        }
+                    },
+                    {
+                        type: 'duties',
+                        title: "🥽 Personal Protective Equipment (PPE) — Full Breakdown by Body Part",
+                        badge: "ЗІЗ та від яких травм захищають",
+                        roles: [
+                            {
+                                roleEn: "1. Head & Face (Голова та обличчя)",
+                                roleUa: "Каски, щитки та зварювальні маски",
+                                bullets: [
+                                    { en: "Safety Helmet / Hard hat: Protects from falling objects. Prevents: Brain concussion, Contusion, Wound, Fracture, Fissure, Bruise, Bleeding / Internal bleeding.", ua: "Захисна каска: Захищає від падаючих предметів. Запобігає: струс мозку, забій/контузія, рана, перелом, тріщина в кістці, синець, кровотеча / внутрішня кровотеча." },
+                                    { en: "Bump cap: Protects from side blows. Features: Closure / Rivet on the belt.", ua: "Полегшена каска (каскетка): Захищає від бокових ударів. Особливості: застібка / заклепка на ремені." },
+                                    { en: "Welding mask / shield: Used for gas welding and electrical arc welding. Protects from welding sparks. Prevents: Blindness, Thermal burn, Radiation burn.", ua: "Зварювальна маска / щиток: Для газового та електродугового зварювання. Захищає від зварювальних іскор. Запобігає: сліпота, термічний опік, радіаційний опік." },
+                                    { en: "Safety shield: Protects from chemicals, dust, small flying particles and debris. Prevents: Black eye, Scratch, Cut.", ua: "Захисний лицьовий щиток: Захищає від хімікатів, пилу, дрібних літаючих частинок та сміття. Запобігає: синець під оком, подряпина, поріз." }
+                                ]
+                            },
+                            {
+                                roleEn: "2. Hearing & 3. Respiratory System (Слух та Дихальна система)",
+                                roleUa: "Навушники, беруші, маски, респіратори, EEBD та SCBA",
+                                bullets: [
+                                    { en: "Ear muffs (worn over the auricle) & Ear plugs (placed inside ears): Protect from loud noise / loud sounds. Prevent: Deafness.", ua: "Захисні навушники (поверх вушної раковини) та Беруші (вставляються у вуха): Захищають від гучного шуму. Запобігають: глухоті." },
+                                    { en: "Safety mask (1st level): Protects from dust and debris. Prevents: Snuffle / Runny nose, Cold in the head, Sneezing, Allergy.", ua: "Захисна маска (1-й рівень): Захищає від пилу та сміття. Запобігає: нежить, застуда, чхання, алергія." },
+                                    { en: "Respirator / Air purifying respirator (2nd level): Equipped with filters, canisters, cartridges. Protects from toxic or dangerous gases or vapours. Prevents: Chemical burn of airways, Poisoning / Intoxication.", ua: "Респіратор (2-й рівень): Оснащений фільтрами, картриджами. Захищає від токсичних газів чи випарів. Запобігає: хімічний опік дихальних шляхів, отруєння / інтоксикація." },
+                                    { en: "EEBD (Emergency Escape Breathing Device, 10–15 min): Used ONLY to leave/escape an enclosed hazardous space in case of emergency (cannot be used to fight fire!).", ua: "EEBD (Аварійний дихальний апарат для евакуації, 10–15 хв): Використовується ТІЛЬКИ для втечі із задимленого/небезпечного приміщення." },
+                                    { en: "SCBA (Self-Contained Breathing Apparatus, ~30 min): Used to enter an enclosed space to extinguish fire or rescue people. EEBD & SCBA Prevent: Asphyxiation, Suffocation, Shortness of breath, Dizziness, Faint, Nausea / Vomiting, Fatigue, Paralysis.", ua: "SCBA (Автономний дихальний апарат, ~30 хв): Для входу в задимлений простір і гасіння пожежі. Запобігають: асфіксія, задуха, задишка, запаморочення, непритомність, нудота/блювота, втома, параліч." }
+                                ]
+                            },
+                            {
+                                roleEn: "4. Body / Torso, 5. Fall Protection & 6. Feet and Hands",
+                                roleUa: "Комбінезони, фартухи, страховка, черевики та рукавички",
+                                bullets: [
+                                    { en: "Overall / Coverall: Protects from sharp / hot objects and cold environment. Prevents injuries: Thermal / Friction / Cold / Sun burns, Cut, Wound, Inflammation, Swelling. Prevents skin problems: Blister, Scar, Skin irritation / eruption, Rash.", ua: "Робочий комбінезон (роба): Захищає від гострих/гарячих предметів і холоду. Запобігає: опікам (термічним, від тертя, обмороженню, сонячним), порізам, ранам, запаленню, набрякам, пухирям, шрамам, подразненню і висипу." },
+                                    { en: "Safety apron (Leather / Rubber): Leather protects from welding and hot objects. Rubber protects from chemicals. Prevents: Chemical burns, Burns / Scalds.", ua: "Захисний фартух: Шкіряний — від зварювання і гарячих предметів; Гумовий — від хімікатів. Запобігає: хімічним опікам та опікам парою/окропом (scalds)." },
+                                    { en: "Safety harness and a line: Protects from falling down when working aloft/overboard. Prevents: Dislocation, Fracture, Strain / Sprain, Rupture, Internal bleeding, Acute injury, Paralysis.", ua: "Страхувальна прив'язь та лінь (леєр): Захищає від падіння з висоти. Запобігає: вивиху, перелому, розтягненню, розриву зв'язок, внутрішній кровотечі, паралічу." },
+                                    { en: "Safety shoes / boots: Slip-resistant soles protect from slips, trips, falls. Reinforced toe caps protect from falling cargo. Prevent: Strain / Sprain, Fracture, Contusion, Cramp(s).", ua: "Захисні черевики: Нековзна підошва захищає від падінь, металевий (посилений) носок — від падіння вантажу. Запобігають: розтягненню, перелому, забою, судомам." },
+                                    { en: "Gloves: Fabric / Textile gloves (protect from dust, debris, splinters); Rubber gloves (protect from chemicals); Leather gloves (protect from welding and hot objects). Prevent: Splinter, Scratch, Bite, Cut.", ua: "Рукавички: Тканинні (від пилу і скалок), Гумові (від хімікатів), Шкіряні (від зварювання і гарячого). Запобігають: скалкам, подряпинам, укусам, порізам." }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        type: 'cards',
+                        title: "🚪 Ship's Doors (Суднові двері: Водонепроникні, Погодонепроникні, Протипожежні)",
+                        badge: "Doors Comparison",
+                        table: {
+                            headers: ["Тип дверей", "Расположение (Location)", "Назначение (Purpose)", "Как работает (Operation)", "Особенности (Features)"],
+                            rows: [
+                                [
+                                    "Watertight doors (Водонепроницаемые)",
+                                    "Internal, below main deck (Внутрішні, нижче головної палуби)",
+                                    "Prevent flooding between compartments; remain closed at sea (Запобігають затопленню відсіків; закриті в морі)",
+                                    "Power-driven; hand-operated mechanism on each side if power fails (Електропривід + ручний механізм з обох боків)",
+                                    "Sliding type; closing triggers an audible alarm (Розсувні; при закритті лунає звукова сигналізація)"
+                                ],
+                                [
+                                    "Weathertight doors (Погодонепроницаемые)",
+                                    "External, on exposed decks (Зовнішні, на відкритих палубах)",
+                                    "Keep out wind, sea waves, spray (Захищають від вітру, хвиль та бризок)",
+                                    "Clamping devices known as 'dogs' for tight seal (Затискні пристрої «собаки» / задрайки для герметичності)",
+                                    "Have a high sill (Мають високий поріг — комінгс)"
+                                ],
+                                [
+                                    "Fire doors (Противопожарные)",
+                                    "Internal (Внутрішні)",
+                                    "Barriers against the spread of fire and smoke (Бар'єр проти поширення вогню та диму)",
+                                    "Heavy closing spring; close automatically if fire alarm sounds (Туга пружина; закриваються автоматично при тривозі)",
+                                    "Should NEVER be hooked back or fixed open (Ніколи не можна фіксувати у відкритому положенні)"
+                                ]
+                            ]
+                        }
+                    },
+                    {
+                        type: 'duties',
+                        title: "🚤 LSA (Life-Saving Appliances) & 11 Steps to Don a Lifejacket",
+                        badge: "Рятувальні засоби",
+                        roles: [
+                            {
+                                roleEn: "LSA Categories & Classification (Personal LSA vs. Survival Craft)",
+                                roleUa: "Класифікація рятувальних засобів (Індивідуальні та Колективні)",
+                                bullets: [
+                                    { en: "1. Personal LSA: Life buoys (рятувальні круги), Life jacket (рятувальний жилет), Immersion suit (гідрокостюм: insulated / non-insulated — used with warm clothing), AES (Anti-exposure suits — захисні костюми для рятувальної команди), TPA (Thermal protective aids — теплозахисні засоби).", ua: "Особисті рятувальні засоби: круги, жилети, гідрокостюми (утеплені/неутеплені), захисні костюми AES, теплозахисні мішки TPA." },
+                                    { en: "2. Survival Craft (Колективні): Life boats (рятувальні шлюпки — rigid construction), Life rafts (рятувальні плоти — inflatable), Rescue boats (чергові шлюпки).", ua: "Колективні рятувальні засоби: рятувальні шлюпки (жорстка конструкція), рятувальні плоти (надувні) та чергові шлюпки." },
+                                    { en: "Lifeboats classification: By launching method — Free-fall (вільного падіння) & Davit-launched (спускні на шлюпбалках). By construction — Totally enclosed (повністю закриті) & Partially enclosed (частково закриті).", ua: "Класифікація шлюпок: за методом спуску (вільного падіння та шлюпбалкові); за конструкцією (повністю або частково закриті)." },
+                                    { en: "Liferafts classification: By launching method — Thrown launching (ті, що скидаються за борт) & Davit-launched (що спускаються шлюпбалкою).", ua: "Класифікація плотів: ті, що скидаються, та спускні на кран-балці." },
+                                    { en: "Lifebuoys types: Ordinary (звичайні), With line (з рятувальним лінем), With self-igniting light (з вогнем, що самозагоряється), With combined light and smoke signal (з комбінованим світло-димовим буйком для MOB — розташовані суворо на крилах містка / bridge wings).", ua: "Типи рятувальних кругів: звичайні, з лінем, з вогнем самозапалювання, зі світло-димовим буйком (на крилах містка)." },
+                                    { en: "Lifejackets (Non-inflatable & Inflatable): Kept in every cabin, muster stations, bridge, and engine room. Fitted with: 1) Whistle (свисток), 2) Light with water-activated battery (лампочка з водоактивованою батареєю), 3) Retro-reflective tapes (світловідбивні стрічки).", ua: "Рятувальні жилети (ненадувні та надувні): оснащені свистком, вогнем із водоактивованою батареєю та світловідбивними стрічками." }
+                                ]
+                            },
+                            {
+                                roleEn: "🦺 How to Don a Lifejacket (11-Step Procedure)",
+                                roleUa: "Як правильно одягати рятувальний жилет та стрибати у воду (11 кроків)",
+                                bullets: [
+                                    { en: "1. Don lifejacket / 2. Place lifejacket over your head / 3. Put it on.", ua: "1. Візьміть жилет / 2. Одягніть через голову / 3. Надіньте на себе." },
+                                    { en: "4. Bring the strap around your body / 5. Fasten the closure.", ua: "4. Обведіть ремінь навколо тіла / 5. Застебніть пряжку (замок)." },
+                                    { en: "6. Pull the free end of the strap until the life jacket fits snugly / 7. Tuck in the free end of the strap.", ua: "6. Затягніть вільний кінець ременя, щоб жилет щільно прилягав / 7. Заправте вільний кінець ременя." },
+                                    { en: "8. Cross your arms across your chest / 9. Pinch your nose with one hand.", ua: "8. Схрестіть руки на грудях / 9. Затисніть ніс однією рукою." },
+                                    { en: "10. Pull the upper part of the lifejacket down with another hand to prevent neck and chin injuries.", ua: "10. Притисніть верхню частину жилета донизу іншою рукою, щоб уникнути травм шиї та підборіддя при ударі об воду." },
+                                    { en: "11. Jump in the water — feet first, legs straight (from height no more than 4.5–5 m).", ua: "11. Стрибайте у воду — ногами вперед, ноги прямі й зведені разом (з висоти до 4,5–5 м)." }
+                                ]
+                            },
+                            {
+                                roleEn: "🗣️ PART 4: Useful Language (Вступні фрази для обговорення та іспиту)",
+                                roleUa: "Корисні конструкції для монологів та аналізу аварій",
+                                bullets: [
+                                    { en: "To express opinion (висловити думку): I believe, I think, in my opinion, it seems to me, to my mind.", ua: "Висловлення власної думки." },
+                                    { en: "To list points (перерахувати аргументи): in the first place, first of all, to start with, firstly, secondly, finally, for starters, to begin with.", ua: "Перерахування аргументів по порядку." },
+                                    { en: "To add more points (додати аргументи): what is more, also, another reason, furthermore, moreover, in addition to this, besides.", ua: "Додавання нових аргументів." },
+                                    { en: "To introduce examples (навести приклади): for example, for instance, such as, in particular.", ua: "Наведення прикладів." },
+                                    { en: "To conclude (підсумувати): to sum it up, all in all, taking into account.", ua: "Підбиття підсумків." },
+                                    { en: "To make reference (послатися на правила): according to, in accordance with, under (the regulations).", ua: "Посилання на конвенції та правила." }
+                                ]
+                            }
+                        ]
+                    },
+                    renderVocabGrid("Safety Vocabularies 1–4 (Загальна безпека, Небезпеки, Тривоги, Двері)", "Safety Vocab A", `
+to wear personal protective equipment (PPE) | носити засоби індивідуального захисту (ЗІЗ)
+goggles / helmet | захисні окуляри / каска (шлем)
+to suffer (to sustain) an injury | отримати травму
+fracture / bruise / strain | перелом / синець (забій) / розтягнення
+to prevent an accident | запобігти нещасному випадку
+to observe safety precautions | дотримуватися заходів безпеки
+slip / trip / fall | посковзнутися / спіткнутися / впасти
+to eliminate hazards | усувати (виключати) небезпеки
+negligence | недбалість, халатність
+to adopt measures | вживати заходів
+safe working environment | безпечні умови праці
+loose overall | просторий (мішкуватий) комбінезон
+wear-and-tear | зношення (зношування)
+casualty | потерпілий
+first-aider | спеціаліст із надання першої допомоги
+moisture | волога
+sensitive to fire | схильний до займання (пожежонебезпечний)
+combustible material | горючий матеріал
+(in)flammable liquids | легкозаймисті рідини
+hazardous area | зона підвищеної небезпеки
+running machinery | працююче обладнання (механізми)
+unguarded opening | неогороджений отвір
+spillage / oil stain | розлив (витік) / масляна пляма
+to produce toxic vapors | виділяти токсичні випари
+chipping / scraping / wire brushing | відбивання іржі / очищення скребком / зачищення дротяною щіткою
+solvent | розчинник
+portable ladder | переносна драбина
+to work aloft | працювати на висоті
+emergency exit / escape route | аварійний вихід / шлях евакуації
+companionway | внутрішній трап (сходи між палубами)
+muster list / muster station | розклад по тривогах / місце збору
+general emergency alarm | загальносуднова тривога
+blast / whistle | гудок / свисток
+public address system | система гучного зв'язку
+to tackle the blaze / smother the flame | боротися з полум'ям / гасити вогонь
+portable fire extinguisher | переносний вогнегасник
+foam / dry powder / carbon dioxide | піна / сухий порошок / вуглекислий газ
+to abandon ship | покинути судно
+lifejacket / lifebuoy / lifeboat / life raft | рятувальний жилет / круг / шлюпка / пліт (надувний)
+to lower / swing out a lifeboat | спускати / вивалювати рятувальну шлюпку
+to release a smoke float | скинути димовий буйок
+flooding | затоплення
+watertight / weathertight doors | водонепроникні / погодонепроникні двері
+sliding-type door | розсувні двері
+power-driven | з механічним (електричним) приводом
+hand-operated mechanism | ручний механізм (на випадок знеструмлення)
+sill | поріг
+clamping device ("dogs") | затискний пристрій ("собаки")
+tight seal | герметичність
+closing spring | закриваюча пружина (у протипожежних дверях)
+                    `),
+                    renderVocabGrid("Safety Vocabularies: PPE, Deck Accidents & MARS Case Studies", "Safety Vocab B", `
+Non-observance of safety procedures | недотримання правил техніки безпеки
+Suitable | підходящий / придатний
+Chin strap | підборідний ремінець
+Spark | іскра
+Welding / to chip rust | зварювання / відбивати іржу
+Ear plugs / Ear muffs | беруші / захисні навушники
+To reduce noise to bearable level | знизити рівень шуму до терпимого
+Respiratory system | дихальна система
+Oxygen deficiency | нестача кисню
+Breathing apparatus | дихальний апарат
+Severe burn / Scald | сильний опік / опік гарячою рідиною чи парою
+Slip-resistant sole | неслизька підошва (стійка до ковзання)
+Brain concussion | струс мозку
+Safety harness / Lifeline | страхувальна прив'язь / рятувальний (страхувальний) леєр
+Foreign body | стороннє тіло
+To sustain injury | отримати травму
+To protect yourself / Fitter | захистити себе / моторист-зварювальник
+To cause severe fractures | спричинити важкі переломи
+To run on a wet deck / To roll | бігати мокрою палубою / хитатися (бортова хитавиця)
+To secure a heavy object / Loose object | закріпити важкий предмет / незакріплений предмет
+To stand too close to a mooring line | стояти надто близько до швартовного кінця
+In the safe place / In the bight of a rope | у безпечному місці / у бухті (петлі) троса
+Weight came on the mooring line / To tighten a rope | вага перейшла на швартовний кінець / натягнути трос
+To dislocate a hip / To spend several weeks in plaster | вивихнути стегно / провести кілька тижнів у гіпсі
+To injure one's back / leg | пошкодити спину / ногу
+To lift a heavy object / To bend one's legs | підняти важкий предмет / зігнути ноги
+To strain one's back / To twist one's knee | потягнути спину / підвернути (вивихнути) коліно
+To climb a ladder / To steady oneself | підніматися трапом / утримувати рівновагу
+To pull smth up on a rope | піднімати щось на мотузці
+To take out (remove) the fuse | зняти запобіжник
+To pour out acid / The acid spilled into his face | розливати кислоту / кислота хлюпнула йому в обличчя
+To open an inspection hatch / To ignite | відкрити оглядовий люк / запалитися (спалахнути)
+To emit methane gas / High-voltage equipment | виділяти метан / високовольтне обладнання
+Top layer of skin / Superficial wound / Permanent scarring | верхній шар шкіри / поверхнева рана / незворотні шрами (рубці)
+To blind / To lose one's eyesight | засліпити / втратити зір
+To walk through a prohibited area | ходити забороненою зоною
+To run down the gangway / To rig the gangway | збігати парадним трапом / озброїти (встановити) парадний трап
+Safety net / Side rails | захисна сітка / леєри (поручні)
+Human skull is indestructible | людський череп є незруйновним
+Victim of one's carelessness or oversight | жертва власної необережності або недогляду
+To muster for drill / To proceed to muster station | збиратися на навчальну тривогу / прямувати до місця збору
+To abandon ship / Poop deck | покинути судно / палуба юта
+Rolling / Pitching | бортова хитавиця / кільова хитавиця
+To give first aid / Contusion / To heal | надати першу допомогу / забій (контузія) / заживати (лікувати)
+To repatriate | повернути на батьківщину (репатріювати)
+Undue haste | надмірна поспішність
+Oil leak / Fuel pump / To start the pump | витік мастила (нафти) / паливний насос / запустити насос
+To neglect / To receive a burn | нехтувати / отримати опік
+To discharge (cargo) / Gasoline | вивантажувати (вантаж) / бензин
+Alongside / Manifold | лагом (уздовж борту) / маніфольд (трубопровід)
+To apply / Dizziness | застосовувати / запаморочення
+                    `)
+                ]
+            },
+
+            // =====================================================================
+            // ВКЛАДКА 5: EXAM MONOLOGUES (1–15)
+            // =====================================================================
+            {
+                id: 'monologues',
+                tabName: "🎙️ 5. Exam Monologues (1–15)",
+                title: "Тема 5: Готові екзаменаційні монологи (Topics 1–15)",
+                subtitle: "Усі 15 усних тем з твого файлу, розбиті за абзацами з українським перекладом для швидкого заучування",
+                sections: [
+                    {
+                        type: 'duties',
+                        title: "Monologues 1–15 (Усні теми на іспит)",
+                        badge: "15 Topics",
+                        roles: [
+                            {
+                                roleEn: "Monologue 1: Ship’s Organization",
+                                roleUa: "Монолог 1: Організація суднової служби",
+                                bullets: [
+                                    { en: "The main goal of the ship’s organization is to ensure the safe and efficient operation of the vessel. The ship's crew is generally divided into three main departments: the Deck Department, the Engine Department, and the Catering Department. Each of the technical departments consists of Officers and Ratings. However, the head of the entire vessel is the Master (Captain).", ua: "Головна мета організації судна — забезпечити безпечну та ефективну експлуатацію судна. Екіпаж зазвичай поділяється на три основні відділення: палубне, машинне та службу обслуговування. Кожне технічне відділення складається з офіцерів та рядових. Проте головою всього судна є Капітан." },
+                                    { en: "The Deck Department is responsible for safe navigation, cargo operations, and the maintenance of the hull, upper deck, and safety equipment (LSA and FFE). This department consists of the Chief Officer, Second and Third Officers, and ratings such as Able Seaman (AB), Ordinary Seaman (OS), and Deck Cadet.", ua: "Палубне відділення відповідає за безпечну навігацію, вантажні операції та обслуговування корпусу, верхньої палуби і рятувального/протипожежного обладнання. Воно складається зі старпома, 2-го і 3-го помічників та рядових: матроса 1-го класу (AB), матроса 2-го класу (OS) і палубного кадета." },
+                                    { en: "The Engine Department deals with the operation and maintenance of all machinery, including the main engine, boilers, pumps, and power supply. It is headed by the Chief Engineer and includes the Second, Third, and Electrical Officers, along with ratings like the Fitter, Motorman, Oiler, Wiper, and Engine Cadet.", ua: "Машинне відділення займається експлуатацією та обслуговуванням усіх механізмів, включаючи головний двигун, котли, насоси та електроживлення. Очолюється старшим механіком і включає 2-го, 3-го механіків, електромеханіка та рядових: токаря-зварювальника, моториста, мастильника, прибиральника і машинного кадета." },
+                                    { en: "Finally, the Catering Department provides services for the crew, such as preparing meals and housekeeping. It is usually headed by the Chief Cook and assisted by the Messman.", ua: "Нарешті, відділ обслуговування забезпечує побут екіпажу: приготування їжі та прибирання. Зазвичай очолюється шеф-кухарем, якому допомагає буфетник." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 2: Duties of the Officers",
+                                roleUa: "Монолог 2: Обов'язки офіцерів палубної команди",
+                                bullets: [
+                                    { en: "The Master has overall responsibility for the vessel, the crew, the cargo, and safety on board.", ua: "Капітан несе загальну відповідальність за судно, екіпаж, вантаж та безпеку на борту." },
+                                    { en: "The Chief Officer is responsible for safe work on board, safety inspections, and training drills. He also oversees cargo operations and assigns tasks to the crew.", ua: "Старший помічник відповідає за безпечну роботу на борту, інспекції з безпеки та навчальні тривоги. Він також контролює вантажні операції та розподіляє завдання екіпажу." },
+                                    { en: "The Second Officer is responsible for all aspects of navigation, including passage planning and correcting navigational charts and publications.", ua: "Другий помічник відповідає за всі аспекти навігації, включаючи планування переходу та коректуру навігаційних карт і публікацій." },
+                                    { en: "The Third Officer is responsible for the maintenance of LSA and FFE (life-saving and fire-fighting equipment) and stands a navigation watch. Depending on company regulations, the Second or Third Officer may be designated as the Medical Officer.", ua: "Третій помічник відповідає за обслуговування рятувального і протипожежного обладнання та несе ходову вахту. Залежно від правил компанії, 2-й або 3-й помічник може бути призначений медичним офіцером." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 3: Duties of the Ratings",
+                                roleUa: "Монолог 3: Обов'язки рядового складу",
+                                bullets: [
+                                    { en: "The AB, OS, and Deck Cadet serve as the deck ratings on board. They are primarily responsible for carrying out general deck works and cleaning the holds.", ua: "AB, OS та палубний кадет виконують обов'язки рядового складу палубної команди. Вони передусім відповідають за загальні палубні роботи та зачищення трюмів." },
+                                    { en: "During daily deck maintenance, ratings use various manual tools. For example, a chipping hammer is used to chip off rust. After that, a brush and cans of paint are used for painting. To swab decks, ratings use a bucket and mop.", ua: "Під час щоденного обслуговування палуби матроси використовують різні ручні інструменти. Наприклад, молоток-кірку для відбивання іржі, пензель і фарбу для фарбування, відро та швабру для миття палуби." },
+                                    { en: "Additionally, they take part in mooring, anchoring, and cargo operations, as well as standing gangway and anchor watches. Furthermore, the AB specifically keeps watch as a helmsman and a lookout on the bridge.", ua: "Крім того, вони беруть участь у швартовних, якірних і вантажних операціях, а також несуть вахту біля трапа та на якорі. Матрос 1-го класу (AB) окремо несе вахту на містку як стерновий і впередзорець." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 4: Duties of a Deck Cadet",
+                                roleUa: "Монолог 4: Обов'язки палубного кадета",
+                                bullets: [
+                                    { en: "A deck cadet is a trainee on board. His main task is to learn and perform navigational and deck duties. Under the supervision of senior officers, the deck cadet assists in the efficient operation of a ship.", ua: "Палубний кадет — це практикант на борту. Його головне завдання — вивчати і виконувати навігаційні та палубні обов'язки під наглядом старших офіцерів." },
+                                    { en: "Most navigational duties are performed on the navigation bridge: learns how to steer the vessel during the navigational watch kept by one of the mates; corrects charts and publications along with the Second Officer; assists the Third Officer in maintenance of LSA and FFE; takes part in pilotage operations; keeps daily records, makes entries in the logbook, and does paperwork.", ua: "На навігаційному містку кадет вчиться керувати судном під час вахти, коригує карти і публікації разом із 2-м помічником, допомагає 3-му помічнику з LSA та FFE, бере участь у лоцманських операціях, веде записи в судновому журналі та оформлює документи." },
+                                    { en: "When the vessel arrives at port, the deck cadet takes part in anchoring, mooring, and cargo operations, and keeps gangway watch (meets port officials and keeps a record of ship’s visitors). Deck routine mainly includes maintenance of the ship’s hull: cleaning, painting, and repair work. Along with other crewmembers, the cadet participates in drills and observes discipline onboard.", ua: "У порту кадет бере участь у постановці на якір, швартуванні та вантажних операціях, стоїть на вахті біля трапа (зустрічає портову владу і записує відвідувачів), виконує палубні роботи (чищення, фарбування), бере участь у тривогах і дотримується дисципліни." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 5: Ship’s Arrangement (Hull and its Parts)",
+                                roleUa: "Монолог 5: Будова судна (Корпус та його частини)",
+                                bullets: [
+                                    { en: "The hull is the main body of a ship. It is made up of frames covered with shell plating. The main structural components of the hull are the keel, frames, and shell plating. The keel is the backbone of the vessel and runs along the bottom of the ship. Frames are attached to the keel and form the skeleton of the ship. Shell plating covers the frames and makes the hull watertight.", ua: "Корпус — це основне тіло судна. Головні конструктивні елементи: кіль (хребет уздовж днища), шпангоути (каркас, прикріплений до кіля) та зовнішня обшивка, що робить корпус водонепроникним." },
+                                    { en: "The hull is divided into two main parts, fore (forward) and aft, by an imaginary line called midship. The extreme forward end is the bow, while the extreme rear end is the stern. Just below the waterline, ships have a bulbous bow needed to reduce drag. A centerline (fore-and-aft line) runs from bow to stern and divides the ship into starboard (right side) and port (left side when facing forward).", ua: "Корпус ділиться міделем на носову (fore) та кормову (aft) частини. Крайній передній кінець — ніс (bow), задній — корма (stern). Нижче ватерлінії розташований бульбоподібний ніс для зменшення опору води. Діаметральна площина ділить судно на правий (starboard) і лівий (port) борти." },
+                                    { en: "Horizontal surfaces on board are called decks. The deck exposed to the weather is the weather deck or main deck, which covers the cargo holds. At the forward end is the forecastle (at the bow), and at the aft end is the poop deck (at the stern). Above the main deck is the superstructure, containing the bridge (wheelhouse) and the accommodation area.", ua: "Горизонтальні поверхні — палуби. Відкрита головна палуба закриває трюми. На носі розташований бак (forecastle), на кормі — ют (poop deck). Над головною палубою знаходиться надбудова з містком та житловими приміщеннями." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 6: Ship’s Arrangement (Superstructure and its Contents)",
+                                roleUa: "Монолог 6: Надбудова судна та її внутрішні приміщення",
+                                bullets: [
+                                    { en: "The superstructure is a construction located above the weather deck. It contains the accommodation (living quarters) and the navigation bridge. The uppermost deck, located directly above the bridge, is called the monkey island (compass deck), where you can find the main mast, radar scanners, and antennas.", ua: "Надбудова — конструкція над відкритою палубою, що вміщує житлову зону та місток. Найвища палуба над містком — пеленгаторна палуба (monkey island), де встановлені грот-щогла, радари та антени." },
+                                    { en: "Below the monkey island is the navigation bridge — the command center of the ship containing navigation equipment and the helm (steering wheel). Behind the bridge on the superstructure is the funnel, used to discharge exhaust fumes, steam, and smoke from the engine room.", ua: "Нижче знаходиться навігаційний місток (командний центр зі штурвалом і приладами) та димова труба (funnel) для виведення вихлопних газів, пари й диму з машинного відділення." },
+                                    { en: "The main facilities inside the accommodation are: Cabins (fitted with portholes), the Galley (where the Chief Cook prepares meals), Mess-rooms (dining rooms for officers and ratings), Recreation rooms, Laundry and drying rooms, a Bonded store (for dutiable goods), Emergency headquarters (to store LSA and FFA), and other facilities such as a library, gym, hospital, pantry, and the ship’s office.", ua: "Усередині житлової надбудови розташовані: каюти з ілюмінаторами, камбуз, їдальні (кают-компанії), кімнати відпочинку, пральня і сушильня, митна комора, аварійний штаб (LSA/FFA), бібліотека, спортзал, лазарет, буфетна та судновий офіс." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 7: Main Deck Arrangement & Deck Works",
+                                roleUa: "Монолог 7: Обладнання головної палуби та палубні роботи",
+                                bullets: [
+                                    { en: "The weather deck (main or upper deck) runs from bow to stern and has raised partial decks at the extreme ends: the forecastle at the bow and the poop deck at the stern. The forecastle mainly contains the anchoring arrangement: the Anchor (secures the ship to the seabed), the Anchor chain, and the Windlass (pulls and operates the anchor chain).", ua: "Головна палуба має бак на носі (де розташований якірний пристрій: якір, якірний ланцюг і брашпиль) та ют на кормі." },
+                                    { en: "The poop deck accommodates the mooring gear to secure the ship to her berth: Mooring lines (ropes), Winches (to pull lines), Bitts and bollards (to make fast the lines), Fairleads (to lead a line), and Chocks (to guide lines to the shore). In the main deck area, we also have cargo-handling equipment: Hatches, Hatch covers, and Cranes fitted with derricks or jibs.", ua: "Швартовний пристрій включає швартовні кінці, лебідки, кнехти, роульси та клюзи/кіпові планки. Вантажне обладнання головної палуби включає люки, люкові кришки та крани зі стрілами." },
+                                    { en: "Deck works include painting, chipping, cleaning, washing, and lubricating. Before painting the steel hull: 1) Salt, dirt, and oil are washed off with a special solution; 2) Loose paint and scale are removed with a scraper; 3) Rust is chipped off with a chipping hammer or grinder; 4) The surface is cleaned with a wire brush; 5) The Bosun provides paint cans, rollers, brushes, and paint thinner. Seamen also shovel, sweep, wash, dry, and ventilate holds after discharging, work on mooring lines, secure cargo, swab decks with mops, and remove oil spills.", ua: "Палубні роботи включають підготовку поверхні й фарбування (змивання солі розчином, очищення шкребком, відбивання іржі молотком/турбінкою, зачищення дротяною щіткою, фарбування), зачищення і вентиляцію трюмів, швартування та кріплення вантажу." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 8: Kinds of Injuries — Causes & Preventive Measures",
+                                roleUa: "Монолог 8: Види травм, причини та заходи запобігання",
+                                bullets: [
+                                    { en: "Working on board is associated with heavy physical work. Common injuries include: a minor cut or scratch on the skin, or a splinter in a finger; a bruise or contusion (e.g., a black eye); muscle and joint injuries such as a strain, sprain, or dislocation; serious bone fractures (collarbone or shin fracture), fissures, or ruptures; head injuries leading to brain concussion or skull damage; thermal burns from hot steam, chemical burns from dangerous liquids, friction burns from mooring lines (causing blisters or scars), as well as frostbite (cold burn) or sunburn.", ua: "Поширені травми на борту: порізи, подряпини, скалки; синці та забої; розтягнення м'язів/сухожиль і вивихи; переломи кісток (ключиці, гомілки), тріщини і розриви; струс мозку; термічні, хімічні опіки та опіки від тертя тросів (що викликають пухирі й шрами), обмороження та сонячні опіки." },
+                                    { en: "These injuries happen due to bad weather, slippery decks, or ignoring safety rules, causing acute pain. To prevent them, every seaman must wear PPE: a safety helmet (protects the skull and prevents brain concussion), safety goggles (protect the eyeball and eyelid from chemical burns or flying splinters), proper gloves (protect forearm, fist, and knuckles from cuts or friction burns), and safety shoes (protect foot, heel, and bone from fractures if a heavy object falls).", ua: "Травми трапляються через негоду, слизьку палубу чи порушення правил. Для захисту використовують ЗІЗ: каску (захист черепа від струсу мозку), захисні окуляри (захист очей від хімії та скалок), рукавички та захисне взуття." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 9: Common Risks & Safety Precautions on Board",
+                                roleUa: "Монолог 9: Основні ризики та правила безпеки у різних зонах судна",
+                                bullets: [
+                                    { en: "Personal safety on board is the highest priority. On the weather deck, the main risks are slips and falls: walk carefully, hold on to railings, wear PPE, and never run. In the accommodation area, the main risk is fire: disconnect plugs of electrical equipment when leaving, do not keep inflammable materials in your cabin, and never smoke in your bunk.", ua: "На відкритій палубі головний ризик — посковзнутися і впасти (триматися за поручні, не бігати). У житловій зоні головний ризик — пожежа (вимикати електроприлади, не палити в ліжку)." },
+                                    { en: "In the engine room, use proper tools, beware of hot water, running machinery, and inflammable liquids, and never wear a loose overall because it can be caught in moving parts. As for the cargo hold (an enclosed space), never enter without permission, inform your department first, and ensure it is well ventilated to avoid suffocation.", ua: "У машинному відділенні остерігатися гарячої води і механізмів та не носити мішкуватий комбінезон. У вантажний трюм не входити без дозволу та попередньої вентиляції." },
+                                    { en: "When lifting loads, your legs should take the weight, not your back, to prevent muscle strain. When working aloft, inspect portable ladders and ropes for wear-and-tear and wear a safety harness. During cleaning and painting, work in well-ventilated conditions, protect eyes, hands, and breathing passages from toxic fumes, and never smoke. Remove any spillage immediately and never block emergency exits.", ua: "Піднімати вантажі ногами, а не спиною; на висоті перевіряти драбини й одягати страховку; при фарбуванні провітрювати і не палити; негайно витирати розливи і не блокувати аварійні виходи." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 10: Alarm Signals & Actions to be Taken",
+                                roleUa: "Монолог 10: Сигнали тривог та дії екіпажу",
+                                bullets: [
+                                    { en: "When a seaman joins a ship, the very first thing he must do is read the Muster List, which explains his designated muster station and specific emergency duties. The General Emergency Alarm consists of 7 short blasts followed by 1 long blast: put on PPE, don your lifejacket, and proceed to your designated muster station.", ua: "Перше, що має зробити моряк на судні — вивчити Розклад по тривогах (Muster List). Загальносуднова тривога (7 коротких + 1 довгий гудок): одягти ЗІЗ, жилет і прибути на місце збору." },
+                                    { en: "The Fire Alarm is a continuous ringing of the ship's alarm bell: proceed to your muster station bringing a portable fire extinguisher or other fire-fighting equipment. The Man Overboard Alarm (MOB) consists of 3 long blasts: loudly shout 'Man Overboard!' to inform the bridge, throw a lifebuoy, release a smoke float, and never take your eyes off the person in the water.", ua: "Пожежна тривога (безперервний дзвінок): прибути на місце збору з вогнегасником. Людина за бортом (3 довгі гудки): крикнути 'Man Overboard!', кинути круг і світло-димовий буйок, не втрачати людину з поля зору." },
+                                    { en: "The Abandon Ship Alarm is always a verbal command given by the Master over the Public Address system, usually followed by the general emergency alarm: put on warm clothes, don your lifejacket, collect a blanket and first aid kit, proceed to the muster station, and assist in launching lifeboats and life rafts.", ua: "Покинути судно — усна команда Капітана по гучному зв'язку: тепло одягнутися, надіти жилет, взяти ковдру й аптечку та допомагати спускати шлюпки і плоти." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 11: Lifejackets, Lifebuoys, Lifeboats — Purpose and Location",
+                                roleUa: "Монолог 11: Рятувальні жилети, круги та шлюпки — призначення і розташування",
+                                bullets: [
+                                    { en: "Life-Saving Appliances (LSA) are divided into Personal LSA (lifejackets, lifebuoys) and Survival craft (lifeboats, liferafts). Lifejackets keep a person afloat, can be non-inflatable or inflatable, and are fitted with a whistle, a light with a water-activated battery, and retro-reflective tapes. They are kept in every cabin, at muster stations, on the bridge, and in the engine room.", ua: "LSA поділяються на індивідуальні та колективні. Жилети бувають надувні й ненадувні, оснащені свистком, лампочкою і світловідбивними стрічками; зберігаються в каютах, на місцях збору, містку і в МО." },
+                                    { en: "Lifebuoys are thrown to a person in the water (MOB) to keep them afloat and mark their position. Types include: ordinary, with line, with self-igniting light, and with combined light and smoke signal. They are distributed along port and starboard sides of the weather deck, while lifebuoys with light-and-smoke signals are located strictly on the bridge wings.", ua: "Рятувальні круги бувають звичайні, з лінем, з вогнем та зі світло-димовим сигналом (останні розташовані суворо на крилах містка)." },
+                                    { en: "Lifeboats have a rigid construction and safely evacuate the crew during 'Abandon Ship'. By launching method, they are free-fall (located at the stern) or davit-launched (located on port and starboard sides of the boat deck). By construction, they are totally enclosed or partially enclosed.", ua: "Рятувальні шлюпки мають жорсткий корпус, діляться на шлюпки вільного падіння (на кормі) і шлюпбалкові (по бортах), повністю або частково закриті." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 12: Types of Fire Extinguishers & Their Use",
+                                roleUa: "Монолог 12: Типи вогнегасників та правила їх використання",
+                                bullets: [
+                                    { en: "When a seaman discovers a fire, they must follow the FIRE procedure: Find the fire, Isolate the fire (close fire doors), Report the fire immediately to the bridge, and Extinguish the fire if safe or Escape if spreading.", ua: "При виявленні пожежі діє правило FIRE: Знайти, Ізолювати, Доповісти на місток, Гасити або Евакуюватися." },
+                                    { en: "There are six classes of fire: Class A (combustible solids: wood, paper, textile, rubber, plastic, cardboard), Class B (flammable liquids: diesel, paints, solvent, lube oil, kerosene), Class C (flammable gases: methane, butane, propane), Class D (combustible metals: magnesium, aluminium, lithium, sodium, zinc, titanium), Class E (electrical equipment: computers, kettles, phones, laptops), and Class F (cooking oils and fats, deep fryers).", ua: "Шість класів пожеж: A — тверді матеріали, B — горючі рідини, C — гази, D — метали, E — електроприлади, F — кулінарні жири." },
+                                    { en: "Fire extinguishers have color bands: Water (red band — Class A only), Foam (cream band — Classes A and B), Dry powder / ABC powder (blue band — multi-purpose for Classes A, B, C, D, E), CO2 (black band — Classes B and E), and Wet chemicals (yellow band — Classes A and F). To operate an extinguisher, use the PASS method: Pull the pin, Aim at the base of the fire, Squeeze the lever, Sweep from side to side.", ua: "Кольорове маркування: Водяний (червоний — A), Пінний (кремовий — A, B), Порошковий (синій — A, B, C, D, E), Вуглекислотний CO2 (чорний — B, E), Хімічний (жовтий — A, F). Метод PASS: висмикнути чеку, спрямувати в основу вогню, натиснути важіль, водити з боку в бік." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 13: Types & Functions of Doors on Board the Vessel",
+                                roleUa: "Монолог 13: Типи та функції дверей на судні",
+                                bullets: [
+                                    { en: "The most important doors on board are watertight doors, weathertight doors, and fire doors. Watertight doors are internal doors below the main deck that prevent the spread of water between compartments during flooding. They must remain closed at sea, are mostly sliding and power-driven, have a hand-operated mechanism on each side in case power fails, and activate an audible alarm when closing.", ua: "Водонепроникні двері — внутрішні двері нижче головної палуби проти затоплення. Закриті в морі, розсувні, з електроприводом, дубльовані ручним приводом і звуковою сигналізацією." },
+                                    { en: "Weathertight doors are external doors on exposed decks that prevent the ingress of wind, waves, and spray. They are fitted with clamping devices known as 'dogs' for a tight seal and feature a high sill.", ua: "Погодонепроникні двері — зовнішні двері на відкритих палубах від хвиль і вітру, мають затискачі-«собаки» (задрайки) та високий поріг." },
+                                    { en: "Fire doors are internal doors acting as barriers against fire and smoke. They are fitted with heavy closing springs, close automatically when a fire alarm sounds, and should never be hooked back or fixed open.", ua: "Протипожежні двері — внутрішні двері проти вогню і диму з тугими пружинами та автозакриттям при тривозі; їх заборонено фіксувати відкритими." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 14: PPE to Prevent Body Injuries",
+                                roleUa: "Монолог 14: Засоби індивідуального захисту (PPE) для запобігання травмам",
+                                bullets: [
+                                    { en: "To protect the head and face, we use: a safety helmet / hard hat (protects from falling objects; prevents brain concussion, fracture, fissure, internal bleeding), a bump cap (protects from side blows), a welding mask (protects from sparks; prevents blindness, thermal and radiation burns), and a safety shield (protects from chemicals and dust; prevents black eye, scratch, or cut). For hearing, ear muffs and ear plugs protect from loud sounds and prevent deafness.", ua: "Захист голови та слуху: каска, каскетка, зварювальна маска, захисний щиток, навушники та беруші." },
+                                    { en: "For the respiratory system: a safety mask (1st level — protects from dust/debris; prevents runny nose, sneezing, allergy), a respirator (2nd level — protects from toxic gases; prevents chemical burn of airways and poisoning), an EEBD (to escape from a hazardous enclosed space), and an SCBA (to enter a hazardous area to fight fire or rescue people; prevents asphyxiation, suffocation, dizziness, faint).", ua: "Захист органів дихання: протипилова маска (1-й рівень), респіратор з фільтрами (2-й рівень), EEBD (тільки для евакуації) та SCBA (для гасіння пожеж і порятунку)." },
+                                    { en: "For the torso and working at heights: an overall (protects from sharp objects and cold; prevents wounds, swelling, blisters, scars, rash), a safety apron (leather for welding, rubber for chemicals; prevents burns and scalds), and a safety harness with a line (prevents falling, dislocation, fracture, paralysis). For extremities: safety shoes with slip-resistant soles and reinforced toe caps, plus fabric, rubber, or leather gloves.", ua: "Захист тіла, рук і ніг: комбінезон, шкіряний/гумовий фартух, страхувальна прив'язь із леєром, захисні черевики та рукавички (тканинні, гумові, шкіряні)." }
+                                ]
+                            },
+                            {
+                                roleEn: "Monologue 15: Abandoning the Ship & How to Don a Lifejacket",
+                                roleUa: "Монолог 15: Залишення судна та процедура одягання рятувального жилета",
+                                bullets: [
+                                    { en: "Abandoning a ship is the last resort in an emergency. The verbal order is given only by the Master. Upon hearing it, immediately put on warm clothes, collect a blanket and first aid kit, don your lifejacket, proceed to your muster station, and assist the rescue party in launching lifeboats and liferafts.", ua: "Залишення судна — крайній захід за усною командою Капітана. Потрібно тепло одягнутися, взяти ковдру й аптечку, надіти жилет і прибути на місце збору для спуску шлюпок і плотів." },
+                                    { en: "Step-by-step procedure to don a lifejacket: 1) Don lifejacket; 2) Place lifejacket over your head; 3) Put it on; 4) Bring the strap around your body; 5) Fasten the closure; 6) Pull the free end of the strap until it fits snugly; 7) Tuck in the free end of the strap; 8) Cross your arms across your chest; 9) Pinch your nose with one hand; 10) Pull the upper part of the lifejacket down with the other hand to prevent neck and chin injuries; 11) Jump into the water feet first, legs straight (from 4.5–5 m).", ua: "11 кроків одягання жилета і стрибка у воду: надіти через голову, обвести ремінь, застебнути пряжку, туго затягнути, заправити кінець ременя, схрестити руки на грудях, затиснути ніс однією рукою, іншою притиснути жилет донизу, стрибати ногами вперед з прямими ногами (4,5–5 м)." }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // =====================================================================
+            // ВКЛАДКА 6: QUESTIONS & ANSWERS (72 + 109) + BODY, MEDICINE & GALLEY
+            // =====================================================================
+            {
+                id: 'qa_all',
+                tabName: "❓ 6. Q&A (72+109) + Body, Med & Galley",
+                title: "Тема 6: Questions & Answers (Самоперевірка) + Додаткові словники (Тіло, Медицина, Камбуз)",
+                subtitle: "Натисніть кнопку «Приховати відповіді Q&A» у верхній панелі для режиму тренажера і відкривайте відповіді кліком",
+                sections: [
+                    parseQA("Part A: Ship's Structure, Dimensions, Engine & Deck Gear (Questions 1–72)", `
+1. What is the hull? (Что такое корпус?) | It is the watertight shell of a ship. (Это водонепроницаемая оболочка судна.)
+2. What is the hull made up of? (Из чего состоит корпус?) | It is made up of frames covered with shell plating. (Он состоит из шпангоутов, покрытых обшивкой.)
+3. What are the frames? (Что такое шпангоуты?) | They are ribs to form the skeleton. (Это ребра для формирования каркаса.)
+4. What is a keel? (Что такое киль?) | It is the backbone of a vessel. (Это хребет судна.)
+5. What is a bulbous bow? (Что такое бульбообразный нос?) | It is a part of the hull below the waterline to reduce drag. (Это часть корпуса ниже ватерлинии для снижения сопротивления.)
+6. What parts is the hull divided into? (На какие части делится корпус?) | Bow, midship, and stern / fore and aft parts. (Нос, мидель и корма.)
+7. What is midship? (Что такое мидель?) | It is an imaginary line dividing the ship into fore and aft / the middle part. (Воображаемая линия / средняя часть.)
+8. What are the two extreme ends of a ship called? (Как называются две крайние оконечности судна?) | The extreme front end is the bow; the extreme rear end is the stern. (Крайняя передняя часть — нос; крайняя задняя — корма.)
+9. What are right and left sides of a ship called? (Как называются правая и левая стороны судна?) | Starboard side and Port side respectively. (Правый борт и левый борт соответственно.)
+10. What divides the ship into right and left sides? (Что делит судно на правую и левую стороны?) | The centerline (fore-and-aft line). (Диаметральная плоскость.)
+11. What is a deck? What kinds of decks do you know? (Что такое палуба? Какие виды палуб вы знаете?) | It is a horizontal surface. I know the main (weather) deck, forecastle, poop deck, and tweendeck. (Горизонтальная поверхность: главная палуба, бак, ют, твиндек.)
+12. What is a weather deck? (Что такое открытая палуба?) | It is the uppermost deck exposed to weather. (Палуба, подверженная погодным условиям.)
+13. What is a forecastle? (Что такое бак?) | It is a raised partial deck / structure at the bow. (Надстройка / палуба на носу.)
+14. What is a poop deck? (Что такое ют?) | It is a raised deck / structure at the stern. (Надстройка / палуба на корме.)
+15. What is a superstructure? What does it contain? (Что такое надстройка? Что она содержит?) | It is a structure above the main deck. It contains living quarters (accommodation) and the bridge. (Конструкция над главной палубой; содержит жилые помещения и мостик.)
+16. What is LOA? (Что такое LOA?) | Length Overall — the maximum length from extreme fore end to extreme rear end. (Наибольшая длина судна.)
+17. What is draft (draught)? (Что такое осадка?) | The distance from the waterline to the bottom (keel) of a ship. (Расстояние от ватерлинии до дна/киля судна.)
+18. What is waterline (WL)? (Что такое ватерлиния?) | The line where the hull meets the water surface. (Линия соприкосновения корпуса с водой.)
+19. What is freeboard? (Что такое надводный борт?) | The vertical distance (height) from the waterline to the main deck line. (Высота от ватерлінії до главной палубы.)
+20. What is beam? (Что такое ширина судна?) | The maximum width (breadth) of the ship. (Максимальная ширина судна.)
+21. What is air draft? (Что такое высота надводного габарита?) | The distance from the waterline to the highest point of the ship. (Расстояние от ватерлинии до самой высокой точки судна.)
+22. What does the hull contain? (Что содержит корпус?) | Engine room, cargo space (holds), and various tanks. (Машинное отделение, грузовые трюмы и танки.)
+23. What is a hold? What is stowed there? (Что такое трюм? Что там укладывается?) | It is a cargo space below deck. Cargo is stowed there. (Грузовое пространство, где укладывается груз.)
+24. What is cargo loaded and discharged through? What is this opening equipped with? (Через что грузится груз и чем закрывается отверстие?) | Through the hatch. It is equipped with a hatch cover. (Через люк, оборудованный люковым закрытием.)
+25. What are tweendecks? (Что такое твиндеки?) | Intermediate decks in the hold used to separate different cargoes. (Промежуточные палубы в трюме.)
+26. What are bulkheads? (Что такое переборки?) | Vertical walls dividing the hull into compartments to prevent flooding. (Вертикальные стенки для предотвращения затопления.)
+27. What is a tank top? (Что такое настил двойного дна?) | The lower deck / bottom floor of the hold covering the double bottom tanks. (Дно трюма / настил двойного дна.)
+28. What are compartments? What are they made up by? What are they fitted with? (Что такое отсеки?) | Watertight spaces formed by decks and bulkheads, fitted with watertight doors. (Водонепроницаемые отсеки, образованные переборками и оборудованные водонепроницаемыми дверями.)
+29. What is the function of the watertight doors? (Функция водонепроницаемых дверей?) | To resist water and prevent flooding in case of an accident. (Предотвратить затопление в случае аварии.)
+30. What kind of tanks do you know? (Какие виды танков вы знаете?) | Double bottom tanks, fore peak tanks, and after peak tanks. (Танки двойного дна, форпик и ахтерпик.)
+31. What are fore peak and after peak tanks used for? (Для чего используются форпик и ахтерпик?) | For ballast and fresh water, to increase stability and trim the ship. (Для балласта, пресной воды, остойчивости и дифферентовки.)
+32. What are double bottom tanks? What are they used for? (Что такое танки двойного дна?) | Tanks between the tank top and the keel used to carry fuel, ballast water, fresh water, and lubricating oils. (Танки на дне судна для топлива, балласта, пресной воды и масел.)
+33. What is ship’s extra weight called? Why do ships need it? (Как называется доп. вес судна и зачем он нужен?) | It is called ballast (seawater). We pump it in or out to maintain stability. (Балласт; закачивается для поддержания остойчивости.)
+34. What is the ship’s stability? (Что такое остойчивость судна?) | The ability of a vessel to remain afloat and upright. (Способность оставаться на плаву и в прямом положении.)
+35. What is rolling? (Что такое бортовая качка?) | Side-to-side ship’s motion (from starboard to port). (Бортовая качка с борта на борт.)
+36. What is pitching? (Что такое килевая качка?) | Up-and-down ship’s motion of the bow and stern. (Килевая качка носа и кормы вверх-вниз.)
+37. Where is the engine room located? What does it include? (Где находится МО и что включает?) | Usually aft near the bottom. It includes main engine, auxiliary engines, generators, pumps, boilers, steering gear, and control panels. (Обычно в корме; включает ГД, генераторы, насосы, котлы.)
+38. What is the function of the main engine? (Функция главного двигателя?) | To rotate the shaft and propel the ship. (Вращать вал и приводить судно в движение.)
+39. What is the function of auxiliary engines? (Функция вспомогательных двигателей?) | To generate and provide electricity on board. (Обеспечивать судно электроэнергией.)
+40. What are propellers? What do they consist of? What are they connected to? (Что такое гребные винты?) | Revolving fans consisting of blades, connected to the main engine by the propeller shaft. (Состоят из лопастей, соединены с гребным валом.)
+41. What does the shaft go through? (Через что проходит гребной вал?) | Through the shaft tunnel. (Через туннель гребного вала.)
+42. What does a propeller produce? (Что создает винт?) | It produces a thrust of water to move the ship. (Создает упор воды.)
+43. What controls the direction of a ship? What is it connected to? (Что управляет направлением судна?) | The rudder controls direction. It is connected to the steering gear and the helm on the bridge. (Перо руля; соединено с рулевым устройством и штурвалом.)
+44. What makes the ship more maneuverable? (Что делает судно более маневренным?) | Bow thruster and stern thruster make the ship more maneuverable in congested waters. (Носовое и кормовое подруливающие устройства.)
+45. What kind of rooms and facilities are there on board the ship? (Какие помещения есть на борту?) | Cabins, galley, mess-rooms, recreation rooms, laundry, drying room, hospital, gym, bonded store. (Каюты, камбуз, столовые, прачечная, лазарет, спортзал.)
+46. What is a superstructure? What does it contain? (Что такое надстройка?) | Construction above the weather deck containing accommodation and the navigation bridge. (Надстройка с жилыми помещениями и мостиком.)
+47. What is a monkey island? What is there on the monkey island? (Что такое верхний/пеленгаторный мостик?) | It is the compass deck above the bridge. There is the main mast, antennas, and radar scanners. (Компасная палуба с мачтой, антеннами и радарами.)
+48. What is the navigation bridge? (Что такое навигационный мостик?) | It is the command center of the ship. (Командный центр судна.)
+49. What is a funnel used for? What is its location? (Для чего используется дымовая труба?) | To discharge exhaust fumes, steam, and smoke. It is located on the superstructure behind the bridge. (Для выброса выхлопных газов и дыма; позади мостика.)
+50. What does the accommodation include? (Что включают жилые помещения?) | Living quarters: cabins, galley, mess-rooms, recreation rooms, laundry, hospital. (Жилые каюты, камбуз, кают-компании, комнаты отдыха.)
+51. What is a cabin? (Что такое каюта?) | A living quarter (bedroom) for a crewmember. (Жилое помещение для члена экипажа.)
+52. What are portholes? (Что такое иллюминаторы?) | Round windows in the hull and cabins. (Окна в корпусе и надстройке.)
+53. What is a galley? (Что такое камбуз?) | The ship's kitchen where food is cooked. (Судовая кухня.)
+54. What is a mess-room? (Что такое столовая / кают-компания?) | A dining room where crewmembers have their meals. (Помещение для приема пищи.)
+55. What are recreation rooms? (Что такое комнаты отдыха?) | Rooms for the crew to rest and spend leisure time. (Комнаты для отдыха экипажа.)
+56. What is a laundry? (Что такое прачечная?) | A room equipped with washing machines to wash clothes. (Помещение для стирки одежды.)
+57. What is a drying room? (Что такое сушилка?) | A room used to dry washed or wet working clothes. (Помещение для сушки одежды.)
+58. What is a bonded store? (Что такое кладовая беспошлинных товаров?) | A locked room to keep dutiable goods (alcohol, tobacco) sealed by customs. (Склад для хранения товаров, облагаемых пошлиной.)
+59. What are emergency headquarters? (Что такое аварийный штаб?) | The command and equipment center (storing LSA and FFA) in case of an accident. (Штаб аварийного реагирования и хранения LSA/FFA.)
+60. What does deck equipment consist of? (Из чего состоит палубное оборудование?) | Mooring gear, anchoring gear, and cargo-handling gear. (Швартовное, якорное и грузовое устройства.)
+61. What does mooring gear include? (Что включает швартовное устройство?) | Winches, mooring lines, bitts/bollards, fairleads, and chocks. (Лебедки, швартовные концы, кнехты, роульсы и киповые планки.)
+62. What are mooring lines used for? (Для чего используются швартовные концы?) | To secure (tie) the ship to her berth. (Для крепления судна к причалу.)
+63. What are winches used for? (Для чего используются лебедки?) | To pull and tighten the mooring lines. (Чтобы тянуть и обтягивать швартовные концы.)
+64. What are bitts or bollards used for? (Для чего используются кнехты?) | To make fast the mooring lines. (Чтобы крепить швартовные концы восьмерками.)
+65. What are fairleads used for? (Для чего используются роульсы?) | To lead a mooring line between the winch and the chock. (Чтобы направлять трос к клюзу.)
+66. What are chocks used for? (Для чего используются киповые планки / швартовные клюзы?) | To guide the mooring lines from the deck to the shore. (Чтобы выводить швартовные концы на берег.)
+67. What does anchor gear include? (Что включает якорное устройство?) | Anchor, anchor chain (cable), windlass, hawse pipe, and chain locker. (Якорь, якорная цепь, брашпиль, якорный клюз и цепной ящик.)
+68. What is the anchor connected to? (К чему присоединен якорь?) | To the anchor chain (cable) by a shackle. (К якорной цепи с помощью скобы.)
+69. What is the anchor chain operated by? Where is it kept? (Чем управляется якорная цепь и где хранится?) | Operated by a windlass. Kept in the chain locker. (Управляется брашпилем, хранится в цепном ящике.)
+70. What are cranes used for? What are they fitted with? (Для чего используются краны и чем оборудованы?) | Used to load and discharge cargo. Fitted with derricks or jibs and cargo hooks/grabs. (Для погрузки/выгрузки; оборудованы стрелами.)
+71. What is the mast used for? (Для чего используется мачта?) | To carry navigational lights, radar scanners, antennas, and signal flags. (Для размещения огней, антенн, радаров и флагов.)
+72. Which items of LSA is every vessel equipped with? (Какими спасательными средствами оборудовано каждое судно?) | Lifeboats, life rafts, rescue boat, life jackets, life buoys, immersion suits. (Шлюпки, плоты, дежурная шлюпка, жилеты, круги, гидрокостюмы.)
+                    `),
+                    parseQA("Part B: Video Tour, Safety, Fire, Cargo & Ship Types (Questions 1–109)", `
+1. What is there on the compass deck? | On the compass deck (monkey island), there is the main mast, radar scanners, and antennas.
+2. What warning signs can you see on the ship? | High voltage, wear PPE (helmet, goggles, safety shoes), no smoking, watch your step, keep watertight doors closed.
+3. What is the purpose of the navigation bridge? | It is the command center from which the vessel is navigated and steered.
+4. Why is coffee machine the most important equipment here? | Because watchkeeping officers keep watches day and night and need coffee to stay alert and awake.
+5. How many floors are there on this ship? | Usually there are 6 to 8 decks (floors) in the accommodation superstructure.
+6. How can you get on the upper deck or lower deck? | By using the stairs (companionways) or the elevator (lift).
+7. Where do officers and the crew live on board the ship? | They live in individual cabins located in the accommodation superstructure.
+8. What is there in a cabin? | A bunk (bed), desk, chair, wardrobe/cupboard, porthole, and a private bathroom with a shower and wash basin.
+9. What facilities are designed for rest and leisure? | Recreation rooms, mess-rooms, gymnasium (gym), library, and lounges.
+10. Where can you go in for sports or read a book? | You can go in for sports in the ship's gym and read a book in the recreation room or library.
+11. Where do you wash clothes on a vessel? | In the laundry, and dry them in the drying room.
+12. Where do they store vegetables, meat or fish? | In the provision store rooms, refrigerators, and walk-in freezers.
+13. Where is food cooked? | Food is cooked in the galley (the ship's kitchen).
+14. Who is in charge of the meals? | The Chief Cook (assisted by stewards and messmen).
+15. Where do officers/ratings have their meals? | In the Officers' Mess-room and Ratings' (Crew) Mess-room respectively.
+16. Where do crewmembers go after the watch in case they’re hungry between the meals or at night? | They go to the pantry (duty mess), where snacks, bread, tea, and coffee are available around the clock.
+17. What kind of life-saving equipment is mentioned here? What can be seen in the Em’cy Headquarters Room? | Lifeboats, liferafts, lifejackets, immersion suits; in the Emergency Headquarters you can see SCBA sets, fire-fighter's outfits, oxygen cylinders, helmets, axes, and a 1st aid box.
+18. Where do crewmembers change clothes? | In the changing room (locker room), where they leave dirty overalls before entering clean living quarters.
+19. Where do seafarers gather for meetings and discussions? | In the ship's office, conference room, or mess-room for safety meetings and pre-arrival briefings.
+20. What emergencies and hazards may happen at sea? | Fire, flooding, collision, grounding, man overboard (MOB), heavy weather, piratical attack, and medical emergencies.
+21. Where can they address for help if feeling bad? | They can address the Medical Officer (2nd or 3rd Mate) at the ship's hospital (infirmary).
+22. Where do you get if you walk astern (backwards of the ship)? | You get to the poop deck / aft mooring station (and the stern).
+23. What kind of deck equipment is installed on the aft station? | Mooring winches with drums, mooring lines, bitts/bollards, fairleads, chocks, and the emergency steering gear below.
+24. What do we call a front part of the main deck? | The forecastle (fore station) at the bow.
+25. How long does it take to get from the aft to the fore station? | On a large container ship or bulk carrier, it takes about 4–5 minutes at normal walking speed.
+26. What can you see at the fore station? | The windlass, anchor chains, chain stoppers, spare anchor, mooring winches, bitts, chocks, and the fore mast.
+27. Where is the anchor situated? | It is housed in the hawse pipe on the bow (and the spare anchor is secured on the forecastle deck).
+28. How big is the spare anchor and its shackle? | It weighs several tons, and its joining shackle is massive (often the size of a human head or torso).
+29. Where are containers and cargo stowed? | Inside the cargo holds (below the hatch covers) and on the weather deck (on hatch covers and lashing bridges).
+30. What type of doors separate the spaces within the ship? What for? | Watertight doors (to prevent flooding between compartments) and fire doors (to prevent the spread of fire and smoke).
+31. What is written on the watertight door? | 'KEEP CLOSED AT SEA' (Тримати зачиненими в морі).
+32. Where does the under deck passage run? | It runs underneath the main deck from the accommodation forward to the bow (forecastle).
+33. What is fire hydrant used for? | For connecting fire hoses to supply seawater to extinguish a fire.
+34. What is total capacity of the main engine? | On a large modern merchant vessel, it can reach from 20,000 to over 80,000–100,000 horsepower (HP).
+35. How big is it? | It is huge — often several stories (3–4 decks) high and as long as a house.
+36. Why is the engine heart of the ship? Which is its brain then? | The main engine is the heart because it propels the ship and keeps it alive; the navigation bridge (and Engine Control Room) is the brain.
+37. What is the function of the shaft? | To transmit rotational power from the main engine to the propeller.
+38. Where are control panels located? | In the Engine Control Room (ECR) and on the Navigation Bridge.
+39. What steers the vessel? | The rudder, which is turned by the steering gear controlled from the helm on the bridge.
+40. How should a seafarer move on the open deck? | Walk carefully, never run, hold on to railings, watch out for wet/slippery surfaces, and always wear PPE.
+41. What makes the accommodation area sensitive to fire? | Combustible materials (bedding, curtains, clothes), electrical appliances/chargers, and careless smoking.
+42. Why isn’t it allowed to wear loose overall when working on the machinery? | Because loose clothing can easily get caught (entangled) in rotating or moving parts of running machinery.
+43. What are the most common risks and injuries on board? How can you avoid them? | Slips, trips, falls, fractures, burns, cuts, and eye injuries. Avoid them by observing safety precautions and wearing proper PPE.
+44. What are the most common aspects of shipboard routine? What risks do they pose? | Chipping rust, painting, working aloft, mooring, and lifting heavy loads — posing risks of eye injury, toxic fumes, falling, rope snap-back, and back strain.
+45. Name the signs and symbols you already know. Where can you find them? Why are they used on ships? | Mandatory PPE signs (blue), Prohibition signs (red), Warning signs (yellow), and IMO green Photoluminescent Escape/LSA signs. They warn of hazards and guide crew in emergencies.
+46. Where are the muster lists displayed? What information may you learn from a muster list? | Displayed in conspicuous places (bridge, engine room, alleyways, mess-rooms). It shows alarm signals, each crewmember's muster station, and emergency duties.
+47. Emergency muster station and lifeboat muster station are different! How do you know which one to proceed to? | By checking the Muster List and listening to announcements over the Public Address (PA) system.
+48. How is the general emergency alarm sounded? What are the actions to be taken? What other types of alarm signals do you know? | 7 short blasts + 1 long blast. Put on warm clothes, PPE, lifejacket, and go to the muster station. Other alarms: Fire (continuous ringing), MOB (3 long blasts), Abandon Ship (verbal order by Master).
+49. How will your knowledge help you in a real emergency? What may happen if you are unaware of safety information? | It prevents panic and saves lives. Unawareness leads to confusion, delay, severe injury, or death.
+50. What should you do, if you find a fire or see smoke? | Follow FIRE: Find, Isolate (close doors/ventilation), Report (raise alarm & inform bridge), Extinguish or Escape.
+51. What are portable fire extinguishers designed for? | For tackling small, initial (incipient) fires before they spread.
+52. What extinguishing agents do the fire extinguishers contain? | Water, Foam, Dry Powder (ABC), Carbon Dioxide (CO2), or Wet Chemicals.
+53. How are the extinguishing agents differentiated and in what case should each type be used? | By color bands: Red (Water — Class A), Cream (Foam — A, B), Blue (Dry Powder — A, B, C, D, E), Black (CO2 — B, E), Yellow (Wet Chemical — A, F).
+54. Who is responsible for fighting a fire on board? | Every crewmember initially, and specifically the trained Fire-Fighting Party led by the Chief Officer (Safety Officer).
+55. Why is fire considered to be one of the most dangerous hazards on board? Express your opinion. | In my opinion, fire at sea is the greatest hazard because a ship is isolated from shore help, full of fuel and enclosed steel spaces that trap heat and toxic smoke.
+56. Where can you find a lifejacket? Why is it important to practise donning it? | In every cabin, at muster stations, bridge, and engine room. Practice ensures you can don it in under 1 minute even in total darkness.
+57. What shall you do upon hearing the alarm? | Stop work immediately, put on warm clothes, PPE, don your lifejacket, and proceed to your designated muster station.
+58. How shall you behave if there’s heavy smoke in the accommodation? | Crawl low near the floor, cover mouth/nose with a wet cloth or put on an EEBD, feel doors for heat before opening, and follow escape routes.
+59. What are your further actions when you arrive at the muster station? | Report to the officer in charge for roll call (headcount) and carry out your assigned duties from the Muster List.
+60. What events may force the crew to abandon ship? | Uncontrollable fire or explosion, rapid flooding/sinking, capsizing, or catastrophic collision/grounding.
+61. What are the possible causes of flooding? What may flooding lead to? | Collision, grounding, hull failure, or open watertight doors. It leads to loss of buoyancy/stability, listing, capsizing, and sinking.
+62. What is used as a precaution against flooding? | Watertight bulkheads, double bottom, collision bulkhead, bilge pumps, and keeping watertight doors closed at sea.
+63. What do weathertight doors serve for? | They are external doors with high sills and 'dogs' that prevent wind, sea waves, and spray from entering the superstructure.
+64. Why do injuries occur? | Mostly due to human negligence, carelessness, undue haste, fatigue, bad weather, and non-observance of safety procedures (not wearing PPE).
+65. What is a chin strap used for? | To secure the safety helmet on the head so it doesn't fall off when bending over, working aloft, or in strong wind.
+66. Which shipboard activities pose danger to your eyes? | Chipping rust, grinding, welding, wire brushing, and handling chemicals, acids, or solvents.
+67. How can you protect your respiratory system? | By wearing a dust mask (1st level), air-purifying respirator with filters (2nd level), or EEBD / SCBA in oxygen-deficient or toxic atmospheres.
+68. What are the main requirements to safety footwear? How can inappropriate footwear affect your health? | Slip-resistant soles and reinforced (steel) toe caps. Inappropriate shoes lead to slips, twisted ankles, and crushed/fractured toes.
+69. How often should you think about your personal safety on deck? | Constantly — every second on board, before and during every task.
+70. What are you doing to protect yourself and your fellow crewmembers? | Wearing full PPE, following safety rules, maintaining good housekeeping (removing oil spills), and warning others of hazards.
+71. What causes accidents on board? | Negligence, oversight, improper tools, unguarded openings, standing in the bight of a mooring line, and ignoring safety rules.
+72. What are the consequences of disregard of safety procedures? | Severe injuries (fractures, burns, blindness, concussion), permanent disability, repatriation, or loss of life.
+73. What are the main precaution measures to avoid injuries? | Risk assessment (toolbox talk), wearing proper PPE, using safe posture when lifting, and strict compliance with safety regulations.
+74. What is a cargo ship? | Any merchant vessel designed to transport goods (freight) and carrying no more than 12 passengers.
+75. Why are there different types of freighters? | Because different cargoes (dry bulk, liquid, containers, wheeled vehicles, refrigerated goods) require specialized hull construction, stowage, and handling gear.
+76. What is dry bulk cargo? Give the definition and examples. | Unpacked, homogeneous loose cargo poured directly into the hold. Examples: grain, coal, iron ore, fertilizers, cement, sulphur, scrap metal.
+77. Why are some dry bulk cargoes classified as dangerous goods? | Because they can shift and ruin stability, or are liable to spontaneous combustion and emit explosive/toxic gases (e.g., coal emits methane).
+78. Why should dry bulk cargo be thoroughly trimmed when loading? What can be used for this purpose? | To level the cargo surface and avoid shifting during rolling at sea, using spouts, conveyors, or bulldozers/grabs.
+79. What are the peculiarities of a gearless vessel? | It has no cranes or derricks of its own and relies entirely on shore-based port equipment for loading and discharging.
+80. What cargo handling gear is mainly used for loading and discharging of dry bulk cargo? | Shore conveyor belts with spouts, pneumatic elevators (for grain), and cranes fitted with grabs.
+81. What are the most common liquid cargoes? | Crude oil, refined petroleum products (gasoline, diesel, kerosene), liquefied gases (LNG, LPG), liquid chemicals, and vegetable oils/wine.
+82. Why do tankers require special forms of construction and outfitting? | To prevent liquid free-surface effect, leakage, fire, and explosion (requiring double hulls, longitudinal/transverse bulkheads, pumps, inert gas systems, and heating coils).
+83. What types of tankers do you know? | Crude oil tankers (VLCC/ULCC), product tankers, gas carriers (LNG/LPG), and chemical tankers.
+84. What is the difference between crude tankers and product tankers? | Crude tankers carry unrefined crude oil from oilfields to refineries; product tankers carry refined products (gasoline, diesel) from refineries to consumer markets.
+85. Why and how are gases liquefied? | Gases are liquefied by refrigeration (cooling to very low temperatures) or pressurization to dramatically reduce their volume (~600 times for LNG) for economical transport.
+86. Why is it so important to observe safety precautions on board tanker ships? | Because liquid cargoes emit highly flammable, explosive, and toxic vapours — a single spark can destroy the ship.
+87. What is general cargo? Give the definition and examples. | Break bulk cargo consisting of individually packaged items loaded piece by piece: bags, bales, boxes, crates, drums, and barrels.
+88. What is the biggest disadvantage with break bulk cargo? | Slow, labor-intensive loading/discharging and high risk of broken stowage (wasted space) and cargo damage/pilferage.
+89. Why is it sometimes difficult and uneconomic to stow general cargo? | Because packages of irregular shapes and sizes leave empty spaces between them (broken stowage) and must be individually lashed and separated.
+90. What are the distinct features of a general cargo ship? | They are usually geared (have 4+ derrick cranes) and have removable tweendecks inside the holds to separate different types of cargo.
+91. What are the advantages of containerization? | Fast intermodal handling, standardized sizes (TEU/FEU), high security (sealed against theft and weather), and no broken stowage.
+92. What kind of specific arrangement do container ships have? | They are cellular ships equipped with vertical cell guides in the holds so containers slot smoothly into place without shifting.
+93. How are containers stowed on board the ship? | In three coordinates: Bays (fore to aft), Rows (abeam / across the ship), and Tiers (vertical layers).
+94. How can any container on board the ship be found easily? | By its unique 6-digit Bay-Row-Tier position code in the ship's cargo stowage plan.
+95. What type of port facilities are used to handle containers? | High-speed dockside gantry cranes (Ship-to-Shore cranes) and straddle carriers / reach stackers.
+96. What type of cargo do Ro-Ro ships carry? | Wheeled cargo: cars, trucks, trailers, buses, railroad cars, and heavy rolling machinery.
+97. What special fitting allows wheeled cargo to be loaded and discharged on and from the ship? | A wide hydraulic ramp (usually at the stern, or quarter/bow ramp).
+98. How does not self-propelled cargo get on board a Ro-Ro ship? | It is placed on wheeled roll-trailers (mafi trailers) and towed on board by port tugmasters (tractors).
+99. What type of cargo do reefers transport? | Perishable goods requiring strict temperature-controlled transportation: meat, fish, dairy products, fruit, and vegetables.
+100. Why is high speed so important for reefers? | To minimize transit time so perishable food reaches the market fresh before spoiling.
+101. What types of heavy lift ships are there? What do they transport? | Semi-submersible ships (Flo-Flo) and Project cargo vessels. They transport oil rigs, yachts, damaged warships, wind turbine blades, and port cranes.
+102. How do semi-submersible heavy lift ships submerge their hulls? | By flooding huge ballast tanks to lower the main deck below the water surface, allowing floating cargo to be positioned over the deck before pumping the ballast out.
+103. What is a passenger ship? What types of ships are included in this category? | Any merchant vessel carrying more than 12 passengers: ocean liners, cruise ships, ferries, and yachts.
+104. What is the main difference between an ocean liner and a cruise ship? | Ocean liners provide fast point-to-point intercontinental transportation in all weather; cruise ships serve shorter pleasure routes with many tourist ports of call.
+105. Why are ferries so popular in waterside cities? | They carry both passengers and vehicles on frequent, fixed short routes across rivers, straits, and bays (often using double-ended ferries that don't need to turn around).
+106. What is HSC? | High-Speed Craft — vessels capable of speeds over 30 knots, including hovercraft (ACV), hydrofoils, catamarans, and Wing-in-Ground (WIG) craft.
+107. What is a tug? Why are tugboats so important? | A small, powerful, highly maneuverable vessel fitted with fenders, designed to tow (push or pull) large ships during berthing, unberthing, and salvage.
+108. Enumerate special-purpose vessels you know. Explain the purpose of each ship. | Icebreaker (clears ice channels), Pilot boat (transfers pilots), Dredger (excavates seabed to keep waterways navigable), Fireboat (fights fires), Lightship (floating lighthouse), Cable/Pipe-laying vessel, and Research vessel (collects hydrographic/weather data).
+109. Why are cargo ships classified by sizes? Characterize each class. | Classified by capacity and dimensions to show which ports, straits, and canal locks they can pass: Handymax (small, 5 holds, 4 cranes, shallow draft), Aframax (medium oil tanker), Panamax (max for Panama Canal), Suezmax (max for Suez Canal), Capesize (too big for canals, goes via Cape Horn/Good Hope), Malaccamax (Strait of Malacca), VLCC/ULCC (huge crude supertankers), Q-Max (largest LNG carrier for Qatar), Seawaymax (St. Lawrence Seaway), Chinamax (huge Brazil–China bulkers).
+                    `),
+                    renderVocabGrid("👤 Зовнішність та Характер (Appearance & Personality)", "18 слів", `
+(un)attractive | (не)приємний на вигляд / (not) pleasing to look at
+beautiful | дуже привабливий на вигляд / very attractive to look at
+good-looking | фізично привабливий / physically attractive
+handsome | привабливий (про чоловіків)
+fat / overweight | той, що має зайву вагу на тілі / having extra flesh on the body
+skinny / slim | дуже худий / стрункий
+muscular | той, що має добре розвинені м'язи / having well-developed muscles
+ugly | неприємний на вигляд / unpleasant to look at
+small | маленький
+chatty | той, що любить багато говорити / liking to talk a lot
+easy-going | спокійний, якого важко засмутити / relaxed and not easily upset
+hard-working | той, що докладає багато зусиль у роботі / putting a lot of effort into work
+lazy | той, що не хоче працювати / not wanting to work
+open | чесний, що не приховує думок / honest
+organised | той, що ретельно все планує / planning things carefully
+reserved | той, що не показує почуттів / not showing feelings
+polite | ввічливий
+unreliable | той, якому не можна довіряти / not able to be trusted
+                    `),
+                    renderVocabGrid("🦴 Тіло людини: Голова, Кінцівки, Тулуб, Внутрішні органи (Human Body)", "Anatomy Vocab", `
+skull | череп
+temple | скроня
+skin | шкіра
+bone | кістка
+cheek | щока
+cheekbone | вилиця
+chin | підборіддя
+neck | шия
+Adam's apple | кадик
+eyeball | очне яблуко
+eyebrow | брова
+eyelash / eyelashes | вія / вії
+eyelid | повіка
+earlobe | мочка вуха
+tooth / teeth | зуб / зуби
+tongue | язик
+throat | горло
+forearm | передпліччя
+fist | кулак
+nail | ніготь
+knuckle | кісточка (суглоб пальця)
+index finger | вказівний палець
+middle finger | середній палець
+ring finger | підмізинний (безіменний) палець
+little finger / pinkie | мізинець
+hip / thigh | таз, бік / стегно (до коліна)
+thigh bone | стегнова кістка
+shin | гомілка (передня частина)
+calf / calves | литка / литки
+foot / feet | стопа / стопи
+heel | п'ята
+collarbone | ключиця
+chest / breast | грудна клітка, груди / молочна залоза
+rib cage | грудна клітка (ребра)
+belly / tummy | живіт / животик (розмовне)
+belly button | пупок
+small of the back | поперек (нижня частина спини)
+abdomen | черевна порожнина / живіт
+abdominal muscles | м'язи живота
+six-pack abs | «кубики» преса
+backbone / spine | хребет
+vertebra / vertebral column | хребець / хребетний стовп
+loins | поперек / стегна
+heart | серце
+lungs | легені
+liver | печінка
+kidney / kidneys | нирка / нирки
+gall bladder | жовчний міхур
+bladder | сечовий міхур
+muscle | м'яз
+tendon | сухожилля
+nervous system | нервова система
+respiratory system | дихальна система
+breathing passages | дихальні шляхи
+blood vessel | кровоносна судина
+artery / vein | артерія / вена
+blood | кров
+nerve | нерв
+                    `),
+                    renderVocabGrid("🩺 Медицина: Хвороби, Симптоми, Травми та Опіки (Medicine)", "Medical Vocab", `
+disease | хвороба
+infection | інфекція
+virus | вірус
+HIV / AIDS | ВІЛ / СНІД
+plague | чума
+measles | кір
+german measles | краснуха
+scarlet fever | скарлатина
+chicken pox | вітряна віспа
+mumps | свинка (паротит)
+allergy | алергія
+contagious | заразний
+acute | гострий (про хворобу)
+pneumonia | пневмонія
+quinsy | гнійна ангіна
+hernia | грижа
+ulcer | виразка
+jaundice | жовтяниця
+kidney stones | камені в нирках
+high blood pressure | високий кров’яний тиск
+blood clot | тромб
+heart attack | серцевий напад
+stroke / apoplexy | інсульт
+paralysis | параліч
+insomnia | безсоння
+deafness / blindness | глухота / сліпота
+pain / ache | біль / біль (ниючий)
+fever | гарячка
+chills / shivers | озноб
+fatigue | втома
+to feel dizzy / dizziness | відчувати запаморочення / запаморочення
+nausea | нудота
+to vomit | блювати
+to sneeze | чхати
+cold in the head | застуда
+snuffle / runny nose | нежить
+poison / poisoning | отрута / отруєння
+intoxication | інтоксикація
+shortness of breath | задишка
+suffocation / asphyxiation | задуха / асфіксія
+internal bleeding | внутрішня кровотеча
+bleeding | кровотеча
+inflammation | запалення
+swelling | набряк
+skin irritation / rash | подразнення шкіри / висип
+skin eruption | висип
+cramp(s) | судоми
+faint | знепритомніти
+injury | травма
+wound | рана
+cut / scratch | поріз / подряпина
+bruise / contusion | синяк / забій
+black eye | синець під оком
+rupture | розрив
+fissure | тріщина
+fracture | перелом
+dislocation | вивих
+strain / sprain | розтягнення
+brain concussion | струс мозку
+splinter | скалка
+bite | укус
+scar | шрам
+burn | опік
+blister | пухир
+thermal burn | термічний опік
+chemical burn | хімічний опік
+radiation burn | радіаційний опік
+frostbite / cold burn | обмороження / холодовий опік
+sunburn | сонячний опік
+friction burn | опік від тертя
+                    `),
+                    renderVocabGrid("🗣️ Дієслова, Поняття та Вирази (Verbs, Concepts & Expressions)", "General English", `
+issue — a subject or problem | тема для обговорення або проблема
+contradiction — opposing ideas | суперечність
+the evidence — facts that show the truth | докази / факти, що доводять правду
+upsetting — making smb unhappy | той, що засмучує
+particularly — especially or very much | особливо або дуже сильно
+digital — using computer technology | цифровий, той, що використовує комп'ютерні технології
+inherited — received from ancestors | успадкований, отриманий від предків
+investigate — to examine a problem | досліджувати проблему або злочин
+discover — to find something new | знайти або дізнатися щось нове
+to admit — to confess smth | визнавати (зізнаватися)
+to be horrified — to be very shocked | бути дуже шокованим або наляканим
+to have no idea — not to know smth | не мати уявлення
+talked to — spoke with smb | говорив з кимось
+desperate for an idea — needing an idea badly | той, хто відчайдушно потребує ідеї
+in detail — with all facts | в деталях
+main character — the most important person in a story | головний герой
+ordinary — normal, not special or unusual | звичайний
+at the beginning of — at the start of something | на початку чогось
+modern day — happening in the present time | сучасний (наш час)
+incredible — amazing, hard to believe | неймовірний
+sense of smell and taste — the ability to smell and taste things | відчуття нюху та смаку
+whenever — at any time when something happens | коли завгодно / щоразу як
+cookery programme — a TV or radio show about cooking | кулінарна телепередача
+owner — a person who possesses something | власник
+escape — to get away from a place or situation | втекти / врятуватися
+to separate from — to move apart or become divided | відокремитися від
+by chance — accidentally, not planned | випадково
+to arrive — to reach a place | прибувати
+to be pleased — to feel happy or satisfied | бути задоволеним
+review — an opinion about something (a book, movie) | відгук / рецензія
+customer — a person who buys goods | покупець / клієнт
+decide — to make a choice | вирішувати
+to become a partnership — to start working together | стати партнерами
+to pull / to push — to move something toward you / away from you | тягнути на себе / штовхати від себе
+rave — to talk very enthusiastically about something | захоплено відгукуватися
+                    `),
+                    renderVocabGrid("🍳 Galley & Food: Nuts, Spices, Kitchen Equipment, Fruits & Berries", "Galley & Food", `
+Almond | Мигдаль
+Cashew | Кеш'ю
+Chestnut | Каштан
+Coconut | Кокос
+Hazelnut | Фундук / Лісовий горіх
+Macadamia nut | Макадамія
+Peanut | Арахіс
+Pecan nut | Пекан
+Pine nut | Кедровий горіх
+Pistachio | Фісташка
+Pumpkin seeds | Гарбузове насіння
+Sesame seeds | Кунжут
+Sunflower seeds | Насіння соняшника
+Walnut | Волоський горіх
+Bay leaf | Лавровий лист
+Black pepper | Чорний перець
+Cinnamon | Кориця
+Clove | Гвоздика
+Nutmeg | Мускатний горіх
+Paprika | Паприка
+Salt | Сіль
+Turmeric | Куркума
+Aluminum foil | Алюмінієва фольга
+Baking sheet pan / Baking tray | Деко (форма) для випікання
+Bottle opener | Відкривачка для пляшок
+Bowl | Миска / Глибока тарілка
+Can opener / Tin opener | Консервний ніж
+Colander | Друшляк
+Corkscrew | Штопор
+Cup / Mug / Glass | Чашка / Кухоль (кружка) / Склянка
+Cutting board | Обробна дошка
+Deep fryer | Фритюрниця
+Flour sifter | Сито для борошна
+Food storage container | Контейнер для зберігання їжі
+Fork / Knife / Spoon | Виделка / Ніж / Ложка
+Freezer / Refrigerator | Морозильна камера / Холодильник
+Frying pan | Сковорідка
+Funnel | Лійка
+Garlic press | Часникодавка
+Grater | Тертка
+Honing / Sharpening rod | Мусат (стрижень для заточування ножів)
+Kettle | Чайник
+Kitchen scale | Кухонні ваги
+Ladle | Ополоник
+Lemon squeezer | Соковижималка для лимонів (цитрус-прес)
+Measuring cup | Мірна чашка (стакан)
+Meat grinder | М'ясорубка
+Microwave oven / Oven | Мікрохвильова піч / Духовка (піч)
+Nutcracker | Горіхокол
+Oven glove | Кухонна рукавиця (прихватка)
+Parchment paper | Пергаментний папір
+Peeler | Овочечистка
+Pepper mill / Salt shaker | Млинок для перцю / Сільничка
+Plate / Saucer | Тарілка / Блюдце
+Pot / Saucepan | Каструля / Сотейник (з довгою ручкою)
+Potato masher | Товкачка для картоплі
+Rolling pin | Качалка
+Scissors | Ножиці
+Slotted spoon | Шумівка
+Spatula | Лопатка
+Stirring spoon | Ложка для перемішування
+Strainer | Ситечко
+Tongs | Щипці (кухонні)
+Towel | Рушник
+Whisk | Вінчик
+Apple | Яблуко
+Apricot / Dried apricots | Абрикос / Курага
+Banana | Банан
+Blackberry | Ожина
+Blueberry | Лохина
+Cherry | Вишня / Черешня
+Cranberry | Журавлина
+Currant | Смородина / Порічка
+Date | Фінік
+Dragon fruit | Пітахая (Драконів фрукт)
+Fig | Інжир
+Gooseberry | Аґрус
+Grapefruit | Грейпфрут
+Grapes / Raisins | Виноград / Родзинки
+Huckleberry | Чорниця (дика)
+Kiwi | Ківі
+Lemon / Lime | Лимон / Лайм
+Melon / Watermelon | Диня / Кавун
+Mulberry | Шовковиця
+Orange / Tangerine | Апельсин / Мандарин
+Peach | Персик
+Pear | Груша
+Persimmon | Хурма
+Pineapple | Ананас
+Plum / Prune | Слива / Чорнослив
+Pomegranate | Гранат
+Quince | Айва
+Raspberry | Малина
+Strawberry | Полуниця
+                    `)
+                ]
+            }
+        ];
+
+        const ALL_TABS = [...PART_1_TABS, ...PART_2_TABS];
+
+        // =========================================================================
+        // ДВИЖОК РЕНДЕРИНГА И УПРАВЛЕНИЯ
+        // =========================================================================
+        let activeTabIdx = 0;
+        let showAllMode = false;
+        let hideUaMode = false;
+        let hideQaMode = false;
+        let searchQuery = '';
+
+        function initApp() {
+            renderNavTabs();
+            renderMainContent();
+        }
+
+        function renderNavTabs() {
+            const nav = document.getElementById('navTabs');
+            nav.innerHTML = ALL_TABS.map((t, idx) => {
+                const isActive = (!showAllMode && idx === activeTabIdx);
+                return `
+                    <button onclick="selectTab(${idx})" class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border ${
+                        isActive
+                            ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-600/20'
+                            : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }">
+                        <span>${t.tabName}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectTab(idx) {
+            showAllMode = false;
+            activeTabIdx = idx;
+            document.getElementById('btnViewAll').textContent = '📋 Усі вкладки підряд';
+            renderNavTabs();
+            renderMainContent();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleViewAll() {
+            showAllMode = !showAllMode;
+            document.getElementById('btnViewAll').textContent = showAllMode ? '🎯 По 1 вкладці' : '📋 Усі вкладки підряд';
+            renderNavTabs();
+            renderMainContent();
+        }
+
+        function toggleTranslation() {
+            hideUaMode = !hideUaMode;
+            document.body.classList.toggle('hide-ua', hideUaMode);
+            document.getElementById('eyeIcon').textContent = hideUaMode ? '🙈' : '👁️';
+            document.getElementById('eyeText').textContent = hideUaMode ? 'Показати переклад' : 'Приховати переклад';
+        }
+
+        function toggleQaBlur() {
+            hideQaMode = !hideQaMode;
+            document.body.classList.toggle('hide-qa', hideQaMode);
+            document.getElementById('qaIcon').textContent = hideQaMode ? '🔒' : '🎯';
+            document.getElementById('qaText').textContent = hideQaMode ? 'Показати відповіді Q&A' : 'Приховати відповіді Q&A';
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = isDark ? 'Світла' : 'Темна';
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim().toLowerCase();
+            renderMainContent();
+        }
+
+        function matchesSearch(text) {
+            if (!searchQuery) return true;
+            return (text || '').toLowerCase().includes(searchQuery);
+        }
+
+        function renderSection(sec) {
+            // 1. СЛОВАРЬ (Vocab Grid)
+            if (sec.type === 'vocab') {
+                const filtered = sec.items.filter(i => matchesSearch(i.en) || matchesSearch(i.ua));
+                if (filtered.length === 0) return '';
+                return `
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-md">
+                        <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/80 px-5 py-3 flex items-center justify-between">
+                            <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">📖 ${sec.title}</h3>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-600/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">${filtered.length} слів</span>
+                        </div>
+                        <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                            ${filtered.map(item => `
+                                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 hover:border-blue-400 transition">
+                                    <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white leading-snug">${item.en}</div>
+                                    <div class="text-xs text-blue-700 dark:text-amber-300/90 font-medium mt-1 ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${item.ua}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 2. ТАБЛИЦА / КАРТОЧКА (Cards / Table)
+            if (sec.type === 'cards') {
+                const rows = (sec.table?.rows || []).filter(r => r.some(cell => matchesSearch(cell)));
+                if (searchQuery && rows.length === 0 && !matchesSearch(sec.title)) return '';
+                return `
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-md">
+                        <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/80 px-5 py-3 flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">${sec.title}</h3>
+                            <span class="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-blue-600/15 text-blue-700 dark:text-blue-300 border border-blue-500/30">${sec.badge || ''}</span>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            ${sec.introEn ? `
+                                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                                    <p class="font-bold text-sm text-slate-900 dark:text-white">${sec.introEn}</p>
+                                    <p class="text-xs sm:text-sm text-blue-700 dark:text-amber-300/90 mt-1 ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${sec.introUa}</p>
+                                </div>
+                            ` : ''}
+                            ${sec.table ? `
+                                <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                                        <thead>
+                                            <tr class="bg-slate-200/70 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+                                                ${sec.table.headers.map(h => `<th class="p-3 font-extrabold border-b border-slate-300 dark:border-slate-700">${h}</th>`).join('')}
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                                            ${rows.map(r => `
+                                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                                                    <td class="p-3 font-bold text-blue-700 dark:text-blue-300 whitespace-nowrap align-top">${r[0]}</td>
+                                                    <td class="p-3 font-semibold text-slate-900 dark:text-white align-top">
+                                                        <div>${r[1]}</div>
+                                                        ${r[2] && sec.table.headers.length === 2 ? `<div class="text-xs text-blue-700 dark:text-amber-300/90 font-normal mt-1 ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${r[2]}</div>` : ''}
+                                                    </td>
+                                                    ${sec.table.headers.length >= 3 ? `<td class="p-3 text-emerald-700 dark:text-emerald-300 font-medium align-top ua-trans" onclick="this.classList.toggle('revealed')">${r[2] || ''}</td>` : ''}
+                                                    ${sec.table.headers.length >= 4 ? `<td class="p-3 text-slate-700 dark:text-slate-300 align-top ua-trans" onclick="this.classList.toggle('revealed')">${r[3] || ''}</td>` : ''}
+                                                    ${sec.table.headers.length >= 5 ? `<td class="p-3 text-slate-700 dark:text-slate-300 align-top ua-trans" onclick="this.classList.toggle('revealed')">${r[4] || ''}</td>` : ''}
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 3. РОЛИ / СПИСКИ ТЕОРИИ (Duties / Roles)
+            if (sec.type === 'duties') {
+                const roles = sec.roles.filter(r =>
+                    matchesSearch(r.roleEn) || matchesSearch(r.roleUa) || matchesSearch(r.descEn) ||
+                    r.bullets.some(b => matchesSearch(b.en) || matchesSearch(b.ua))
+                );
+                if (roles.length === 0) return '';
+                return `
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-md">
+                        <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/80 px-5 py-3 flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">${sec.title}</h3>
+                            <span class="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-blue-600/15 text-blue-700 dark:text-blue-300 border border-blue-500/30">${sec.badge || ''}</span>
+                        </div>
+                        <div class="p-5 grid grid-cols-1 gap-4">
+                            ${roles.map(role => `
+                                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 space-y-2.5">
+                                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                                        <h4 class="font-extrabold text-sm sm:text-base text-blue-600 dark:text-blue-400">${role.roleEn}</h4>
+                                        <span class="text-xs sm:text-sm font-bold text-slate-600 dark:text-amber-300 ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${role.roleUa}</span>
+                                    </div>
+                                    ${role.descEn ? `
+                                        <div>
+                                            <p class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">${role.descEn}</p>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${role.descUa}</p>
+                                        </div>
+                                    ` : ''}
+                                    <div class="space-y-2 pt-1">
+                                        ${role.bullets.map(b => `
+                                            <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/70">
+                                                <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white leading-snug">• ${b.en}</div>
+                                                <div class="text-xs text-emerald-700 dark:text-emerald-400 font-medium mt-1 ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${b.ua}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 4. ВОПРОСЫ И ОТВЕТЫ (Q&A)
+            if (sec.type === 'qa') {
+                const items = sec.items.filter(q => matchesSearch(q.q) || matchesSearch(q.a));
+                if (items.length === 0) return '';
+                return `
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-md">
+                        <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/80 px-5 py-3 flex items-center justify-between">
+                            <h3 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">❓ ${sec.title}</h3>
+                            <span class="px-3 py-0.5 rounded-full text-xs font-mono font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">${items.length} питань</span>
+                        </div>
+                        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                            ${items.map(item => `
+                                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-1.5">
+                                    <div class="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">${item.q}</div>
+                                    ${item.a ? `<div class="text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 font-semibold pt-1 border-t border-slate-200 dark:border-slate-700/60 qa-ans" onclick="this.classList.toggle('revealed')">✅ ${item.a}</div>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            return '';
+        }
+
+        function renderTab(tab) {
+            const sectionsHtml = tab.sections.map(s => renderSection(s)).filter(Boolean).join('');
+            if (!sectionsHtml) return '';
+            return `
+                <section class="space-y-6">
+                    <div class="border-l-4 border-blue-600 pl-4 py-1">
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">${tab.title}</h2>
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">${tab.subtitle}</p>
+                    </div>
+                    <div class="space-y-6">${sectionsHtml}</div>
+                </section>
+            `;
+        }
+
+        function renderMainContent() {
+            const container = document.getElementById('mainContainer');
+            if (showAllMode || searchQuery) {
+                container.innerHTML = ALL_TABS.map(t => renderTab(t)).filter(Boolean).join('<hr class="border-slate-300 dark:border-slate-800 my-10"/>');
+            } else {
+                container.innerHTML = renderTab(ALL_TABS[activeTabIdx]);
+            }
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>

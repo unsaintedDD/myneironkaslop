@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Моя база знаний</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-10 font-sans">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">База знаний</h1>
+        
+        <!-- Вкладки категорий -->
+        <div class="flex gap-4 mb-6">
+            <button id="tabMain" class="px-4 py-2 bg-blue-600 text-white rounded-lg transition">Важное</button>
+            <button id="tabTrash" class="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition">Хлам</button>
+            <button id="tabFav" class="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition">Избранное ★</button>
+        </div>
+
+        <!-- Поиск -->
+        <input type="text" id="searchInput" placeholder="Поиск по названию..." 
+               class="w-full p-4 mb-6 bg-gray-800 rounded-lg border border-gray-700 text-white focus:outline-none focus:border-blue-500">
+        
+        <!-- Контейнер для карточек -->
+        <div id="results" class="flex flex-col gap-4"></div>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
