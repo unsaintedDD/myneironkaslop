@@ -20,6 +20,11 @@ const pagesData = [
         "category": "важное"
     },
     {
+        "title": "All Radar",
+        "url": "page/all radar.html",
+        "category": "важное"
+    },
+    {
         "title": "Buoys",
         "url": "page/buoys.html",
         "category": "важное"
