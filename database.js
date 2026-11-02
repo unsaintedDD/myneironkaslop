@@ -45,6 +45,11 @@ const pagesData = [
         "category": "важное"
     },
     {
+        "title": "Zalic1 3",
+        "url": "page/zalic1-3.html",
+        "category": "важное"
+    },
+    {
         "title": "Буи",
         "url": "page/буи.html",
         "category": "важное"
