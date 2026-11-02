@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Bridge Equipment — Інтерактивний конспект за вкладками</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Плавне відкриття та закриття випадаючих списків (акордеонів) */
+    .accordion-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.26s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+      opacity: 0;
+    }
+
+    .accordion-body.open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .accordion-inner {
+      overflow: hidden;
+    }
+
+    .chevron {
+      transition: transform 0.25s ease;
+    }
+
+    .open-btn .chevron {
+      transform: rotate(180deg);
+    }
+
+    /* Анімація перемикання вкладок */
+    .tab-pane {
+      animation: fadeIn 0.22s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Приховування скролбару для горизонтального меню на мобільних */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- ВЕРХНЯ ШАПКА ТА НАВІГАЦІЯ ЗА ВКЛАДКАМИ -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-3.5 pb-0">
+      
+      <!-- Заголовок + Швидкий пошук -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-mono-code font-bold text-base shadow-xs shrink-0">
+            NB
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-extrabold text-slate-900 leading-tight">
+              Navigation Bridge Equipment — Інтерактивний конспект
+            </h1>
+            <p class="text-xs text-slate-500">
+              Оберіть прилад на вкладці нижче: вся інформація, випадаючі списки та взаємозв'язки в одному місці
+            </p>
+          </div>
+        </div>
+
+        <!-- Кнопка переходу до швидкого пошуку абревіатур -->
+        <div class="flex items-center gap-2">
+          <button
+            onclick="openQuickSearch()"
+            class="w-full sm:w-auto px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 border border-slate-200 hover:border-blue-200 rounded-xl transition flex items-center justify-center gap-2"
+          >
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <span>Пошук абревіатури (CPA, PAD, HDG...)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ПАНЕЛЬ ВКЛАДОК (TABS) -->
+      <nav class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 -mb-px" id="tabsNav" aria-label="Вкладки обладнання">
+        <!-- Заповнюється динамічно через JS -->
+      </nav>
+    </div>
+  </header>
+
+  <!-- ОСНОВНИЙ КОНТЕНТ АКТИВНОЇ ВКЛАДКИ -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
+    <div id="tabContentArea"></div>
+  </main>
+
+  <script>
+    // =========================================================================
+    // БАЗА ДАНИХ УСІХ 7 ВКЛАДОК (100% МАТЕРІАЛУ УКРАЇНСЬКОЮ + ENGLISH TEXT)
+    // =========================================================================
+    const tabsData = [
+      // -----------------------------------------------------------------------
+      // ВКЛАДКА 1: МІСТОК ТА КЛАСИЧНІ ПРИЛАДИ
+      // -----------------------------------------------------------------------
+      {
+        id: "bridge",
+        icon: "🚢",
+        shortLabel: "1. Місток & Огляд",
+        fullTitle: "Навігаційний місток та класичні прилади (Navigation Bridge)",
+        badge: "COMMAND CENTRE",
+        themeColor: "blue",
+        summary: "Командний центр («Мозок судна») на найвищій палубі надбудови. Об'єднує візуальне спостереження, радіозв'язок, астронавігацію та всі електронні системи.",
+        connections: {
+          inputs: [
+            { targetTab: "sensors", label: "Датчики судна (GYRO, LOG, GPS)", detail: "Подають курс, швидкість і координати на пульти містка" },
+            { targetTab: "radar", label: "Радар (Marine Radar)", detail: "Відображає цілі та берегову лінію навколо судна" },
+            { targetTab: "ais", label: "АІС (AIS System)", detail: "Приймає цифрові дані про судна поблизу по УКХ" }
+          ],
+          outputs: [
+            { targetTab: "ecdis", label: "Карти та ECDIS", detail: "Планування переходу (Passage planning) та контроль маршруту" },
+            { targetTab: "arpa", label: "САРП (ARPA Safety)", detail: "Оцінка ризику зіткнення та прийняття рішень" },
+            { targetTab: "sensors", label: "Autopilot & Helm (Штурвал)", detail: "Керування курсом і швидкістю судна" }
+          ]
+        },
+        accordions: [
+          {
+            title: "1. The Navigation Bridge — Командний центр судна (English + Переклад)",
+            subtitle: "Розташування містка, оглядовість та головна роль на борту",
+            defaultOpen: true,
+            items: [
+              {
+                code: "BRAIN OF THE SHIP",
+                title: "Місток як головний командний пункт",
+                summary: "Uppermost deck of the superstructure • Clear visibility",
+                content: `
+                  <div class="p-3 rounded-lg bg-blue-50/70 border border-blue-200 text-xs sm:text-sm text-slate-800 mb-3">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"The navigation bridge is a command centre of the vessel. It is the brain of the ship... The navigation bridge is situated on the uppermost deck of the superstructure and is so constructed that the navigators get clear visibility. The bridge contains all the necessary equipment for safe and efficient navigation."</i>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1.5 text-slate-700 text-xs sm:text-sm">
+                    <li><b>Command centre / Brain of the ship:</b> Навігаційний місток — це командний центр і «мозок» судна.</li>
+                    <li><b>Uppermost deck of the superstructure:</b> Розташований на найвищій палубі надбудови.</li>
+                    <li><b>Clear visibility:</b> Сконструйований так, щоб штурмани мали чистий, безперешкодний круговий огляд.</li>
+                    <li><b>Safe and efficient navigation:</b> Містить усе необхідне обладнання для безпечної та ефективної навігації.</li>
+                  </ul>
+                `
+              }
+            ]
+          },
+          {
+            title: "2. Основні функції на містку та словник (Activities & Vocabulary)",
+            subtitle: "5 головних завдань вахти + обов'язкові англійські дієслова та прилади",
+            defaultOpen: false,
+            items: [
+              {
+                code: "5 CORE TASKS",
+                title: "П'ять головних процесів на навігаційному містку",
+                summary: "Lookout, Speed & direction control, Passage planning, Position fixing, Communication",
+                content: `
+                  <ul class="list-disc pl-5 space-y-1.5 text-slate-700 text-xs sm:text-sm">
+                    <li><b>Lookout</b> — візуальне та слухове спостереження за обстановкою.</li>
+                    <li><b>Speed and direction control</b> — контроль швидкості та напрямку руху (курсу).</li>
+                    <li><b>Passage planning</b> — планування переходу (рейсу від причалу до причалу).</li>
+                    <li><b>Position fixing</b> — визначення місцезнаходження судна (обсервація).</li>
+                    <li><b>Communication</b> — зовнішній та внутрішній радіозв'язок.</li>
+                  </ul>
+                `
+              },
+              {
+                code: "VOCABULARY",
+                title: "Дії штурмана та базові інструменти (Із тексту)",
+                summary: "to communicate, to keep a lookout, binoculars, portable radio...",
+                content: `
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm">
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <b>to communicate</b> — здійснювати зв'язок / спілкуватися
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <b>to keep in touch with</b> — підтримувати зв'язок із (іншими суднами / берегом)
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <b>to plan the passage</b> — планувати навігаційний перехід
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <b>to keep a lookout</b> — нести візуальну вахту (спостереження)
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <b>to ensure safety</b> — забезпечувати безпеку мореплавства
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <b>to fix ship’s position</b> — визначати координати (місце) судна
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <b>to navigate</b> — керувати судном / вести судноводіння
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-blue-50 border border-blue-200">
+                      <b>Binoculars &amp; Portable radio</b> — бінокль (для спостереження) та переносна рація (для оперативного зв'язку)
+                    </div>
+                  </div>
+                `
+              }
+            ]
+          },
+          {
+            title: "3. Астронавігація та історичні прилади (Sextant, Chronometer, Compass)",
+            subtitle: "Як століттями визначали широту (Latitude) та довготу (Longitude) за світилами",
+            defaultOpen: false,
+            items: [
+              {
+                code: "CELESTIAL",
+                title: "Спостереження за світилами (Sun, Moon, Planets, and Stars)",
+                summary: "Класичний контроль місцезнаходження судна в океані",
+                content: `
+                  <div class="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-800 mb-2">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"On the bridge, the navigator uses various equipment to locate the ship's position. The navigator checks the position by observing the sun, moon, planets, and stars. For hundreds of years, the most important navigation devices have included a compass to tell direction, a chronometer to tell the exact time and help determine a ship's longitude, and a sextant to calculate a ship's latitude by measuring the angle of the sun or of a star above the horizon."</i>
+                  </div>
+                `
+              },
+              {
+                code: "CHRONOMETER",
+                title: "Chronometer (Хронометр) → Визначення Довготи (Longitude)",
+                summary: "Точний час (exact time) дозволяє обчислити довготу судна",
+                content: `
+                  <p class="text-xs sm:text-sm text-slate-700">
+                    <b>Призначення:</b> Показує точний еталонний час (<i>to tell the exact time</i>) за Гринвічем.<br>
+                    <b>Яку координату дає:</b> Допомагає визначити <b>довготу судна (ship's longitude)</b> з огляду на різницю між місцевим часом меридіана та всесвітнім часом (Земля обертається на 15° довготи за годину).
+                  </p>
+                `
+              },
+              {
+                code: "SEXTANT",
+                title: "Sextant (Секстант) → Визначення Широти (Latitude)",
+                summary: "Вимірює кут світила над горизонтом (angle above the horizon)",
+                content: `
+                  <p class="text-xs sm:text-sm text-slate-700">
+                    <b>Призначення:</b> Оптичний кутомірний прилад, що вимірює вертикальний кут (висоту) Сонця або зірки над видимим горизонтом (<i>measuring the angle of the sun or of a star above the horizon</i>).<br>
+                    <b>Яку координату дає:</b> Дозволяє розрахувати <b>широту судна (ship's latitude)</b>.
+                  </p>
+                `
+              }
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // ВКЛАДКА 2: РАДАР (РЛС)
+      // -----------------------------------------------------------------------
+      {
+        id: "radar",
+        icon: "📡",
+        shortLabel: "2. Радар (РЛС)",
+        fullTitle: "Морський радар та фізичні дані цілей (Marine Radar)",
+        badge: "RADAR TRACKING",
+        themeColor: "indigo",
+        summary: "Випромінює радіоімпульси та приймає луна-сигнал (ехо) від суден і берегів. Визначає дистанцію (RNG) і пеленг (BRG), підтримує безпечний курс і дозволяє визначати місце судна.",
+        connections: {
+          inputs: [
+            { targetTab: "sensors", label: "GYRO (Гірокомпас)", detail: "Подає істинний курс (HDG) та тримає режим N-UP (North-Up)" },
+            { targetTab: "sensors", label: "LOG / SDME (Лаг)", detail: "Подає швидкість відносно води (STW) для режиму True Motion" },
+            { targetTab: "sensors", label: "GPS & CCR", detail: "Подає координати (POS), SOG та зводить відстані до єдиної точки CCR" },
+            { targetTab: "ais", label: "АІС (AIS Data)", detail: "Передає мітки АІС для об'єднання з радарним ехом (режим ANS)" }
+          ],
+          outputs: [
+            { targetTab: "arpa", label: "Процесор САРП (ARPA)", detail: "Передає координати цілей (RNG, BRG) для розрахунку CPA/TCPA та PAD" },
+            { targetTab: "ecdis", label: "ECDIS (Електронна карта)", detail: "Накладає радарну картинку (Radar Overlay) та цілі на карту" }
+          ]
+        },
+        accordions: [
+          {
+            title: "1. Призначення РЛС та поняття Tracking (English Text + Переклад)",
+            subtitle: "Що таке супровід цілей (tracking) і які 4 головні завдання виконує морський радар",
+            defaultOpen: true,
+            items: [
+              {
+                code: "MARINE RADAR",
+                title: "Роль радара та 4 базові функції (From English Text)",
+                summary: "Identify, track and position other vessels within radar range",
+                content: `
+                  <div class="p-3 rounded-lg bg-indigo-50 border border-indigo-200 text-xs sm:text-sm text-slate-800 mb-3">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"One of the most important aspects of safe navigation is tracking. Tracking means monitoring, or following objects underway. Radar plays an essential role in navigation. It is used to identify, track and position other vessels in order to navigate the ship from one point to another safely. The screen displays all the targets within the radar range."</i>
+                  </div>
+                  <p class="font-bold text-slate-900 text-xs sm:text-sm mb-1.5">Морський радар використовується для 4 завдань (Marine radar is used to):</p>
+                  <ol class="list-decimal pl-5 space-y-1 text-slate-700 text-xs sm:text-sm">
+                    <li><b>calculate range and bearing of a target</b> — обчислювати дистанцію (<code>RNG</code>) та пеленг (<code>BRG</code>) до цілі;</li>
+                    <li><b>determine speed and course</b> — визначати швидкість і курс руху об'єктів;</li>
+                    <li><b>maintain a safe course</b> — підтримувати безпечний курс свого судна;</li>
+                    <li><b>fix the ship’s position</b> — визначати місцезнаходження судна (за береговими орієнтирами).</li>
+                  </ol>
+                `
+              }
+            ]
+          },
+          {
+            title: "2. Фізичні параметри цілей та інструменти вимірювання (RNG, BRG, EBL, VRM)",
+            subtitle: "Дані, які радар вираховує сам за радіопроменем, та ручні лінійки штурмана",
+            defaultOpen: true,
+            items: [
+              {
+                code: "RNG",
+                title: "RNG (Range) — Дистанція до цілі",
+                summary: "Відстань від вашого судна до об'єкта в морських милях (NM) або кабельтових",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Радар визначає дистанцію <code>RNG</code> за часом проходження радіоімпульсу до цілі та назад. Точне значення дистанції вручну вимірюється кільцем <code>VRM</code>.</p>`
+              },
+              {
+                code: "BRG",
+                title: "BRG (Bearing) — Пеленг на ціль",
+                summary: "Градусний кут напрямку на чуже судно або навігаційний орієнтир (000°–360°)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Кут між напрямком на Північ (або носом судна) і лінією на ціль. <b>Головна ознака небезпеки:</b> якщо дистанція <code>RNG</code> скорочується, а пеленг <code>BRG</code> майже не змінюється — судна йдуть на зіткнення!</p>`
+              },
+              {
+                code: "EBL",
+                title: "EBL (Electronic Bearing Line) — Електронна візирна лінійка",
+                summary: "Пунктирний промінь, який штурман вручну наводить на ціль для вимірювання пеленга (BRG)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Інструмент ручного заміру кута: штурман обертає лінійку <code>EBL</code> навколо центру розгортки, наводить її на ціль або мис і зчитує точний пеленг <code>BRG</code> у градусах.</p>`
+              },
+              {
+                code: "VRM",
+                title: "VRM (Variable Range Marker) — Рухоме кільце дальності",
+                summary: "Кругова пунктирна лінійка змінного радіуса для точного заміру відстані (RNG)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Штурман змінює діаметр кільця <code>VRM</code>, поки воно не торкнеться переднього краю луна-сигналу цілі, щоб дізнатися точну дистанцію <code>RNG</code>.</p>`
+              }
+            ]
+          },
+          {
+            title: "3. Статуси та типи цілей на екрані РЛС (TGT, LOST, PA, ANS)",
+            subtitle: "Як процесор радара маркує цілі, малює історію маневрів та об'єднує дані з АІС",
+            defaultOpen: false,
+            items: [
+              {
+                code: "TGT",
+                title: "TGT (Target) — Радіолокаційна ціль",
+                summary: "Загальне позначення будь-якого об'єкта, взятого на супровід",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Позначення цілі на екрані радара, якій присвоєно номер супроводу для розрахунку параметрів руху.</p>`
+              },
+              {
+                code: "LOST",
+                title: "LOST (Lost Target) — Втрачена ціль",
+                summary: "Ознака того, що радар або АІС втратили об'єкт із виду (супроводжується звуковим алертом)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Виникає, якщо луна-сигнал від судна зник (зайшло за мис, потрапило у смугу зливи або вийшло за дальність). На екрані блимає перекреслений знак і лунає звукова сигналізація.</p>`
+              },
+              {
+                code: "PA",
+                title: "PA (Past Positions) — Минулі положення цілі («Хвіст» із точок)",
+                summary: "Точки позаду судна, що показують історію його маневрів за останні кілька хвилин",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Якщо лінія точок <code>PA</code> пряма і інтервали рівні — судно йде постійним курсом і швидкістю. Якщо «хвіст» зігнувся — ціль почала поворот!</p>`
+              },
+              {
+                code: "ANS",
+                title: "ANS (AIS Target Association) — Об'єднання (асоціація) цілей РЛС та АІС",
+                summary: "Режим, коли радар зрозумів, що «пляма» луна-сигналу і трикутник АІС — це одне й те саме судно",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Щоб одне судно не роздвоювалося на екрані на дві окремі цілі, система <code>ANS</code> зіставляє їхні координати й рух та об'єднує радарну мітку і символ АІС в один комбінований знак.</p>`
+              }
+            ]
+          },
+          {
+            title: "4. Режими орієнтації та руху екрана (H-UP, N-UP, C-UP, RM, TM)",
+            subtitle: "Кнопки інтерфейсу, що змінюють відображення радарної картинки",
+            defaultOpen: false,
+            items: [
+              {
+                code: "H-UP",
+                title: "H-UP (Head-Up) — Орієнтація «За носом судна»",
+                summary: "Вгорі екрана завжди ніс вашого судна (нестабілізований режим)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Зручний для візуального порівняння з видом із вікна рубки, але під час повороту судна вся картинка на екрані обертається.</p>`
+              },
+              {
+                code: "N-UP",
+                title: "N-UP (North-Up) — Орієнтація «За Північчю»",
+                summary: "Вгорі екрана завжди Істинна Північ (потребує сигналу від GYRO!)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Картинка повністю збігається з навігаційною картою та ECDIS. Якщо зв'язок із гірокомпасом (<code>GYRO</code>) переривається — режим <code>N-UP</code> автоматично вимикається!</p>`
+              },
+              {
+                code: "C-UP",
+                title: "C-UP (Course-Up) — Орієнтація «За заданим курсом»",
+                summary: "Вгорі екрана фіксується курс, заданий у момент увімкнення режиму",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Стабілізований гірокомпасом режим: ніс дивиться вгору по генеральному курсу, але при невеликому рисканні судна на хвилі береги не розмиваються.</p>`
+              },
+              {
+                code: "RM",
+                title: "RM (Relative Motion) — Відносний рух",
+                summary: "Ви стоїте нерухомо в центрі екрана, а весь світ рухається відносно вас",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Найкращий режим для швидкої оцінки небезпеки зіткнення: якщо вектор відносного руху цілі спрямований прямо у центр (на ваше судно) — значить <code>CPA = 0</code>!</p>`
+              },
+              {
+                code: "TM",
+                title: "TM (True Motion) — Істинний рух",
+                summary: "Ви та інші кораблі пливете по екрану/карті, а суша та буї нерухомі",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Показує реальні курси суден відносно води або ґрунту. Берегова лінія залишається нерухомою на екрані.</p>`
+              }
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // ВКЛАДКА 3: САРП ТА БЕЗПЕКА (ARPA & SAR)
+      // -----------------------------------------------------------------------
+      {
+        id: "arpa",
+        icon: "🎯",
+        shortLabel: "3. САРП (ARPA) & SAR",
+        fullTitle: "САРП: Розрахунки безпеки, вектори та маркери лиха (ARPA & SAR)",
+        badge: "COLLISION AVOIDANCE",
+        themeColor: "amber",
+        summary: "Комп'ютер автоматичної радіолокаційної прокладки (ARPA) бере рух вашого судна (OS) та рух чужого судна (TGT) і математично розраховує ризик зіткнення (CPA, TCPA) та малює графічні зони небезпеки (PAD).",
+        connections: {
+          inputs: [
+            { targetTab: "radar", label: "Радар (RNG & BRG цілей)", detail: "Отримує послідовні заміри пеленга та дистанції до кожної цілі" },
+            { targetTab: "sensors", label: "GYRO & LOG (HDG + STW)", detail: "Отримує точний курс і швидкість власного судна у воді" }
+          ],
+          outputs: [
+            { targetTab: "ecdis", label: "ECDIS", detail: "Передає супроводжувані цілі САРП та тривоги небезпечного зближення" },
+            { targetTab: "sensors", label: "Штурман → Autopilot / Helm", detail: "На основі CPA та ромба PAD штурман виконує маневр розходження" }
+          ]
+        },
+        accordions: [
+          {
+            title: "1. ARPA в англійському тексті (Automatic Radar Plotting Aid)",
+            subtitle: "Еволюція радарних технологій для автоматичного виявлення ризику зіткнення",
+            defaultOpen: true,
+            items: [
+              {
+                code: "ARPA CONCEPT",
+                title: "Automatic Radar Plotting Aid — Система автоматичної радіолокаційної прокладки",
+                summary: "Calculates object's course, speed and distance → risk of collision",
+                content: `
+                  <div class="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-800 mb-2">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"In the course of time, radar technology has greatly improved and resulted in the introduction of Automatic Radar Plotting Aid (ARPA). It calculates the object's course, speed and distance, thereby knowing if there is a risk of collision."</i>
+                  </div>
+                  <p class="text-xs sm:text-sm text-slate-700">САРП звільняє штурмана від ручної прокладки на маневреному планшеті, автоматично обчислюючи курс, швидкість і дистанцію цілей для своєчасного попередження про ризик зіткнення (<i>risk of collision</i>).</p>
+                `
+              }
+            ]
+          },
+          {
+            title: "2. Розрахункові параметри безпеки (CPA, TCPA, BCR, BCT)",
+            subtitle: "Найважливіші цифри для розходження суден у морі",
+            defaultOpen: true,
+            items: [
+              {
+                code: "CPA",
+                title: "CPA (Closest Point of Approach) — Відстань найкоротшого зближення",
+                summary: "Мінімальна дистанція (у милях), на якій ви розійдетеся з ціллю",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Показує, на якій найменшій відстані судна пройдуть одне від одного, якщо збережуть поточні курси та швидкості. Якщо <code>CPA = 0</code> — судна йдуть прямо на зіткнення!</p>`
+              },
+              {
+                code: "TCPA",
+                title: "TCPA (Time to CPA) — Час до моменту найкоротшого зближення",
+                summary: "Скільки хвилин залишилося до точки максимального зближення (CPA)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Вимірюється у хвилинах. Позитивне значення <code>TCPA</code> означає, що судна зближуються; від'ємне (зі знаком мінус) — точка найкоротшого зближення вже пройдена.</p>`
+              },
+              {
+                code: "BCR",
+                title: "BCR (Bow Crossing Range) — Відстань перетину курсу по носу",
+                summary: "Дистанція, на якій чуже судно перетне лінію вашого курсу прямо перед вашим носом",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Допомагає штурману оцінити, чи безпечно ціль пройде по носу вашого судна, чи краще змінити курс/швидкість.</p>`
+              },
+              {
+                code: "BCT",
+                title: "BCT (Bow Crossing Time) — Час до перетину вашого курсу",
+                summary: "Час (у хвилинах) до моменту, коли ціль перетне лінію вашого курсу по носу",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Працює в парі з <code>BCR</code> і показує точний резерв часу до перетину курсу.</p>`
+              }
+            ]
+          },
+          {
+            title: "3. Додаткові графічні зони та вектори зближення (PAD, PPC, TCV)",
+            subtitle: "Наочні графічні фігури на екрані САРП для вибору безпечного маневру",
+            defaultOpen: false,
+            items: [
+              {
+                code: "PAD",
+                title: "PAD (Predicted Area of Danger) — Передбачувана зона небезпеки",
+                summary: "Графічний багатокутник (ромб або овал) навколо цілі на екрані РЛС",
+                content: `
+                  <p class="text-xs sm:text-sm text-slate-700 mb-2">Радар малює на екрані графічний багатокутник (зазвичай ромб або овал) на шляху чужого судна.</p>
+                  <div class="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-950">
+                    <b>Як користуватися PAD:</b> Якщо вектор руху вашого судна перетинає цей ромб (<code>PAD</code>), ви гарантовано зблизитеся на небезпечну відстань (менше заданого безпечного <code>CPA</code>). Дуже наочна річ для вибору курсу розходження: достатньо відвернути так, щоб ваш вектор оминув ромб <code>PAD</code>!
+                  </div>
+                `
+              },
+              {
+                code: "PPC",
+                title: "PPC (Predicted Point of Collision) — Передбачувана точка зіткнення",
+                summary: "Розрахункова геометрична точка перетину траєкторій, де станеться зіткнення (CPA = 0)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Точка, навколо якої комп'ютер САРП вибудовує зону небезпеки <code>PAD</code>.</p>`
+              },
+              {
+                code: "TCV",
+                title: "TCV (Target Control Vector) — Вектор контролю цілі",
+                summary: "Графічний вектор швидкості та напрямку руху супроводжуваної цілі",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Дозволяє візуально контролювати швидкість і напрямок переміщення об'єкта за вибраний інтервал часу (наприклад, за 6 або 12 хвилин).</p>`
+              }
+            ]
+          },
+          {
+            title: "4. Екстрені рятувальні маркери на екрані (SART та AIS-SART)",
+            subtitle: "Як радар та АІС відображають сигнали лиха від рятувальних плотів",
+            defaultOpen: false,
+            items: [
+              {
+                code: "SART",
+                title: "SART (Search and Rescue Transponder) — Радіолокаційний відповідач пошуку і рятування",
+                summary: "Серія з 12 чітких точок або дуг на екрані радара, що вказують напрямок на терплячих лихо",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Якщо аварійне судно або рятувальний пліт увімкнули <code>SART</code>, у відповідь на імпульс 3-сантиметрового радара (X-band) на вашому екрані з'явиться лінія з <b>12 яскравих точок або дуг</b>, що вказує точний пеленг і місцезнаходження людей у біді.</p>`
+              },
+              {
+                code: "AIS-SART",
+                title: "AIS-SART — Аварійний АІС-маркер пошуку і рятування",
+                summary: "Передає точні координати лиха каналами АІС (виділяється особливим символом)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Сучасний передавач із вбудованим GPS, який транслює сигнал лиха через УКХ-канали АІС. Радар та ECDIS виділяють його спеціальним помітним символом (коло з хрестиком всередині).</p>`
+              }
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // ВКЛАДКА 4: АІС (AIS SYSTEM)
+      // -----------------------------------------------------------------------
+      {
+        id: "ais",
+        icon: "📻",
+        shortLabel: "4. АІС (AIS)",
+        fullTitle: "Автоматична ідентифікаційна система (AIS — Automatic Identification System)",
+        badge: "VHF DIGITAL DATA",
+        themeColor: "cyan",
+        summary: "Цифрова система стеження та ідентифікації суден поблизу. Працює через радіоканали УКХ (VHF), передаючи паспортні дані судна, його координати, курс, швидкість, осадку, ETA та небезпечний вантаж (DG).",
+        connections: {
+          inputs: [
+            { targetTab: "sensors", label: "Власні датчики (GPS, GYRO, LOG)", detail: "Формують пакет динамічних даних вашого судна для передачі в ефір" },
+            { targetTab: "bridge", label: "УКХ-радіоефір (VHF Channels)", detail: "Приймає цифрові пакети від транспондерів інших суден та берегових станцій VTS" }
+          ],
+          outputs: [
+            { targetTab: "radar", label: "Екран РЛС (Режим ANS)", detail: "Виводить трикутники АІС на радар та об'єднує їх із луна-сигналом через ANS" },
+            { targetTab: "ecdis", label: "Електронна карта ECDIS", detail: "Миттєво відображає назви, курси та паспорти всіх суден на карті" }
+          ]
+        },
+        accordions: [
+          {
+            title: "1. Принцип роботи АІС та 9 параметрів із англійського тексту (English Text)",
+            subtitle: "Обмін цифровими даними по радіоканалах між суднами з виведенням на екран та ECDIS",
+            defaultOpen: true,
+            items: [
+              {
+                code: "AIS OVERVIEW",
+                title: "Automatic Identification System (English Text + Переклад)",
+                summary: "Identifies and locates other vessels in the vicinity via radio channels",
+                content: `
+                  <div class="p-3 rounded-lg bg-cyan-50 border border-cyan-200 text-xs sm:text-sm text-slate-800 mb-3">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"Automatic Identification System (AIS) is a tracking system that identifies and locates other vessels in the vicinity. AIS uses radio channels to exchange digital data between ships. The obtained information can be displayed on a screen or an ECDIS."</i>
+                  </div>
+                  <p class="font-bold text-slate-900 text-xs sm:text-sm mb-1.5">9 видів інформації, які надає АІС згідно з англійським текстом (It provides such information as):</p>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs sm:text-sm text-slate-700">
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200">1. <b>Vessel’s identification</b> (IMO number, call sign) — ідентифікація судна</div>
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200">2. <b>Position</b> — поточні координати</div>
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200">3. <b>Course</b> — курс відносно ґрунту (COG)</div>
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200">4. <b>Heading</b> — істинний курс носа (HDG)</div>
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200">5. <b>Speed</b> — швидкість (SOG)</div>
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200">6. <b>Destination</b> — порт призначення</div>
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200">7. <b>Draft / Draught</b> — осадка судна</div>
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200">8. <b>ETA</b> — розрахунковий час прибуття</div>
+                    <div class="p-2 rounded bg-slate-50 border border-slate-200 sm:col-span-2">9. <b>DG (Dangerous Goods)</b> — наявність небезпечного вантажу на борту</div>
+                  </div>
+                `
+              }
+            ]
+          },
+          {
+            title: "2. Розшифровка цифрових абревіатур АІС на екрані РЛС/ECDIS",
+            subtitle: "Що означає кожне поле, коли ви клікаєте на ціль АІС",
+            defaultOpen: true,
+            items: [
+              {
+                code: "MMSI",
+                title: "MMSI — Цифровий паспортний номер судна",
+                summary: "Унікальний 9-значний ідентифікатор суднової радіостанції та транспондера АІС",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Використовується для цифрового виклику судна по ЦВВ (DSC) та автоматичного розпізнавання цілі в системі АІС.</p>`
+              },
+              {
+                code: "IMO",
+                title: "IMO — Міжнародний незмінний номер судна",
+                summary: "Постійний 7-значний номер корпусу судна (не змінюється при зміні прапора чи власника)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Присвоюється судну під час побудови і залишається з ним на все життя.</p>`
+              },
+              {
+                code: "CALL SIGN",
+                title: "CALL SIGN — Позивний радіостанції корабля",
+                summary: "Унікальний буквено-цифровий позивний для голосового виклику по рації УКХ",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Дозволяє швидко викликати потрібне судно голосом у радіоефірі для узгодження маневру розходження.</p>`
+              },
+              {
+                code: "NAV STATUS",
+                title: "NAV STATUS — Навігаційний статус судна",
+                summary: "На ходу / На якорі / Обмежений у можливості маневрувати / Зайнятий ловом риби тощо",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Вказує поточний режим роботи судна згідно з правилами МПЗЗС-72 (COLREGs), що допомагає визначити, хто кому має поступитися дорогою.</p>`
+              },
+              {
+                code: "ROT",
+                title: "ROT (Rate of Turn) — Кутова швидкість повороту чужого судна",
+                summary: "Показує, наскільки швидко повертає ціль (у градусах за хвилину — deg/min)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Надзвичайно корисний параметр: передається напряму від гірокомпаса чужого судна і <b>миттєво</b> показує початок маневру цілі ще до того, як це помітить радар!</p>`
+              },
+              {
+                code: "ETA & DRAUGHT",
+                title: "ETA, DESTINATION, DRAUGHT (Draft) та DG",
+                summary: "Рейсові дані: час прибуття, порт призначення, осадка в метрах та небезпечний вантаж",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Вводяться штурманом перед виходом у рейс: куди прямує судно (<code>Destination</code>), коли прибуде (<code>ETA</code>), яка його поточна осадка (<code>Draught</code>) та чи перевозить воно небезпечні вантажі (<code>DG — Dangerous Goods</code>).</p>`
+              }
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // ВКЛАДКА 5: КАРТИ ТА ECDIS
+      // -----------------------------------------------------------------------
+      {
+        id: "ecdis",
+        icon: "🗺️",
+        shortLabel: "5. Карти & ECDIS",
+        fullTitle: "Морські навігаційні карти та система ECDIS (Charts & ECDIS)",
+        badge: "REAL-TIME INTEGRATION HUB",
+        themeColor: "emerald",
+        summary: "Морська карта — «серце і душа навігації». Сучасна система ECDIS замінює паперові карти, інтегруючи дані від GPS, AIS, ARPA, ехолота, гірокомпаса та лага на одному екрані в реальному часі.",
+        connections: {
+          inputs: [
+            { targetTab: "sensors", label: "GPS / GNSS", detail: "Подає точні координати (POS), курс (COG) та швидкість (SOG) у реальному часі" },
+            { targetTab: "sensors", label: "GYRO & LOG & Echo Sounder", detail: "Подають істинний курс (HDG), швидкість у воді (STW) та глибину під кілем" },
+            { targetTab: "ais", label: "АІС (AIS System)", detail: "Відображає мітки та паспорти суден поверх електронної карти" },
+            { targetTab: "arpa", label: "Радар та САРП (Radar / ARPA)", detail: "Накладає радарне ехо та вектори цілей (CPA/TCPA) на карту" }
+          ],
+          outputs: [
+            { targetTab: "bridge", label: "Вахтовий штурман (Passage Planning)", detail: "Дає повну навігаційну картину з одного погляду (at a glance)" },
+            { targetTab: "sensors", label: "Autopilot (Track Control)", detail: "Передає заданий маршрут для автоматичного утримання судна на лінії шляху" }
+          ]
+        },
+        accordions: [
+          {
+            title: "1. Паперова морська карта та штурманський стіл (Nautical Chart & Chart Table)",
+            subtitle: "«Серце і душа навігації», навігаційні посібники та 7 обов'язкових елементів карти",
+            defaultOpen: true,
+            items: [
+              {
+                code: "HEART AND SOUL",
+                title: "Nautical Chart, Chart Table & Publications (English Text + Переклад)",
+                summary: "Used to plan voyages and navigate ships safely and economically",
+                content: `
+                  <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-slate-800 mb-3">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"For centuries, a nautical chart has been the heart and soul of navigation. Mariners use charts to plan voyages and navigate ships safely and economically... On the bridge there’s a special chart table, where the navigator can comfortably shape the course. Apart from nautical charts, there’s a set of nautical publications."</i>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1 text-slate-700 text-xs sm:text-sm">
+                    <li><b>Heart and soul of navigation:</b> Морська карта — це «серце і душа навігації».</li>
+                    <li><b>Chart table:</b> Спеціальний штурманський стіл на містку, де штурман може зручно прокладати курс (<i>comfortably shape the course</i>).</li>
+                    <li><b>Nautical publications:</b> Комплект навігаційних книг і посібників (лоції, таблиці припливів, списки вогнів та радіосигналів).</li>
+                  </ul>
+                `
+              },
+              {
+                code: "7 CHART ELEMENTS",
+                title: "7 ключових видів інформації на морській карті (Essential information on)",
+                summary: "Глибини, небезпеки, ЗНО, припливи/течії, якірні стоянки, VTS, характер ґрунту",
+                content: `
+                  <ol class="list-decimal pl-5 space-y-1.5 text-slate-700 text-xs sm:text-sm">
+                    <li><b>depths of water and heights of land</b> — глибини води та висоти суші (маяків, гір);</li>
+                    <li><b>navigational hazards</b> — навігаційні небезпеки (мілини, рифи, скелі, затонулі судна);</li>
+                    <li><b>aids to navigation (ЗНО)</b> — засоби навігаційного обладнання (буї, маяки, віхи, вогні);</li>
+                    <li><b>tides and currents</b> — інформація про припливи/відпливи та морські течії;</li>
+                    <li><b>anchorage areas</b> — райони якірних стоянок;</li>
+                    <li><b>VTS (Vessel Traffic Services)</b> — зони дії служб регулювання руху суден;</li>
+                    <li><b>nature of the seabed</b> — характер морського дна / ґрунту (пісок, мул, камінь — важливо для постановки на якір).</li>
+                  </ol>
+                `
+              }
+            ]
+          },
+          {
+            title: "2. ECDIS — Електронна картографічна система (English Text + Інтеграція)",
+            subtitle: "Сучасна альтернатива паперовій карті, що працює в режимі реального часу",
+            defaultOpen: true,
+            items: [
+              {
+                code: "ECDIS HUB",
+                title: "Electronic Chart Display and Information System",
+                summary: "Displays all information in real time • Interfaced with GPS, AIS, ARPA, Echo sounder",
+                content: `
+                  <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-slate-800 mb-3">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"Electronic Chart Display and Information System (ECDIS) is modern alternative for a paper chart. All the information is displayed in real time. It eases the process of passage planning and provides all necessary navigational data at a glance. ECDIS is interfaced with other navigational equipment such as GPS, AIS, ARPA, echo sounder etc., which makes it a rich source of information."</i>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1.5 text-slate-700 text-xs sm:text-sm">
+                    <li><b>Modern alternative for a paper chart:</b> Офіційна сучасна заміна паперових карт.</li>
+                    <li><b>Displayed in real time:</b> Уся навігаційна обстановка відображається в реальному часі.</li>
+                    <li><b>Eases passage planning &amp; data at a glance:</b> Суттєво полегшує планування переходу і дає всі дані з одного погляду.</li>
+                    <li><b>Interfaced with (Інтегрована з):</b> <code>GPS</code> (позиція), <code>AIS</code> (цілі АІС), <code>ARPA</code> (радарні цілі), <code>Echo sounder</code> (ехолот — глибина), <code>Gyro</code> (курс), <code>Log</code> (швидкість).</li>
+                  </ul>
+                `
+              }
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // ВКЛАДКА 6: ДАТЧИКИ, ВЛАСНЕ СУДНО (OS) ТА КЕРУВАННЯ КУРСОМ
+      // -----------------------------------------------------------------------
+      {
+        id: "sensors",
+        icon: "🧭",
+        shortLabel: "6. Датчики, OS & Керування",
+        fullTitle: "Дані власного судна (OS), системні датчики та керування курсом",
+        badge: "SENSORS & STEERING",
+        themeColor: "violet",
+        summary: "Первинні джерела даних судна: GPS, Гірокомпас (GYRO), Магнітний компас, Лаг (LOG/SDME) та система єдиної точки відліку (CCR). Вони формують параметри власного судна (OS Data) та керують Авторульовим (Autopilot).",
+        connections: {
+          inputs: [
+            { targetTab: "bridge", label: "Супутники GNSS та фізичне середовище", detail: "Приймають сигнали супутників, обертання Землі та потік води" }
+          ],
+          outputs: [
+            { targetTab: "radar", label: "Радар (OS Data & N-UP)", detail: "Передають HDG, COG, SOG, STW, POS та зведення координат CCR" },
+            { targetTab: "arpa", label: "САРП (ARPA Processor)", detail: "Забезпечують розрахунок векторів розходження" },
+            { targetTab: "ais", label: "Транспондер АІС", detail: "Передають координати й курс вашого судна іншим кораблям" },
+            { targetTab: "ecdis", label: "ECDIS", detail: "Позиціонують значок вашого судна на електронній карті" }
+          ]
+        },
+        accordions: [
+          {
+            title: "1. Дані власного судна на екрані РЛС/ECDIS (OS — Own Ship Data)",
+            subtitle: "5 головних параметрів вашого корабля: HDG, COG, SOG, STW, POS",
+            defaultOpen: true,
+            items: [
+              {
+                code: "HDG vs COG",
+                title: "HDG (Heading) та COG (Course Over Ground) — У чому різниця?",
+                summary: "HDG — куди дивиться ніс за компасом (GYRO); COG — куди судно реально рухається по дну (GPS)",
+                content: `
+                  <ul class="list-disc pl-5 space-y-1.5 text-slate-700 text-xs sm:text-sm">
+                    <li><b>HDG (Heading) — Істинний курс носа судна:</b> куди фізично спрямований ніс вашого корабля за гірокомпасом (<code>GYRO</code>).</li>
+                    <li><b>COG (Course Over Ground) — Шляховий кут (курс відносно ґрунту):</b> куди судно реально зміщується з урахуванням бокового вітру (дрейфу) та морської течії (надходить від <code>GPS</code>).</li>
+                  </ul>
+                `
+              },
+              {
+                code: "STW vs SOG",
+                title: "STW (Speed Through Water) та SOG (Speed Over Ground) — У чому різниця?",
+                summary: "STW — швидкість скрізь воду (від лага LOG); SOG — швидкість відносно дна (від GPS)",
+                content: `
+                  <ul class="list-disc pl-5 space-y-1.5 text-slate-700 text-xs sm:text-sm">
+                    <li><b>STW (Speed Through Water) — Швидкість відносно води:</b> вимірюється датчиком швидкості — лагом (<code>LOG / SDME</code>). Саме вона потрібна САРП для правильного розрахунку маневрів у воді.</li>
+                    <li><b>SOG (Speed Over Ground) — Швидкість відносно ґрунту:</b> реальна швидкість руху відносно морського дна за даними супутників <code>GPS</code> (враховує попутну чи зустрічну течію).</li>
+                  </ul>
+                `
+              },
+              {
+                code: "POS",
+                title: "POS (Position) — Поточні географічні координати",
+                summary: "Широта (Latitude) та Довгота (Longitude) вашого судна від GPS",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Поточне місцезнаходження судна, приведене до єдиної точки відліку <code>CCR</code> на містку.</p>`
+              }
+            ]
+          },
+          {
+            title: "2. Системні датчики та похибки (GYRO, Magnetic Compass, LOG, GPS, CCR)",
+            subtitle: "Джерела навігаційних даних, контроль відмов та єдина точка відліку для великих суден",
+            defaultOpen: true,
+            items: [
+              {
+                code: "GYRO vs MAG",
+                title: "Gyro Compass (Гірокомпас) та Magnetic Compass (Магнітний компас)",
+                summary: "True North проти Magnetic North (English Text + індикація відмови GYRO на РЛС)",
+                content: `
+                  <div class="p-3 rounded-lg bg-violet-50 border border-violet-200 text-xs sm:text-sm text-slate-800 mb-3">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"Magnetic compass is one of the most reliable tools. The compass needle points the magnetic North, which is why a navigator shall always determine the compass errors in order to obtain the true bearing. Unlike magnetic compass, gyro compass is not affected by magnetic field and is used to find the true North."</i>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1.5 text-slate-700 text-xs sm:text-sm">
+                    <li><b>Magnetic Compass:</b> Не потребує електрики, стрілка вказує на <b>Магнітну Північ (Magnetic North)</b>. Штурман зобов'язаний визначати похибку компаса (<i>compass errors</i> — девіацію та схилення), щоб отримати істинний пеленг (<i>true bearing</i>).</li>
+                    <li><b>GYRO (Gyrocompass):</b> Не залежить від магнітного поля і вказує на <b>Істинну Північ (True North)</b>.</li>
+                    <li class="text-rose-800 font-medium"><b>УВАГА (Аварія GYRO на радарі):</b> Якщо напис <code>GYRO</code> на панелі РЛС блимає або горить жовтим — радар втратив зв'язок із гірокомпасом, і режим <code>N-UP (North-Up)</code> автоматично вимкнувся!</li>
+                  </ul>
+                `
+              },
+              {
+                code: "GPS / GNSS",
+                title: "GPS (Global Positioning System) — Супутникова система навігації",
+                summary: "Високоточні координати й маршрут за будь-якої погоди (English Text)",
+                content: `
+                  <div class="p-3 rounded-lg bg-violet-50 border border-violet-200 text-xs sm:text-sm text-slate-800 mb-2">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"Global Positioning System (GPS) is a highly effective satellite-based tracking system. With its help, a navigator can clearly understand what routes to take and what courses to avoid. It gives accurate information and is not much affected by weather conditions."</i>
+                  </div>
+                  <p class="text-xs sm:text-sm text-slate-700">Супутникова система, яка майже не залежить від погодних умов і дає координати <code>POS</code>, курс <code>COG</code> та швидкість <code>SOG</code>.</p>
+                `
+              },
+              {
+                code: "LOG / SDME",
+                title: "LOG (або SDME) — Судновий швидкістьомір (Лаг)",
+                summary: "Джерело даних про швидкість судна відносно води (STW)",
+                content: `<p class="text-xs sm:text-sm text-slate-700">Передає швидкість скрізь воду (<code>STW</code>) у радар, САРП та ECDIS.</p>`
+              },
+              {
+                code: "CCR / CCRP",
+                title: "CCR (Consistent Common Reference Point) — Єдина точка відліку",
+                summary: "Зведення відстаней від рознесених на 100–200 м антен до ходового містка",
+                content: `<p class="text-xs sm:text-sm text-slate-700">На великих суднах антена радара, антена GPS і сам місток знаходяться в різних місцях (розмах може сягати 100–200 метрів). Процесор РЛС та ECDIS перераховує всі відстані до однієї обраної точки — <code>CCR</code> (зазвичай на навігаційному містку), щоб уникнути похибок у сотні метрів при зближенні суден.</p>`
+              }
+            ]
+          },
+          {
+            title: "3. Керування курсом: Авторульовий та Штурвал (Autopilot & Helm)",
+            subtitle: "Автоматичне утримання курсу від гірокомпаса та перехід на ручне керування",
+            defaultOpen: false,
+            items: [
+              {
+                code: "AUTOPILOT & HELM",
+                title: "Autopilot та Helm / Steering Wheel (English Text + Переклад)",
+                summary: "Works in conjunction with gyro compass • Switch to manual steering",
+                content: `
+                  <div class="p-3 rounded-lg bg-violet-50 border border-violet-200 text-xs sm:text-sm text-slate-800 mb-3">
+                    <b>Оригінал (English Text):</b><br>
+                    <i>"Autopilot is considered to be one of the most technically advanced navigational tools on board a ship. It works in conjunction with the gyro compass and alters the course in the required time and manner. There’s also a helm, also known as a steering wheel, if in need to switch to manual steering."</i>
+                  </div>
+                  <ul class="list-disc pl-5 space-y-1.5 text-slate-700 text-xs sm:text-sm">
+                    <li><b>Autopilot (Авторульовий):</b> Працює у прямій зв'язці з <b>гірокомпасом (gyro compass)</b> та змінює/утримує курс у потрібний час і заданий спосіб.</li>
+                    <li><b>Helm / Steering wheel (Штурвал):</b> Використовується, коли необхідно <b>перейти на ручне керування кермом (to switch to manual steering)</b> — у вузькостях, при інтенсивному русі або під час маневру розходження.</li>
+                  </ul>
+                `
+              }
+            ]
+          }
+        ]
+      },
+
+      // -----------------------------------------------------------------------
+      // ВКЛАДКА 7: МАТРИЦЯ ВЗАЄМОЗВ'ЯЗКІВ ТА ПОШУК УСІХ АБРЕВІАТУР
+      // -----------------------------------------------------------------------
+      {
+        id: "matrix",
+        icon: "🔗",
+        shortLabel: "7. Схема зв'язків & Пошук",
+        fullTitle: "Інтерактивна схема зв'язків та Глосарій усіх термінів",
+        badge: "SYSTEM ARCHITECTURE",
+        themeColor: "slate",
+        summary: "Оберіть будь-який вузол у схемі, щоб миттєво побачити його вхідні та вихідні потоки даних, або скористайтеся миттєвим пошуком по всіх абревіатурах конспекту."
+      }
+    ];
+
+    // =========================================================================
+    // ДАНІ ДЛЯ ІНТЕРАКТИВНОГО СИМУЛЯТОРА ЗВ'ЯЗКІВ (У ВКЛАДЦІ 7)
+    // =========================================================================
+    const matrixNodes = [
+      {
+        id: "m_gyro",
+        code: "GYRO",
+        name: "Гірокомпас (Gyrocompass)",
+        tab: "sensors",
+        role: "Первинний датчик Істинної Півночі (True North). Не залежить від магнітного поля.",
+        sendsTo: [
+          "RADAR — подає істинний курс (HDG) та стабілізує картинку в режимі N-UP / C-UP",
+          "ARPA — забезпечує розрахунок істинних векторів цілей",
+          "ECDIS — орієнтує символ судна за курсом HDG",
+          "AUTOPILOT — веде судно заданим курсом (works in conjunction with gyro)"
+        ],
+        receivesFrom: ["Фізичне обертання Землі та живлення бортової мережі (Резерв: Magnetic Compass)"]
+      },
+      {
+        id: "m_gps",
+        code: "GPS / GNSS",
+        name: "Супутникова навігація (GPS)",
+        tab: "sensors",
+        role: "Всепогодна супутникова система позиціонування.",
+        sendsTo: [
+          "OS DATA (РЛС) — подає координати POS, шляховий кут COG та швидкість відносно ґрунту SOG",
+          "AIS — передає координати вашого судна для трансляції іншим кораблям",
+          "ECDIS — безперервно наносить позицію судна на електронну карту в реальному часі"
+        ],
+        receivesFrom: ["Сигнали навігаційних супутників (корекція зміщення антен через CCR)"]
+      },
+      {
+        id: "m_log",
+        code: "LOG / SDME",
+        name: "Лаг (Швидкістьомір)",
+        tab: "sensors",
+        role: "Датчик швидкості судна відносно води.",
+        sendsTo: [
+          "OS DATA (РЛС) — подає швидкість відносно води STW (Speed Through Water)",
+          "ARPA — базовий параметр швидкості для оцінки маневрів розходження",
+          "ECDIS — контроль пройденої відстані та швидкості у воді"
+        ],
+        receivesFrom: ["Гідродинамічний / доплерівський потік води під корпусом"]
+      },
+      {
+        id: "m_ccr",
+        code: "CCR / CCRP",
+        name: "Єдина точка відліку (CCR)",
+        tab: "sensors",
+        role: "Математичне зведення вимірів від рознесених на 100–200 м антен до ходового містка.",
+        sendsTo: [
+          "RADAR & ARPA — прибирає похибку в сотні метрів при замірі дистанції RNG до близьких цілей",
+          "ECDIS — узгоджує позицію GPS-антени, радарної антени та центру містка"
+        ],
+        receivesFrom: ["Геометрія розташування антен GPS, Радара та АІС на корпусі судна"]
+      },
+      {
+        id: "m_radar",
+        code: "RADAR",
+        name: "Морський Радар (РЛС)",
+        tab: "radar",
+        role: "Фізичне виявлення цілей радіопроменем у межах дальності (within radar range).",
+        sendsTo: [
+          "ARPA — передає дистанцію (RNG) та пеленг (BRG) цілей для автопрокладки",
+          "ECDIS — передає радарне накладання (Radar Overlay) та цілі",
+          "Штурман — виводить EBL, VRM, хвости PA, режим ANS та 12 точок SART"
+        ],
+        receivesFrom: ["GYRO (HDG, N-UP)", "LOG (STW)", "GPS (POS, COG, SOG)", "CCR", "AIS (для об'єднання цілей ANS)"]
+      },
+      {
+        id: "m_arpa",
+        code: "ARPA",
+        name: "САРП (Автопрокладка)",
+        tab: "arpa",
+        role: "Математичний розрахунок ризику зіткнення (risk of collision).",
+        sendsTo: [
+          "Екран РЛС та ECDIS — видає CPA, TCPA, BCR, BCT, ромб небезпеки PAD, точку PPC та вектор TCV",
+          "Система тривог — подає звуковий сигнал при небезпечному CPA або втраті цілі (LOST)"
+        ],
+        receivesFrom: ["RADAR (RNG, BRG)", "GYRO (HDG)", "LOG (STW)"]
+      },
+      {
+        id: "m_ais",
+        code: "AIS",
+        name: "Система АІС (VHF Data)",
+        tab: "ais",
+        role: "Обмін цифровими даними між суднами по радіоканалах УКХ.",
+        sendsTo: [
+          "RADAR — передає MMSI, IMO, Call Sign, ROT, Nav Status, ETA, Draught, DG та об'єднує цілі в режимі ANS",
+          "ECDIS — відображає трикутники цілей АІС та сигнали лиха AIS-SART на карті"
+        ],
+        receivesFrom: ["УКХ-радіоканали інших суден та VTS", "Власні датчики GPS, GYRO, LOG"]
+      },
+      {
+        id: "m_ecdis",
+        code: "ECDIS",
+        name: "Електронна карта (ECDIS)",
+        tab: "ecdis",
+        role: "Головний інтегратор містка в реальному часі (modern alternative for a paper chart).",
+        sendsTo: [
+          "Штурман — забезпечує планування переходу (passage planning) та огляд усіх небезпек і глибин (data at a glance)",
+          "AUTOPILOT — передає маршрут для автоматичного ведення судна"
+        ],
+        receivesFrom: ["GPS (POS, COG, SOG)", "AIS", "RADAR & ARPA", "GYRO (HDG)", "LOG (STW)", "Echo Sounder (глибини)"]
+      },
+      {
+        id: "m_steering",
+        code: "AUTOPILOT & HELM",
+        name: "Авторульовий та Штурвал",
+        tab: "sensors",
+        role: "Виконавчий механізм утримання та зміни курсу судна.",
+        sendsTo: ["Рульова машина (перо керма) — змінює або утримує курс судна"],
+        receivesFrom: ["GYRO (працює у зв'язці з гірокомпасом)", "ECDIS", "Ручне керування штурвалом (Helm — to switch to manual steering)"]
+      }
+    ];
+
+    // Повний словник для миттєвого пошуку у Вкладці 7
+    const quickGlossary = [
+      { code: "HDG", name: "Heading — Істинний курс носа судна", desc: "Куди дивиться ніс корабля за гірокомпасом (GYRO).", tab: "sensors" },
+      { code: "COG", name: "Course Over Ground — Шляховий кут (курс по ґрунту)", desc: "Куди судно реально зміщується з урахуванням вітру і течії (від GPS).", tab: "sensors" },
+      { code: "SOG", name: "Speed Over Ground — Швидкість відносно ґрунту", desc: "Реальна швидкість руху відносно морського дна за GPS.", tab: "sensors" },
+      { code: "STW", name: "Speed Through Water — Швидкість відносно води", desc: "Швидкість судна скрізь воду за лагом (LOG / SDME).", tab: "sensors" },
+      { code: "POS", name: "Position — Координати судна", desc: "Поточна широта (Latitude) і довгота (Longitude) вашого судна.", tab: "sensors" },
+      { code: "RNG", name: "Range — Дистанція до цілі", desc: "Відстань до радарної цілі у милях або кабельтових.", tab: "radar" },
+      { code: "BRG", name: "Bearing — Пеленг на ціль", desc: "Градусний кут напрямку на чуже судно або орієнтир.", tab: "radar" },
+      { code: "EBL", name: "Electronic Bearing Line — Електронна візирна лінійка", desc: "Промінь на екрані РЛС для ручного вимірювання пеленга (BRG).", tab: "radar" },
+      { code: "VRM", name: "Variable Range Marker — Рухоме кільце дальності", desc: "Кільце змінного радіуса для точного вимірювання дистанції (RNG).", tab: "radar" },
+      { code: "CPA", name: "Closest Point of Approach — Відстань найкоротшого зближення", desc: "Мінімальна дистанція розходження з ціллю (головний показник ризику зіткнення).", tab: "arpa" },
+      { code: "TCPA", name: "Time to CPA — Час до найкоротшого зближення", desc: "Час у хвилинах до досягнення точки CPA.", tab: "arpa" },
+      { code: "BCR", name: "Bow Crossing Range — Дистанція перетину курсу по носу", desc: "Відстань, на якій ціль перетне ваш курс прямо перед носом.", tab: "arpa" },
+      { code: "BCT", name: "Bow Crossing Time — Час до перетину курсу по носу", desc: "Час до моменту перетину вашого курсу чужим судном.", tab: "arpa" },
+      { code: "PAD", name: "Predicted Area of Danger — Передбачувана зона небезпеки", desc: "Графічний ромб/овал на екрані САРП; перетин вашим вектором означає небезпечне зближення.", tab: "arpa" },
+      { code: "PPC", name: "Predicted Point of Collision — Передбачувана точка зіткнення", desc: "Розрахункова геометрична точка зіткнення (центр зони PAD).", tab: "arpa" },
+      { code: "TCV", name: "Target Control Vector — Вектор контролю цілі", desc: "Графічний вектор швидкості та курсу супроводжуваної цілі.", tab: "arpa" },
+      { code: "MMSI", name: "Maritime Mobile Service Identity — Цифровий номер судна", desc: "9-значний цифровий паспорт судна в системі АІС та радіозв'язку.", tab: "ais" },
+      { code: "IMO", name: "IMO Number — Міжнародний номер судна", desc: "Незмінний 7-значний номер корпусу судна.", tab: "ais" },
+      { code: "CALL SIGN", name: "Call Sign — Позивний радіостанції", desc: "Радіопозивний корабля для голосового зв'язку по УКХ.", tab: "ais" },
+      { code: "NAV STATUS", name: "Navigational Status — Навігаційний статус", desc: "Статус в АІС: На ходу / На якорі / Обмежений в маневрі тощо.", tab: "ais" },
+      { code: "ROT", name: "Rate of Turn — Швидкість повороту", desc: "Кутова швидкість повороту судна у градусах за хвилину (миттєво показує маневр).", tab: "ais" },
+      { code: "ETA", name: "Estimated Time of Arrival — Розрахунковий час прибуття", desc: "Час прибуття цілі у порт призначення (Destination).", tab: "ais" },
+      { code: "DRAUGHT", name: "Draught / Draft — Осадка судна", desc: "Глибина занурення корпусу судна в метрах.", tab: "ais" },
+      { code: "DG", name: "Dangerous Goods — Небезпечний вантаж", desc: "Інформація в АІС про перевезення небезпечних вантажів.", tab: "ais" },
+      { code: "H-UP", name: "Head-Up — Режим «За носом»", desc: "Вгорі екрана РЛС завжди ніс вашого судна.", tab: "radar" },
+      { code: "N-UP", name: "North-Up — Режим «За Північчю»", desc: "Вгорі екрана РЛС завжди Істинна Північ (потребує сигналу GYRO).", tab: "radar" },
+      { code: "C-UP", name: "Course-Up — Режим «За курсом»", desc: "Вгорі екрана РЛС фіксується заданий курс судна.", tab: "radar" },
+      { code: "RM", name: "Relative Motion — Відносний рух", desc: "Ви стоїте в центрі екрана, а цілі та береги рухаються відносно вас.", tab: "radar" },
+      { code: "TM", name: "True Motion — Істинний рух", desc: "Ви та інші кораблі пливете по екрану, а земля нерухома.", tab: "radar" },
+      { code: "TGT", name: "Target — Ціль", desc: "Загальне позначення будь-якої радіолокаційної цілі.", tab: "radar" },
+      { code: "LOST", name: "Lost Target — Втрачена ціль", desc: "Сигнал та звуковий алерт про втрату супроводжуваної цілі з виду.", tab: "radar" },
+      { code: "PA", name: "Past Positions — Минулі положення цілі", desc: "«Хвіст» із точок позаду судна, що показує історію його маневрів.", tab: "radar" },
+      { code: "ANS", name: "AIS Target Association — Об'єднання цілей", desc: "Режим злиття радарної плями луна-сигналу і трикутника АІС одного судна.", tab: "radar" },
+      { code: "GYRO", name: "Gyrocompass — Гірокомпас", desc: "Вказує на Істинну Північ (True North). Якщо блимає жовтим — втрачено зв'язок і вимкнувся N-UP.", tab: "sensors" },
+      { code: "LOG / SDME", name: "Log — Лаг (швидкістьомір)", desc: "Вимірює швидкість судна відносно води (STW).", tab: "sensors" },
+      { code: "GPS / GNSS", name: "Global Positioning System — Супутникова навігація", desc: "Всепогодна система, що дає координати POS, курс COG та швидкість SOG.", tab: "sensors" },
+      { code: "CCR / CCRP", name: "Consistent Common Reference Point — Єдина точка відліку", desc: "Перерахунок усіх дистанцій від рознесених антен (100–200 м) до ходового містка.", tab: "sensors" },
+      { code: "SART", name: "Search and Rescue Transponder — Радіолокаційний відповідач", desc: "Дає на екрані радара лінію з 12 точок/дуг у напрямку на рятувальний пліт.", tab: "arpa" },
+      { code: "AIS-SART", name: "AIS Search and Rescue Transmitter — Аварійний АІС-маркер", desc: "Передає координати лиха по УКХ-каналах АІС (особливий символ на РЛС та ECDIS).", tab: "arpa" },
+      { code: "ECDIS", name: "Electronic Chart Display and Information System", desc: "Сучасна електронна картографічна система, інтегрована з GPS, AIS, ARPA, ехолотом.", tab: "ecdis" },
+      { code: "VTS", name: "Vessel Traffic Services — Служба регулювання руху суден", desc: "Берегова система контролю судноплавства, позначена на морських картах.", tab: "ecdis" },
+      { code: "SEXTANT", name: "Sextant — Секстант", desc: "Вимірює кут світила над горизонтом для обчислення Широти (Latitude).", tab: "bridge" },
+      { code: "CHRONOMETER", name: "Chronometer — Хронометр", desc: "Прилад точного часу для визначення Довготи судна (Longitude).", tab: "bridge" }
+    ];
+
+    // =========================================================================
+    // ЛОГІКА ВІДОБРАЖЕННЯ ВКЛАДОК ТА ВИПАДАЮЧИХ СПИСКІВ
+    // =========================================================================
+    let activeTabId = "bridge";
+    let activeMatrixNodeId = "m_ecdis";
+
+    const themeColors = {
+      blue: {
+        tabActive: "border-blue-600 text-blue-700 bg-blue-50/70",
+        bannerBg: "bg-gradient-to-r from-blue-600 to-blue-700",
+        badge: "bg-blue-100 text-blue-800 border-blue-200",
+        codePill: "bg-blue-600 text-white"
+      },
+      indigo: {
+        tabActive: "border-indigo-600 text-indigo-700 bg-indigo-50/70",
+        bannerBg: "bg-gradient-to-r from-indigo-600 to-indigo-700",
+        badge: "bg-indigo-100 text-indigo-800 border-indigo-200",
+        codePill: "bg-indigo-600 text-white"
+      },
+      amber: {
+        tabActive: "border-amber-600 text-amber-800 bg-amber-50/80",
+        bannerBg: "bg-gradient-to-r from-amber-600 to-amber-700",
+        badge: "bg-amber-100 text-amber-900 border-amber-200",
+        codePill: "bg-amber-600 text-white"
+      },
+      cyan: {
+        tabActive: "border-cyan-600 text-cyan-800 bg-cyan-50/80",
+        bannerBg: "bg-gradient-to-r from-cyan-600 to-cyan-700",
+        badge: "bg-cyan-100 text-cyan-900 border-cyan-200",
+        codePill: "bg-cyan-600 text-white"
+      },
+      emerald: {
+        tabActive: "border-emerald-600 text-emerald-800 bg-emerald-50/80",
+        bannerBg: "bg-gradient-to-r from-emerald-600 to-emerald-700",
+        badge: "bg-emerald-100 text-emerald-900 border-emerald-200",
+        codePill: "bg-emerald-600 text-white"
+      },
+      violet: {
+        tabActive: "border-violet-600 text-violet-800 bg-violet-50/80",
+        bannerBg: "bg-gradient-to-r from-violet-600 to-violet-700",
+        badge: "bg-violet-100 text-violet-900 border-violet-200",
+        codePill: "bg-violet-600 text-white"
+      },
+      slate: {
+        tabActive: "border-slate-800 text-slate-900 bg-slate-100",
+        bannerBg: "bg-gradient-to-r from-slate-800 to-slate-900",
+        badge: "bg-slate-200 text-slate-800 border-slate-300",
+        codePill: "bg-slate-800 text-white"
+      }
+    };
+
+    function renderTabsNav() {
+      const nav = document.getElementById("tabsNav");
+      nav.innerHTML = tabsData.map(tab => {
+        const isActive = tab.id === activeTabId;
+        const theme = themeColors[tab.themeColor] || themeColors.blue;
+        const activeClasses = isActive
+          ? `${theme.tabActive} border-b-2 font-bold shadow-2xs`
+          : "border-b-2 border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium";
+
+        return `
+          <button
+            onclick="switchTab('${tab.id}')"
+            class="px-3.5 py-2.5 text-xs sm:text-sm rounded-t-xl whitespace-nowrap transition flex items-center gap-2 ${activeClasses}"
+          >
+            <span>${tab.icon}</span>
+            <span>${tab.shortLabel}</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function switchTab(tabId) {
+      activeTabId = tabId;
+      renderTabsNav();
+      renderActiveTabContent();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openQuickSearch() {
+      switchTab("matrix");
+      setTimeout(() => {
+        const input = document.getElementById("glossarySearchInput");
+        if (input) input.focus();
+      }, 100);
+    }
+
+    function renderActiveTabContent() {
+      const container = document.getElementById("tabContentArea");
+      const tab = tabsData.find(t => t.id === activeTabId);
+      if (!tab) return;
+
+      const theme = themeColors[tab.themeColor] || themeColors.blue;
+
+      // Якщо це Вкладка 7 (Матриця зв'язків та Глосарій)
+      if (tab.id === "matrix") {
+        container.innerHTML = renderMatrixTabHtml(tab, theme);
+        selectMatrixNode(activeMatrixNodeId);
+        filterGlossary("");
+        return;
+      }
+
+      // Блок взаємозв'язків для вкладки приладу
+      const inputsHtml = tab.connections.inputs.map(inp => `
+        <button
+          onclick="switchTab('${inp.targetTab}')"
+          class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 transition group flex items-start justify-between gap-2 shadow-2xs"
+          title="Натисніть, щоб перейти до вкладки цього приладу"
+        >
+          <div>
+            <div class="text-xs font-bold text-slate-900 group-hover:text-blue-700 flex items-center gap-1.5">
+              <span class="text-emerald-600">→</span>
+              <span>${inp.label}</span>
+            </div>
+            <div class="text-[11px] text-slate-600 mt-0.5">${inp.detail}</div>
+          </div>
+          <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded shrink-0">Перейти ↗</span>
+        </button>
+      `).join("");
+
+      const outputsHtml = tab.connections.outputs.map(out => `
+        <button
+          onclick="switchTab('${out.targetTab}')"
+          class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 transition group flex items-start justify-between gap-2 shadow-2xs"
+          title="Натисніть, щоб перейти до вкладки цього приладу"
+        >
+          <div>
+            <div class="text-xs font-bold text-slate-900 group-hover:text-blue-700 flex items-center gap-1.5">
+              <span class="text-blue-600">⇒</span>
+              <span>${out.label}</span>
+            </div>
+            <div class="text-[11px] text-slate-600 mt-0.5">${out.detail}</div>
+          </div>
+          <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded shrink-0">Перейти ↗</span>
+        </button>
+      `).join("");
+
+      // Випадаючі списки (Акордеони)
+      const accordionsHtml = tab.accordions.map((acc, accIdx) => {
+        const accId = `acc_${tab.id}_${accIdx}`;
+        const isOpen = acc.defaultOpen;
+
+        const nestedItemsHtml = acc.items.map((item, itemIdx) => {
+          const itemId = `item_${tab.id}_${accIdx}_${itemIdx}`;
+          // Перший елемент у відкритому списку робимо розгорнутим для наочності
+          const itemOpen = isOpen && itemIdx === 0;
+
+          return `
+            <div class="border border-slate-200 rounded-xl bg-white overflow-hidden transition hover:border-slate-300">
+              <button
+                type="button"
+                onclick="toggleDrop('${itemId}', this)"
+                class="w-full text-left px-4 py-3 flex items-start sm:items-center justify-between gap-3 hover:bg-slate-50/80 transition ${itemOpen ? 'open-btn bg-slate-50/60' : ''}"
+              >
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+                  <span class="font-mono-code text-xs font-bold px-2.5 py-1 rounded-md shrink-0 w-fit ${theme.codePill}">
+                    ${item.code}
+                  </span>
+                  <div>
+                    <div class="font-bold text-sm text-slate-900">${item.title}</div>
+                    <div class="text-xs text-slate-500">${item.summary}</div>
+                  </div>
+                </div>
+                <svg class="chevron w-4 h-4 text-slate-400 shrink-0 mt-1 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+
+              <div id="${itemId}" class="accordion-body ${itemOpen ? 'open' : ''}">
+                <div class="accordion-inner">
+                  <div class="px-4 pb-4 pt-2.5 border-t border-slate-100 bg-white">
+                    ${item.content}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+            <button
+              type="button"
+              onclick="toggleDrop('${accId}', this)"
+              class="w-full text-left px-5 py-4 bg-slate-50/70 hover:bg-slate-100/70 flex items-center justify-between gap-4 transition ${isOpen ? 'open-btn border-b border-slate-200' : ''}"
+            >
+              <div>
+                <h3 class="text-sm sm:text-base font-bold text-slate-900">${acc.title}</h3>
+                <p class="text-xs text-slate-500 mt-0.5">${acc.subtitle}</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="hidden sm:inline-block text-[11px] font-semibold text-slate-500 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                  ${acc.items.length} ${acc.items.length === 1 ? 'пункт' : 'пункти(ів)'}
+                </span>
+                <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600">
+                  <svg class="chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <div id="${accId}" class="accordion-body ${isOpen ? 'open' : ''}">
+              <div class="accordion-inner">
+                <div class="p-4 sm:p-5 space-y-2.5 bg-slate-50/30">
+                  ${nestedItemsHtml}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      container.innerHTML = `
+        <div class="tab-pane space-y-6">
+          
+          <!-- ВЕРХНЯ КАРТКА ПРИЛАДУ -->
+          <div class="${theme.bannerBg} rounded-2xl p-5 sm:p-6 text-white shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">${tab.icon}</span>
+                  <span class="font-mono-code text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-white/20 text-white">
+                    ${tab.badge}
+                  </span>
+                </div>
+                <h2 class="text-lg sm:text-2xl font-extrabold tracking-tight">${tab.fullTitle}</h2>
+                <p class="text-xs sm:text-sm text-white/90 max-w-3xl leading-relaxed">${tab.summary}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ІНТЕРАКТИВНИЙ БЛОК ВЗАЄМОЗВ'ЯЗКІВ ЦЬОГО ПРИЛАДУ -->
+          <div class="bg-slate-100/80 rounded-2xl border border-slate-200 p-4 sm:p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                <span>🔗 Як ця система пов'язана з іншими приладами на містку</span>
+              </h3>
+              <span class="text-[11px] text-slate-500 hidden sm:inline">Клікніть на будь-який зв'язок для переходу до вкладки приладу</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Вхідні потоки -->
+              <div class="space-y-2">
+                <div class="text-xs font-bold text-emerald-800 uppercase tracking-wide flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  Звідки отримує дані (Вхід):
+                </div>
+                <div class="space-y-2">
+                  ${inputsHtml}
+                </div>
+              </div>
+              <!-- Вихідні потоки -->
+              <div class="space-y-2">
+                <div class="text-xs font-bold text-blue-800 uppercase tracking-wide flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                  Куди передає дані (Вихід):
+                </div>
+                <div class="space-y-2">
+                  ${outputsHtml}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ПАНЕЛЬ КЕРУВАННЯ ВИПАДАЮЧИМИ СПИСКАМИ ВКЛАДКИ -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+            <h3 class="text-sm sm:text-base font-bold text-slate-900">
+              📚 Детальний конспект розділу (Випадаючі списки по кліку)
+            </h3>
+            <div class="flex items-center gap-2">
+              <button
+                onclick="toggleAllInCurrentTab(true)"
+                class="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition"
+              >
+                + Розгорнути всі списки
+              </button>
+              <button
+                onclick="toggleAllInCurrentTab(false)"
+                class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition"
+              >
+                − Згорнути всі списки
+              </button>
+            </div>
+          </div>
+
+          <!-- СПИСОК АКОРДЕОНІВ -->
+          <div class="space-y-4">
+            ${accordionsHtml}
+          </div>
+
+        </div>
+      `;
+    }
+
+    // Рендер Вкладки 7 (Інтерактивна схема + Пошук усіх абревіатур)
+    function renderMatrixTabHtml(tab, theme) {
+      const nodeButtonsHtml = matrixNodes.map(n => `
+        <button
+          onclick="selectMatrixNode('${n.id}')"
+          id="btn_${n.id}"
+          class="matrix-node-btn p-3 rounded-xl border text-left transition flex flex-col justify-between"
+        >
+          <span class="font-mono-code text-xs font-bold px-2 py-0.5 rounded w-fit mb-1.5 bg-slate-200 text-slate-800">${n.code}</span>
+          <span class="text-xs font-bold text-slate-900 leading-snug">${n.name}</span>
+        </button>
+      `).join("");
+
+      return `
+        <div class="tab-pane space-y-6">
+          <div class="${theme.bannerBg} rounded-2xl p-5 sm:p-6 text-white shadow-sm">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-2xl">${tab.icon}</span>
+              <span class="font-mono-code text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-white/20 text-white">
+                ${tab.badge}
+              </span>
+            </div>
+            <h2 class="text-lg sm:text-2xl font-extrabold">${tab.fullTitle}</h2>
+            <p class="text-xs sm:text-sm text-white/90 mt-1">${tab.summary}</p>
+          </div>
+
+          <!-- ЧАСТИНА 1: ІНТЕРАКТИВНИЙ КОНСТРУКТОР ЗВ'ЯЗКІВ -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">1. Інтерактивна схема потоків даних: Натисніть на прилад</h3>
+              <p class="text-xs text-slate-500">Оберіть будь-яку систему нижче, щоб побачити, з чим вона з'єднана на містку:</p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+              ${nodeButtonsHtml}
+            </div>
+
+            <!-- Картка вибраного вузла -->
+            <div id="matrixInspector" class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+              <!-- Заповнюється функцією selectMatrixNode -->
+            </div>
+          </div>
+
+          <!-- ЧАСТИНА 2: МИТТЄВИЙ ПОШУК ПО ВСІХ АБРЕВІАТУРАХ ТА ТЕРМІНАХ -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">2. Швидкий довідник-пошук усіх абревіатур (42 терміни)</h3>
+                <p class="text-xs text-slate-500">Введіть абревіатуру (наприклад: CPA, PAD, CCR, ROT, SART, EBL) або слово українською</p>
+              </div>
+              <div class="relative w-full sm:w-72">
+                <input
+                  id="glossarySearchInput"
+                  type="text"
+                  oninput="filterGlossary(this.value)"
+                  placeholder="Пошук (CPA, PAD, GYRO, STW...)"
+                  class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                >
+                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div id="glossaryGrid" class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              <!-- Заповнюється функцією filterGlossary -->
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectMatrixNode(nodeId) {
+      activeMatrixNodeId = nodeId;
+      const node = matrixNodes.find(n => n.id === nodeId);
+      if (!node) return;
+
+      document.querySelectorAll(".matrix-node-btn").forEach(btn => {
+        if (btn.id === `btn_${nodeId}`) {
+          btn.className = "matrix-node-btn p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition flex flex-col justify-between shadow-xs";
+        } else {
+          btn.className = "matrix-node-btn p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition flex flex-col justify-between";
+        }
+      });
+
+      const inspector = document.getElementById("matrixInspector");
+      if (!inspector) return;
+
+      const recHtml = node.receivesFrom.map(r => `<li class="text-xs sm:text-sm text-slate-700">${r}</li>`).join("");
+      const sendHtml = node.sendsTo.map(s => `<li class="text-xs sm:text-sm text-slate-700">${s}</li>`).join("");
+
+      inspector.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono-code text-xs font-bold px-2.5 py-1 rounded bg-blue-600 text-white">${node.code}</span>
+              <h4 class="text-base font-bold text-slate-900">${node.name}</h4>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">${node.role}</p>
+          </div>
+          <button
+            onclick="switchTab('${node.tab}')"
+            class="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-2xs transition shrink-0 w-fit"
+          >
+            Відкрити вкладку цього приладу →
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-3.5 rounded-xl bg-white border border-emerald-200">
+            <div class="text-xs font-bold uppercase text-emerald-800 mb-2">← Отримує вхідні дані від:</div>
+            <ul class="list-disc pl-5 space-y-1">${recHtml}</ul>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white border border-blue-200">
+            <div class="text-xs font-bold uppercase text-blue-800 mb-2">→ Передає вихідні дані у:</div>
+            <ul class="list-disc pl-5 space-y-1">${sendHtml}</ul>
+          </div>
+        </div>
+      `;
+    }
+
+    function filterGlossary(query) {
+      const grid = document.getElementById("glossaryGrid");
+      if (!grid) return;
+      const q = query.trim().toLowerCase();
+
+      const filtered = quickGlossary.filter(item =>
+        item.code.toLowerCase().includes(q) ||
+        item.name.toLowerCase().includes(q) ||
+        item.desc.toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-2 p-6 text-center text-xs sm:text-sm text-slate-500">За вашим запитом нічого не знайдено.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:border-blue-300 transition flex items-start justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono-code text-xs font-bold px-2 py-0.5 rounded bg-slate-800 text-white">${item.code}</span>
+              <span class="text-xs sm:text-sm font-bold text-slate-900">${item.name}</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">${item.desc}</p>
+          </div>
+          <button
+            onclick="switchTab('${item.tab}')"
+            class="text-[11px] font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg border border-blue-200 shrink-0 transition"
+          >
+            Вкладка ↗
+          </button>
+        </div>
+      `).join("");
+    }
+
+    // Функції для відкриття/закриття випадаючих списків
+    function toggleDrop(id, btnEl) {
+      const body = document.getElementById(id);
+      if (!body) return;
+      const isOpen = body.classList.contains("open");
+      if (isOpen) {
+        body.classList.remove("open");
+        if (btnEl) btnEl.classList.remove("open-btn");
+      } else {
+        body.classList.add("open");
+        if (btnEl) btnEl.classList.add("open-btn");
+      }
+    }
+
+    function toggleAllInCurrentTab(openState) {
+      const container = document.getElementById("tabContentArea");
+      if (!container) return;
+      container.querySelectorAll(".accordion-body").forEach(el => {
+        if (openState) el.classList.add("open");
+        else el.classList.remove("open");
+      });
+      container.querySelectorAll("button").forEach(btn => {
+        if (btn.querySelector(".chevron")) {
+          if (openState) btn.classList.add("open-btn");
+          else btn.classList.remove("open-btn");
+        }
+      });
+    }
+
+    // Ініціалізація при завантаженні сторінки
+    window.addEventListener("DOMContentLoaded", () => {
+      renderTabsNav();
+      renderActiveTabContent();
+    });
+  </script>
+</body>
+</html>
