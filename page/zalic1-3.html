@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime Q&A Study Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#1a1a1a',
+                            card: '#2d2d2d',
+                            text: '#e5e5e5',
+                            muted: '#a3a3a3',
+                            border: '#404040'
+                        }
+                    }
+                }
+            }
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-gray-800', 'text-white', 'dark:bg-blue-600', 'dark:text-white');
+                el.classList.add('bg-gray-200', 'text-gray-600', 'dark:bg-dark-card', 'dark:text-dark-muted', 'dark:hover:bg-gray-700');
+            });
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('bg-gray-200', 'text-gray-600', 'dark:bg-dark-card', 'dark:text-dark-muted', 'dark:hover:bg-gray-700');
+            activeBtn.classList.add('bg-gray-800', 'text-white', 'dark:bg-blue-600', 'dark:text-white');
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('theme-toggle').innerText = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+    </script>
+    <style>
+        .qa-item {
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--tw-prose-hr, #e5e7eb);
+        }
+        .dark .qa-item {
+            border-color: #404040;
+        }
+        .qa-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-dark-bg min-h-screen p-4 md:p-8 font-sans text-gray-900 dark:text-dark-text transition-colors duration-200">
+    <div class="max-w-5xl mx-auto mb-4 flex justify-end">
+        <button id="theme-toggle" onclick="toggleTheme()" class="px-4 py-2 bg-gray-200 dark:bg-dark-card text-gray-800 dark:text-dark-text rounded-lg shadow hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors">
+            ☀️ Light Mode
+        </button>
+    </div>
+
+    <div class="max-w-5xl mx-auto bg-white dark:bg-dark-card rounded-xl shadow-lg overflow-hidden transition-colors duration-200 border dark:border-dark-border">
+        
+        <!-- Tabs Header -->
+        <div class="flex flex-col md:flex-row border-b border-gray-200 dark:border-dark-border text-sm md:text-base">
+            <button id="btn-parts" onclick="showTab('parts')" class="tab-btn flex-1 py-4 px-2 font-semibold bg-gray-800 text-white dark:bg-blue-600 dark:text-white transition-colors duration-200">Ship Parts & Measurement</button>
+            <button id="btn-dims" onclick="showTab('dims')" class="tab-btn flex-1 py-4 px-2 font-semibold bg-gray-200 text-gray-600 dark:bg-dark-card dark:text-dark-muted dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors duration-200 border-l dark:border-dark-border">Dimensions (Video)</button>
+            <button id="btn-aids" onclick="showTab('aids')" class="tab-btn flex-1 py-4 px-2 font-semibold bg-gray-200 text-gray-600 dark:bg-dark-card dark:text-dark-muted dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors duration-200 border-l dark:border-dark-border">Navigational Aids</button>
+            <button id="btn-bridge" onclick="showTab('bridge')" class="tab-btn flex-1 py-4 px-2 font-semibold bg-gray-200 text-gray-600 dark:bg-dark-card dark:text-dark-muted dark:hover:bg-gray-700 hover:bg-gray-300 transition-colors duration-200 border-l dark:border-dark-border">Navigation Bridge</button>
+        </div>
+
+        <!-- Tab 1: Parts of a ship -->
+        <div id="parts" class="tab-content p-6 md:p-8 space-y-6">
+            <h2 class="text-2xl font-bold border-b border-gray-200 dark:border-dark-border pb-2 mb-6 text-gray-800 dark:text-gray-100">Parts of a ship and her measurement</h2>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">1. What is the tonnage of a ship?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The measurement of her weight, size or capacity.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">2. What types of tonnage do you know?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Gross Tonnage, Net Tonnage, and Deadweight Tonnage.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">3. What is the difference between gross tonnage and net tonnage?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Gross tonnage is the moulded volume of all enclosed spaces. Net tonnage is the volume used to carry cargo, calculated by deducting non-cargo spaces from the gross tonnage.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">4. What is deadweight tonnage?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The weight of all the contents a vessel is capable of carrying when loaded to the summer mark (cargo, stores, equipment, fresh/potable water, lubricating oil, and fuel).</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">5. What types of displacement do you know?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Light Displacement and Loaded Displacement.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">6. What types of cargo spaces do you know?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Bale Space, Grain Space, and Oil Space.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">7. What is meant by grain space?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The volume of the cargo holds that can be used to carry dry bulk cargo.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">8. What is meant by bale space?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The volume of the cargo holds that can be used to carry general cargo.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">9. What is meant by oil space?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">98% of the total volume of the wet bulk tanks.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">10. What is ullage?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The empty space (remaining 2%) on top of the liquid level that prevents a tank from overflowing when the oil expands due to heat.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">11. What are moulded dimensions?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The distance between two points measured inside of a shell plating.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">12. What is the inside width of a ship called?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Moulded breadth.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">13. When is it especially important to take into consideration the beam of a ship?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It is an important factor to obtain a clearance to proceed.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">14. Why do the port authorities have to know the ship’s LOA?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Before a berth along an embankment is allocated.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">15. What is the construction waterline?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The line to which the ship may be loaded in summer.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">16. What is meant by the following abbreviations: FP, AP and LBP?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">FP (Fore-perpendicular) is the vertical line through the point where the Construction Waterline and stem intersect. AP (Aft-perpendicular) goes through the rudderstock. LBP (Length Between Perpendiculars) is measured between FP and AP to determine stability.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">17. In which type of water is the draft largest? Why?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">In fresh water, because fresh water is less dense than salt water.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">18. Where could the highest point of the vessel be? Why is it important to know this?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The highest point is the mast (air draft). It is important to know as it is a factor to obtain clearance to proceed under bridges, power lines, and cranes.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">19. When is it necessary to state your freeboard? Why?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">When loading the vessel, because it indicates the safe loading limit and ensures that the vessel is not overloaded.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">20. What is trim?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The difference between the draught at the stem (forward) and the draught at the stern.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">21. When can we say that the vessel is trimmed by the stern/trimmed by the head?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Trimmed by the head when loaded with cargo and the draught forward is larger. Trimmed by the stern when loaded with cargo and the draught aft is larger.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">22. What do we need load lines for?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">They show the maximum load a ship can carry (the original "Plimsoll line").</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">23. What do draft marks show?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">They measure the distance between the bottom of the hull (the keel) and the waterline.</p></div>
+        </div>
+
+        <!-- Tab 2: Dimensions -->
+        <div id="dims" class="tab-content hidden p-6 md:p-8 space-y-6">
+            <h2 class="text-2xl font-bold border-b border-gray-200 dark:border-dark-border pb-2 mb-6 text-gray-800 dark:text-gray-100">All the dimensions of the ship and her stability (video)</h2>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">1. What do you call the height of a hull from the highest point of its main deck to its lowest point?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Depth.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">2. What is the difference between the centerline and baseline?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The centerline is a vertical plane that runs the length of the ship at the midpoint of its beam. The baseline is a horizontal plane perpendicular to the centerline, located at the lowest point of the hull.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">3. What is keel?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The principal structural member of a ship running lengthwise along the centerline from bow to stern, to which the ship's frames are attached.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">4. What is K? Where is it located?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">K is the lowest point of the keel, serving as the point from which vertical distances are measured. It is located at the intersection of the centerline and the baseline.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">5. What is the difference between the waterline and Design Water Line?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The waterline is the intersection of the water's surface with the hull. The Design Water Line (DWL) specifically represents the waterline of a ship under full load (maximum draft conditions) on an even keel.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">6. What do you call the horizontal point halfway between the forward and aft perpendiculars?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Midships.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">7. What directions are distances on ships measured in?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Longitudinally, transversely, and vertically.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">8. How are longitudinal/ transverse/ vertical distances measured?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Longitudinally: From the forward perpendicular, aft perpendicular, or midships. Transversely: Port or starboard from the centerline (+/-). Vertically: Upward from the baseline or lowest point of the keel.</p></div>
+        </div>
+
+        <!-- Tab 3: Navigational Aids -->
+        <div id="aids" class="tab-content hidden p-6 md:p-8 space-y-6">
+            <h2 class="text-2xl font-bold border-b border-gray-200 dark:border-dark-border pb-2 mb-6 text-gray-800 dark:text-gray-100">Navigational Aids</h2>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">1. What are the main methods of navigation at sea?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The four basic methods of navigation at sea are Piloting, Dead Reckoning, Electronic Navigation, and Celestial Navigation.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">2. What are buoys used for?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Buoys are used to indicate the side on which a ship should pass when moving in a given direction (by using simple arrangements of colors, shapes, numbers, and lights).</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">3. What are the measurements of water depths called?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The measurements of water depths are called soundings.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">4. How is the ship navigated in piloting?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">In piloting, the navigator directs a vessel by observing landmarks on the Earth's surface, taking visual bearings of conspicuous landmarks using the ship’s compass, measuring water depths (soundings), and taking observations of celestial bodies at regular intervals using the ship’s sextant.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">5. What landmarks are used to navigate a ship?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Lighthouses, beacons, buoys, prominent rocks, cliffs, and church spires.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">6. What are bearings?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">A bearing is the horizontal angle between an object and a reference point, used to determine (fix) a ship's position.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">7. How does the navigator determine a ship's position in dead reckoning?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">By keeping a careful account (reckoning) of the distance and direction of travel from a known position called the point of departure.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">8. How does the navigator find a ship's position in electronic and celestial navigation?</p>
+            <ul class="mt-2 list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                <li>Electronic navigation: With the aid of electronic devices such as radar and others.</li>
+                <li>Celestial navigation: By observing the sun, moon, planets, and stars.</li>
+            </ul></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">9. What is the difference between course and heading?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The course is the intended direction of the ship's travel, while the heading is the direction in which the ship is pointed at any given time.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">10. What is a track?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The track (or course made good) is the direction of a straight line between a point of departure and a present position.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">11. What is an instrument for measuring the speed of a ship called?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">A ship's log (or maritime log).</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">12. Why are logbooks important?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">They keep written accounts of voyages (the ship's course, speed, distance travelled, and weather information) and may serve as sources of data used in preparing navigational charts.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">13. What is a knot?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">A knot is a unit of speed that means velocity in nautical miles per hour.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">14. What units of distance do you know?</p>
+            <ul class="mt-2 list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                <li>Nautical mile: 6080 feet (1852 meters).</li>
+                <li>Cable: One-tenth of a nautical mile (used for short distances).</li>
+                <li>Fathom: 6 feet (used for measuring the depth of the sea).</li>
+            </ul></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">15. What is tracking?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Tracking means monitoring, or following objects underway.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">16. What is the chronometer/sextant used for?</p>
+            <ul class="mt-2 list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                <li>Chronometer: To tell the exact time and help determine a ship's longitude.</li>
+                <li>Sextant: To calculate a ship's latitude by measuring the angle of the sun or of a star above the horizon.</li>
+            </ul></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">17. Why is radar essential for navigation? What is it used for? What does it show?</p>
+            <ul class="mt-2 list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                <li>Why it is essential: It identifies, tracks, and positions other vessels in order to navigate the ship from one point to another safely.</li>
+                <li>What it is used for: To calculate range and bearing of a target, determine speed and course, maintain a safe course, and fix the ship’s position.</li>
+                <li>What it shows: The screen displays all the targets within the radar range.</li>
+            </ul></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">18. What is ARPA used for?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">ARPA is used to calculate an object's course, speed, and distance, thereby knowing if there is a risk of collision.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">19. Which system identifies and locates other vessels in the vicinity? What information does it provide?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The Automatic Identification System (AIS). It provides the vessel’s identification (IMO number, call sign), position, course, heading, speed, destination, draft, ETA, and DG.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">20. What is a nautical chart used for?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Charts are used to plan voyages and navigate ships safely and economically. They give essential information on depths of water and heights of land, navigational hazards, aids to navigation, tides and currents, anchorage areas, VTS, and the nature of the seabed.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">21. What is the modern alternative for a paper chart? What other navigational equipment is it interfaced with?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">The modern alternative is ECDIS (Electronic Chart Display and Information System). It is interfaced with GPS, AIS, ARPA, echo sounder, etc.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">22. What are the advantages of GPS?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It helps a navigator clearly understand what routes to take and what courses to avoid, gives accurate information, and is not much affected by weather conditions.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">23. What is the difference between a magnetic compass and a gyrocompass?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">A magnetic compass points to the magnetic North, while a gyrocompass is not affected by the magnetic field and is used to find the true North.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">24. What is a helm used for?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">A helm is used to switch to manual steering when needed.</p></div>
+        </div>
+
+        <!-- Tab 4: Navigation Bridge -->
+        <div id="bridge" class="tab-content hidden p-6 md:p-8 space-y-6">
+            <h2 class="text-2xl font-bold border-b border-gray-200 dark:border-dark-border pb-2 mb-6 text-gray-800 dark:text-gray-100">Navigation Bridge (video)</h2>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">1. Why is the bridge wing considered to be a critical vantage point?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It is a critical vantage point for berthing or docking because it allows the Captain and Harbor Pilot to gauge the position of the ship.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">2. How many lifebuoys are there on each side of the bridge wing?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">There are two lifebuoys on each side of the bridge wing.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">3. What is a remote panel? Where is it located?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It is a panel containing controls and indicators, located on both the Port and Starboard Bridge wings.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">4. What indicators and controls are there on a remote panel?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It has controls for the bow thrusters, and indicators for speed, engine rpm, rate of turn, heading, compass, mic, and speaker.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">5. What is used for taking bearings of objects or celestial bodies?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">A Gyro Repeater used in conjunction with an azimuth ring.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">6. Where are the fire hydrants, fire extinguishers and fireboxes located?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Fireboxes and fire hydrants are all over the ship (one on each side of the bridge wing), and CO2 extinguishers are inside the bridge.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">7. What can be found inside the navigation bridge?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">A CO2 extinguisher, a pantry for snacks and drinks, a pilot chair, and the center console with electronic navigation equipment.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">8. How does an EPIRB work?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It is installed in an open space so that if the ship sinks, it floats up and indicates the position via radio beacon.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">9. What is a SART used for?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">When activated, it allows other ships to locate the vessel on their radars.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">10. What types of plans are onboard ships?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Fire plan, Damage Control Plan, and Dangerous Goods Plan.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">11. Where is the most important type of navigation equipment located?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">On the center console.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">12. What does GMDSS consist of?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It consists of VHF 1, 2, and 3, MF/HF, Sat C, Sat F, and handheld UHF radios.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">13. What is the difference between VHF, MF/HF and UHF?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">VHF reaches up to 40 nautical miles, MF/HF can reach hundreds of miles depending on frequency and weather, and UHF is limited to line of sight.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">14. What is the telegraph transmitter linked to?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It is linked directly down to the engine room's telegraph.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">15. What program should be used for some extreme maneuvers of a vessel?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Program Bypass.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">16. What is DGPS used for?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It is used for positioning.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">17. When do we switch to manual hand steering?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">When precision is needed.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">18. What does the pilot door indicator show?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It shows if the pilot doors are completely closed.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">19. What does the watertight door indicator show?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">It shows the status of the watertight doors for the whole ship.</p></div>
+            
+            <div class="qa-item"><p class="font-bold text-gray-800 dark:text-blue-400">20. What types of communication are there within a ship?</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300">Internal telephone, sound-powered internal telephone, and PA system.</p></div>
+        </div>
+    </div>
+</body>
+</html>
