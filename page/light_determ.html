@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigational Lights — Інтерактивний конспект</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Плавное размытие для режима самопроверки */
+        .ua-trans {
+            transition: filter 0.25s ease, opacity 0.25s ease;
+        }
+        body.hide-ua .ua-trans {
+            filter: blur(6px);
+            opacity: 0.65;
+            user-select: none;
+            cursor: pointer;
+        }
+        body.hide-ua .ua-trans:hover,
+        body.hide-ua .ua-trans.revealed {
+            filter: blur(0px);
+            opacity: 1;
+        }
+        /* Скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<a href="../index.html" style="position:fixed; top:15px; left:15px; background:#2563eb; color:white; padding:10px 15px; text-decoration:none; border-radius:8px; font-family:sans-serif; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index:9999;">⬅ На главную</a>
+
+    <!-- Верхняя панель (Header) -->
+    <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- Лого и заголовок -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-extrabold text-lg shadow-lg shadow-blue-600/30">
+                    🚨
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight">
+                        Navigational Lights — Ідентифікація та характеристики вогнів
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Усі світлові ритми та схеми (у векторі SVG) • Построковий переклад (EN / UA) • Повний конспект + Шпаргалка
+                    </p>
+                </div>
+            </div>
+
+            <!-- Кнопки управления -->
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Скрыть/показать перевод -->
+                <button id="btnToggleUa" onclick="toggleTranslation()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 transition">
+                    <span id="eyeIcon">👁️</span>
+                    <span id="eyeText">Приховати переклад (UA)</span>
+                </button>
+
+                <!-- Переключатель темы (Dark / Light) -->
+                <button id="btnTheme" onclick="toggleTheme()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 transition">
+                    <span id="themeIcon">☀️</span>
+                    <span id="themeText">Світла тема</span>
+                </button>
+
+                <!-- Показать все вкладки подряд -->
+                <button id="btnViewAll" onclick="toggleViewAll()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+                    📋 Показати обидві вкладки підряд
+                </button>
+            </div>
+        </div>
+
+        <!-- Навигационные вкладки (Tabs) -->
+        <div class="max-w-7xl mx-auto px-4 pb-2 overflow-x-auto">
+            <div class="flex items-center gap-1.5 min-w-max" id="navTabs"></div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-8" id="mainContainer">
+        <!-- Заполняется скриптом -->
+    </main>
+
+    <!-- Подвал -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 py-4 text-center text-xs text-slate-500 dark:text-slate-400">
+        Navigational Lights Identification • Навчальний модуль (Повний конспект + Короткі варіанти)
+    </footer>
+
+    <script>
+        // =========================================================================
+        // ГЕНЕРАТОР SVG-ИЛЛЮСТРАЦИЙ (СВЕТОВЫЕ РИТМЫ, СЕКТОРЫ, СТВОРЫ И КАРТА)
+        // =========================================================================
+        const COLORS = {
+            red: '#ef4444',
+            green: '#22c55e',
+            yellow: '#facc15',
+            white: '#f8fafc',
+            blue: '#3b82f6',
+            dark: '#0f172a',
+            slate: '#1e293b'
+        };
+
+        // 1. Схема базовых характеристик: Цвет, Период (Fl(3) 10s), Фаза
+        function svgBasicFeatures() {
+            return `
+                <svg viewBox="0 0 340 245" class="w-full max-w-[370px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="170" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">3 FEATURES OF A NAVIGATIONAL LIGHT</text>
+
+                    <!-- 1. Цвета огней (W, R, G, Y) -->
+                    <g transform="translate(20, 32)">
+                        <text x="0" y="12" font-size="9.5" font-weight="700" fill="currentColor">1. COLOURS (Default = White):</text>
+                        <circle cx="30" cy="32" r="11" fill="${COLORS.white}" stroke="#475569" stroke-width="2"/>
+                        <text x="30" y="54" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">White (W)</text>
+
+                        <circle cx="105" cy="32" r="11" fill="${COLORS.red}" stroke="#0f172a" stroke-width="1.5"/>
+                        <text x="105" y="54" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">Red (R)</text>
+
+                        <circle cx="180" cy="32" r="11" fill="${COLORS.green}" stroke="#0f172a" stroke-width="1.5"/>
+                        <text x="180" y="54" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">Green (G)</text>
+
+                        <circle cx="255" cy="32" r="11" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="1.5"/>
+                        <text x="255" y="54" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">Yellow (Y)</text>
+                    </g>
+
+                    <!-- 2. Период и Фаза на примере Fl (3) 10s -->
+                    <g transform="translate(20, 105)">
+                        <text x="0" y="10" font-size="9.5" font-weight="700" fill="currentColor">2. PERIOD &amp; 3. PHASE: Example "Fl (3) 10s"</text>
+                        <rect x="0" y="20" width="300" height="22" fill="#0f172a" stroke="#475569" rx="3"/>
+                        <!-- Цикл 1 -->
+                        <polygon points="18,40 24,23 30,40" fill="${COLORS.yellow}"/>
+                        <polygon points="36,40 42,23 48,40" fill="${COLORS.yellow}"/>
+                        <polygon points="54,40 60,23 66,40" fill="${COLORS.yellow}"/>
+                        <!-- Цикл 2 -->
+                        <polygon points="168,40 174,23 180,40" fill="${COLORS.yellow}"/>
+                        <polygon points="186,40 192,23 198,40" fill="${COLORS.yellow}"/>
+                        <polygon points="204,40 210,23 216,40" fill="${COLORS.yellow}"/>
+
+                        <!-- Стрелка периода 10s -->
+                        <line x1="18" y1="55" x2="168" y2="55" stroke="#3b82f6" stroke-width="2"/>
+                        <polygon points="18,55 25,51 25,59" fill="#3b82f6"/>
+                        <polygon points="168,55 161,51 161,59" fill="#3b82f6"/>
+                        <line x1="18" y1="42" x2="18" y2="62" stroke="#3b82f6" stroke-width="1" stroke-dasharray="2,2"/>
+                        <line x1="168" y1="42" x2="168" y2="62" stroke="#3b82f6" stroke-width="1" stroke-dasharray="2,2"/>
+                        <text x="93" y="69" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="700" fill="#3b82f6">Period = 10 seconds (1 cycle)</text>
+                    </g>
+
+                    <!-- Примеры из учебника Fl(4) 8s, Oc(2+3) 10s, Iso 4s -->
+                    <g transform="translate(20, 190)">
+                        <rect x="0" y="0" width="92" height="40" rx="6" fill="#1e293b" stroke="#475569"/>
+                        <text x="46" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="#facc15">Fl (4) 8s</text>
+                        <text x="46" y="30" text-anchor="middle" font-size="8" fill="#cbd5e1">4 flashes / 8 sec</text>
+
+                        <rect x="104" y="0" width="92" height="40" rx="6" fill="#1e293b" stroke="#475569"/>
+                        <text x="150" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="#facc15">Oc (2+3) 10s</text>
+                        <text x="150" y="30" text-anchor="middle" font-size="8" fill="#cbd5e1">Group Occ / 10 sec</text>
+
+                        <rect x="208" y="0" width="92" height="40" rx="6" fill="#1e293b" stroke="#475569"/>
+                        <text x="254" y="16" text-anchor="middle" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="#facc15">Iso 4s</text>
+                        <text x="254" y="30" text-anchor="middle" font-size="8" fill="#cbd5e1">2s light + 2s dark</text>
+                    </g>
+                </svg>
+            `;
+        }
+
+        // 2. Схема проблесковых и постоянных огней (F, Fl, Q, VQ, UQ, IQ)
+        function svgFlashingTypes() {
+            let qRects = '', vqRects = '', uqRects = '', iqRects = '';
+            for (let x = 8; x < 210; x += 14) qRects += `<rect x="${x}" y="2" width="5" height="10" fill="${COLORS.yellow}"/>`;
+            for (let x = 8; x < 210; x += 8) vqRects += `<rect x="${x}" y="2" width="3.5" height="10" fill="${COLORS.yellow}"/>`;
+            for (let x = 8; x < 210; x += 4.5) uqRects += `<rect x="${x}" y="2" width="2" height="10" fill="${COLORS.yellow}"/>`;
+            [8, 18, 28, 38, 48, 58, 68, 78, 135, 145, 155, 165, 175, 185, 195].forEach(x => {
+                iqRects += `<rect x="${x}" y="2" width="4.5" height="10" fill="${COLORS.yellow}"/>`;
+            });
+
+            return `
+                <svg viewBox="0 0 340 255" class="w-full max-w-[380px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="170" y="15" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">FIXED &amp; FLASHING LIGHT RHYTHMS</text>
+
+                    <!-- Fixed (F) -->
+                    <g transform="translate(15, 28)">
+                        <rect x="0" y="0" width="215" height="14" fill="#0f172a" rx="2"/>
+                        <rect x="2" y="2" width="211" height="10" fill="${COLORS.yellow}"/>
+                        <text x="225" y="11" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="currentColor">F (Steady on)</text>
+                    </g>
+
+                    <!-- Flashing (Fl) -->
+                    <g transform="translate(15, 64)">
+                        <rect x="0" y="0" width="215" height="14" fill="#0f172a" rx="2"/>
+                        <rect x="20" y="2" width="12" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="85" y="2" width="12" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="150" y="2" width="12" height="10" fill="${COLORS.yellow}"/>
+                        <text x="225" y="11" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="currentColor">Fl (≤ 30/min)</text>
+                    </g>
+
+                    <!-- Quick (Q) -->
+                    <g transform="translate(15, 100)">
+                        <rect x="0" y="0" width="215" height="14" fill="#0f172a" rx="2"/>
+                        ${qRects}
+                        <text x="225" y="11" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="currentColor">Q (50–79/min)</text>
+                    </g>
+
+                    <!-- Very Quick (VQ) -->
+                    <g transform="translate(15, 136)">
+                        <rect x="0" y="0" width="215" height="14" fill="#0f172a" rx="2"/>
+                        ${vqRects}
+                        <text x="225" y="11" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="currentColor">VQ (80–159/m)</text>
+                    </g>
+
+                    <!-- Ultra Quick (UQ) -->
+                    <g transform="translate(15, 172)">
+                        <rect x="0" y="0" width="215" height="14" fill="#0f172a" rx="2"/>
+                        ${uqRects}
+                        <text x="225" y="11" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="currentColor">UQ (160+/min)</text>
+                    </g>
+
+                    <!-- Interrupted Quick (IQ) -->
+                    <g transform="translate(15, 208)">
+                        <rect x="0" y="0" width="215" height="14" fill="#0f172a" rx="2"/>
+                        ${iqRects}
+                        <text x="225" y="11" font-family="JetBrains Mono" font-size="9.5" font-weight="700" fill="currentColor">IQ (1 dark gap)</text>
+                    </g>
+                </svg>
+            `;
+        }
+
+        // 3. Схема остальных характеристик (Iso, Gp Fl(2+3), Occ, ALTWG, Mo(U), LFl)
+        function svgOtherPhaseTypes() {
+            return `
+                <svg viewBox="0 0 340 255" class="w-full max-w-[380px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="170" y="15" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">COMPLEX &amp; SPECIAL PHASE RHYTHMS</text>
+
+                    <!-- Isophase (Iso) -->
+                    <g transform="translate(15, 28)">
+                        <rect x="0" y="0" width="210" height="14" fill="#0f172a" rx="2"/>
+                        <rect x="5" y="2" width="45" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="95" y="2" width="45" height="10" fill="${COLORS.yellow}"/>
+                        <text x="220" y="11" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="currentColor">Iso (Light = Dark)</text>
+                    </g>
+
+                    <!-- Group Flashing Gp Fl(2+3) -->
+                    <g transform="translate(15, 64)">
+                        <rect x="0" y="0" width="210" height="14" fill="#0f172a" rx="2"/>
+                        <rect x="10" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="24" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="65" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="79" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="93" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <text x="220" y="11" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="currentColor">Gp Fl (2+3)</text>
+                    </g>
+
+                    <!-- Occulting (Occ) -->
+                    <g transform="translate(15, 100)">
+                        <rect x="0" y="0" width="210" height="14" fill="#0f172a" rx="2"/>
+                        <rect x="5" y="2" width="55" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="72" y="2" width="55" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="139" y="2" width="55" height="10" fill="${COLORS.yellow}"/>
+                        <text x="220" y="11" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="currentColor">Occ (Light &gt; Dark)</text>
+                    </g>
+
+                    <!-- Alternating (ALTWG) -->
+                    <g transform="translate(15, 136)">
+                        <rect x="0" y="0" width="210" height="14" fill="#0f172a" rx="2"/>
+                        <rect x="8" y="2" width="38" height="10" fill="${COLORS.white}"/>
+                        <rect x="56" y="2" width="38" height="10" fill="${COLORS.green}"/>
+                        <rect x="104" y="2" width="38" height="10" fill="${COLORS.white}"/>
+                        <rect x="152" y="2" width="38" height="10" fill="${COLORS.green}"/>
+                        <text x="220" y="11" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="currentColor">AL (e.g. ALTWG)</text>
+                    </g>
+
+                    <!-- Morse U Mo(U) [ • • — ] -->
+                    <g transform="translate(15, 172)">
+                        <rect x="0" y="0" width="210" height="14" fill="#0f172a" rx="2"/>
+                        <rect x="12" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="26" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="40" y="2" width="28" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="115" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="129" y="2" width="8" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="143" y="2" width="28" height="10" fill="${COLORS.yellow}"/>
+                        <text x="220" y="11" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="currentColor">Mo (U) [ • • — ]</text>
+                    </g>
+
+                    <!-- Long-Flashing (LFl) -->
+                    <g transform="translate(15, 208)">
+                        <rect x="0" y="0" width="210" height="14" fill="#0f172a" rx="2"/>
+                        <rect x="20" y="2" width="48" height="10" fill="${COLORS.yellow}"/>
+                        <rect x="130" y="2" width="48" height="10" fill="${COLORS.yellow}"/>
+                        <text x="220" y="11" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="currentColor">LFl (≥ 2 sec flash)</text>
+                    </g>
+                </svg>
+            `;
+        }
+
+        // 4. Схема классификации огней (Major -> Primary / Secondary, Minor Lights)
+        function svgClassification() {
+            return `
+                <svg viewBox="0 0 340 240" class="w-full max-w-[370px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="170" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">CLASSIFICATION OF NAVIGATIONAL LIGHTS</text>
+
+                    <!-- Root node -->
+                    <rect x="95" y="26" width="150" height="28" rx="6" fill="#2563eb"/>
+                    <text x="170" y="44" text-anchor="middle" font-size="10" font-weight="800" fill="#ffffff">ALL LIGHTED AIDS</text>
+
+                    <!-- Lines to Major & Minor -->
+                    <line x1="135" y1="54" x2="85" y2="76" stroke="currentColor" stroke-width="2"/>
+                    <line x1="205" y1="54" x2="255" y2="76" stroke="currentColor" stroke-width="2"/>
+
+                    <!-- Major Lights -->
+                    <rect x="20" y="76" width="130" height="42" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+                    <text x="85" y="93" text-anchor="middle" font-size="10" font-weight="800" fill="#60a5fa">MAJOR LIGHTS</text>
+                    <text x="85" y="108" text-anchor="middle" font-size="8" fill="#cbd5e1">High intensity &amp; reliability</text>
+
+                    <!-- Minor Lights -->
+                    <rect x="190" y="76" width="130" height="42" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="255" y="93" text-anchor="middle" font-size="10" font-weight="800" fill="#34d399">MINOR LIGHTS</text>
+                    <text x="255" y="108" text-anchor="middle" font-size="8" fill="#cbd5e1">Harbours, channels, rivers</text>
+
+                    <!-- Sub-lines for Primary & Secondary -->
+                    <line x1="55" y1="118" x2="48" y2="142" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="115" y1="118" x2="128" y2="142" stroke="currentColor" stroke-width="1.5"/>
+
+                    <!-- Primary -->
+                    <rect x="8" y="142" width="84" height="44" rx="5" fill="#0f172a" stroke="#facc15" stroke-width="1.5"/>
+                    <text x="50" y="158" text-anchor="middle" font-size="9" font-weight="800" fill="#facc15">Primary</text>
+                    <text x="50" y="170" text-anchor="middle" font-size="7.5" fill="#cbd5e1">Long range,</text>
+                    <text x="50" y="180" text-anchor="middle" font-size="7.5" fill="#cbd5e1">landfalls</text>
+
+                    <!-- Secondary -->
+                    <rect x="98" y="142" width="84" height="44" rx="5" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+                    <text x="140" y="158" text-anchor="middle" font-size="9" font-weight="800" fill="#e2e8f0">Secondary</text>
+                    <text x="140" y="170" text-anchor="middle" font-size="7.5" fill="#cbd5e1">Shorter range,</text>
+                    <text x="140" y="180" text-anchor="middle" font-size="7.5" fill="#cbd5e1">entrances</text>
+
+                    <!-- Conspicuousness Box -->
+                    <rect x="12" y="198" width="316" height="34" rx="6" fill="#1e293b" stroke="#475569"/>
+                    <text x="170" y="213" text-anchor="middle" font-size="8.5" font-weight="700" fill="#f87171">⚡ Most conspicuous: FLASHING (marks danger)</text>
+                    <text x="170" y="226" text-anchor="middle" font-size="8.5" font-weight="700" fill="#93c5fd">💡 Least conspicuous: FIXED (illuminates area)</text>
+                </svg>
+            `;
+        }
+
+        // 5. Схема Sector Light & Leading Lights (створные и секторные огни)
+        function svgSectorAndLeading() {
+            return `
+                <svg viewBox="0 0 350 265" class="w-full max-w-[390px] h-auto mx-auto text-slate-800 dark:text-slate-200">
+                    <text x="175" y="15" text-anchor="middle" font-size="10.5" font-weight="800" fill="currentColor">SECTOR LIGHT &amp; LEADING LIGHTS (ALIGNMENT)</text>
+
+                    <!-- Левая половина: SECTOR LIGHT -->
+                    <g transform="translate(10, 26)">
+                        <rect x="0" y="0" width="158" height="175" rx="8" fill="#0f172a" stroke="#334155"/>
+                        <text x="79" y="16" text-anchor="middle" font-size="9.5" font-weight="800" fill="#f8fafc">SECTOR LIGHT</text>
+
+                        <!-- Сектора (Red, White, Green) -->
+                        <!-- Red Sector (Danger / Shoals) -->
+                        <path d="M79,40 L15,145 L58,145 Z" fill="${COLORS.red}" fill-opacity="0.35" stroke="${COLORS.red}" stroke-width="1.5" stroke-dasharray="3,2"/>
+                        <!-- White Sector (Safe fairway) -->
+                        <path d="M79,40 L58,145 L100,145 Z" fill="${COLORS.white}" fill-opacity="0.3" stroke="${COLORS.white}" stroke-width="1.5"/>
+                        <!-- Green Sector (Danger / Rocks) -->
+                        <path d="M79,40 L100,145 L143,145 Z" fill="${COLORS.green}" fill-opacity="0.35" stroke="${COLORS.green}" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+                        <!-- Маяк в вершине -->
+                        <circle cx="79" cy="40" r="6" fill="${COLORS.yellow}" stroke="#0f172a" stroke-width="1.5"/>
+
+                        <!-- Подписи секторов -->
+                        <text x="36" y="138" text-anchor="middle" font-size="8" font-weight="800" fill="#fca5a5">RED</text>
+                        <text x="36" y="158" text-anchor="middle" font-size="7.5" fill="#fca5a5">Danger</text>
+
+                        <text x="79" y="135" text-anchor="middle" font-size="8.5" font-weight="800" fill="#ffffff">WHITE</text>
+                        <text x="79" y="158" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fde047">Safe Channel</text>
+
+                        <text x="122" y="138" text-anchor="middle" font-size="8" font-weight="800" fill="#86efac">GREEN</text>
+                        <text x="122" y="158" text-anchor="middle" font-size="7.5" fill="#86efac">Danger</text>
+                    </g>
+
+                    <!-- Правая половина: LEADING LIGHTS -->
+                    <g transform="translate(180, 26)">
+                        <rect x="0" y="0" width="160" height="175" rx="8" fill="#0f172a" stroke="#334155"/>
+                        <text x="80" y="16" text-anchor="middle" font-size="9.5" font-weight="800" fill="#f8fafc">LEADING LIGHTS</text>
+
+                        <!-- Rear light (higher) -->
+                        <line x1="80" y1="32" x2="80" y2="68" stroke="#94a3b8" stroke-width="3"/>
+                        <circle cx="80" cy="32" r="5.5" fill="${COLORS.yellow}"/>
+                        <text x="122" y="36" text-anchor="middle" font-size="8" font-weight="700" fill="#facc15">Rear (Higher)</text>
+
+                        <!-- Front light (lower) -->
+                        <line x1="80" y1="78" x2="80" y2="104" stroke="#94a3b8" stroke-width="3"/>
+                        <circle cx="80" cy="78" r="5.5" fill="${COLORS.yellow}"/>
+                        <text x="122" y="82" text-anchor="middle" font-size="8" font-weight="700" fill="#38bdf8">Front (Lower)</text>
+
+                        <!-- Осевая линия створа -->
+                        <line x1="80" y1="106" x2="80" y2="150" stroke="#22c55e" stroke-width="2" stroke-dasharray="4,3"/>
+
+                        <!-- In line vs Just open -->
+                        <text x="45" y="135" text-anchor="middle" font-size="8" font-weight="700" fill="#4ade80">● In line</text>
+                        <text x="45" y="146" text-anchor="middle" font-size="7" fill="#cbd5e1">(Vertical = Safe)</text>
+
+                        <text x="120" y="135" text-anchor="middle" font-size="8" font-weight="700" fill="#fb923c">● ● Just open</text>
+                        <text x="120" y="146" text-anchor="middle" font-size="7" fill="#cbd5e1">(Off centerline)</text>
+                    </g>
+
+                    <!-- Chart Notation Seguin Island Light -->
+                    <g transform="translate(10, 210)">
+                        <rect x="0" y="0" width="330" height="46" rx="8" fill="#1e293b" stroke="#facc15" stroke-width="1.5"/>
+                        <text x="165" y="18" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#facc15">Chart Notation: F 180ft 18M HORN (MRASS)</text>
+                        <text x="165" y="35" text-anchor="middle" font-size="8.5" fill="#e2e8f0">F = Fixed (White) • 180ft = Elevation • 18M = 18 NM Range • HORN = Sound signal</text>
+                    </g>
+                </svg>
+            `;
+        }
+
+        // =========================================================================
+        // БАЗА ДАННЫХ: 2 ВКЛАДКИ (1. ПОВНИЙ КОНСПЕКТ, 2. КОРОТКІ ВАРІАНТИ)
+        // =========================================================================
+        const TOPICS = [
+            {
+                id: 'full',
+                tabName: '1. Повний конспект (Full Definitions)',
+                title: 'Вкладка 1: Повний конспект — Навігаційні вогні, класифікація, сектори та створи',
+                subtitle: 'Усі повні несокорочені визначення з файлу та конспекту (EN + UA) • Зі схемами світлових ритмів',
+                cards: [
+                    {
+                        badge: 'Базові поняття • Стор. 1 PDF',
+                        titleEn: 'Light Identification & Three Basic Features',
+                        titleUa: 'Ідентифікація навігаційних засобів та 3 основні характеристики вогню',
+                        svg: svgBasicFeatures(),
+                        points: [
+                            {
+                                num: 'RACON',
+                                en: 'Racon (radar beacon) — a radar transponder beacon that emits a characteristic signal on radar.',
+                                ua: 'Радіомаяк (радіолокаційний маяк-відповідач).'
+                            },
+                            {
+                                num: 'Daytime',
+                                en: 'During daytime, the identification of aids to navigation is accomplished by observing: location, shape, colour scheme, auxiliary features (sound signals, RACON, etc.) or markings (name, number, etc.).',
+                                ua: 'Вдень ідентифікація засобів навігаційного обладнання здійснюється шляхом спостереження за: місцем розташування, формою, колірною схемою, допоміжними засобами (звукові сигнали, RACON тощо) або маркуванням (назва, номер тощо).'
+                            },
+                            {
+                                num: 'Nighttime',
+                                en: 'During the night, we use the features of the aid to navigation\'s light to both identify it and ascertain its purpose. Lights are used to ensure safe navigation.',
+                                ua: 'Вночі ми використовуємо характеристики вогню навігаційного знака, щоб ідентифікувати його та визначити його призначення. Вогні використовуються для забезпечення безпечної навігації.'
+                            },
+                            {
+                                num: '1. Colour',
+                                en: 'Colour: Either white, red, green or yellow. If no colour is stated in the chart, default is white.',
+                                ua: 'Колір: білий, червоний, зелений або жовтий. Якщо на карті колір не вказано, за замовчуванням він є білим.'
+                            },
+                            {
+                                num: '2. Period',
+                                en: 'Period: The time in seconds needed for one complete cycle of changes.',
+                                ua: 'Період: час у секундах, необхідний для одного повного циклу змін.'
+                            },
+                            {
+                                num: '3. Phase',
+                                en: 'Phase (class / character) characteristic: The particular pattern of changes within one complete cycle (hence, within one period).',
+                                ua: 'Фазова характеристика (клас / характер вогню): конкретна схема (патерн) змін протягом одного повного циклу (тобто протягом одного періоду).'
+                            }
+                        ]
+                    },
+                    {
+                        badge: 'Характеристики вогнів (Частина 1) • F, Fl, Q, VQ, UQ, IQ',
+                        titleEn: 'Light Phase Characteristics — Fixed & Flashing Lights',
+                        titleUa: 'Фазові характеристики — Постійні та проблискові вогні (з частотою спалахів)',
+                        svg: svgFlashingTypes(),
+                        points: [
+                            {
+                                num: 'Fixed (F)',
+                                en: 'Fixed light (F): This light shines with an unblinking and steady intensity and is always on.',
+                                ua: 'Постійний вогонь (F): цей вогонь світить немиготливо з постійною інтенсивністю і завжди увімкнений.'
+                            },
+                            {
+                                num: 'Flashing (Fl)',
+                                en: 'Flashing light (Fl): The duration of the light is always less than the duration of the darkness. The frequency does not exceed 30 times per minute.',
+                                ua: 'Проблисковий вогонь (Fl): тривалість світла завжди менша за тривалість темряви. Частота не перевищує 30 спалахів на хвилину.'
+                            },
+                            {
+                                num: 'Quick (Q)',
+                                en: 'Quick Flashing light (Q) = repetition rate of 50 to 79 flashes — USUALLY 50 or 60 flashes per minute (the duration of quick flash is less than the darkness; in textbook: at least 60 times per minute).',
+                                ua: 'Швидкий (частий) проблисковий вогонь (Q) = частота повторення від 50 до 79 спалахів — ЗАЗВИЧАЙ 50 або 60 спалахів на хвилину (тривалість спалаху менша за темряву).'
+                            },
+                            {
+                                num: 'Very Quick (VQ)',
+                                en: 'Very Quick Flashing light (VQ) = repetition rate of 80 to 159 flashes — USUALLY 100 or 120 flashes per minute (the duration of very quick flash is less than the darkness; in textbook: at least 100 times per minute).',
+                                ua: 'Дуже швидкий (дуже частий) проблисковий вогонь (VQ) = частота повторення від 80 до 159 спалахів — ЗАЗВИЧАЙ 100 або 120 спалахів на хвилину.'
+                            },
+                            {
+                                num: 'Ultra Quick (UQ)',
+                                en: 'Ultra Quick Flashing light (UQ) = repetition rate of 160 or more flashes — USUALLY 240 to 300 flashes per minute.',
+                                ua: 'Ультрашвидкий проблисковий вогонь (UQ) = частота повторення 160 і більше спалахів — ЗАЗВИЧАЙ від 240 до 300 спалахів на хвилину.'
+                            },
+                            {
+                                num: 'Interrupted Quick (IQ)',
+                                en: 'Interrupted Quick Flashing light (IQ): Interrupted flashing light is a light with one moment of darkness in one period (like Quick Flashing with one moment of darkness in one period).',
+                                ua: 'Переривчастий швидкий проблисковий вогонь (IQ): це вогонь з одним моментом (паузою) темряви в одному періоді.'
+                            }
+                        ]
+                    },
+                    {
+                        badge: 'Характеристики вогнів (Частина 2) • Iso, Gp Fl, Occ, AL, Mo, LFl',
+                        titleEn: 'Light Phase Characteristics — Isophase, Occulting, Alternating, Morse & Long-Flashing',
+                        titleUa: 'Фазові характеристики — Ізофазний, Груповий, Затемнюваний, Змінний, Морзе та Довгий проблисковий',
+                        svg: svgOtherPhaseTypes(),
+                        points: [
+                            {
+                                num: 'Isophase (Iso)',
+                                en: 'Isophase light (Iso): Isophase light is the light in which the duration of the light is equal to the duration of the darkness. A period consists of both a light and a dark interval. Also called Equal Interval (E Int).',
+                                ua: 'Ізофазний (рівнопроблисковий) вогонь (Iso): це вогонь, у якому тривалість світла дорівнює тривалості темряви. Період складається зі світлового та темного інтервалів.'
+                            },
+                            {
+                                num: 'Group Flashing (Gp Fl)',
+                                en: 'Group Flashing light — Gp Fl (x+x): This is actually a combination of two patterns in one period. For example, the first 2 flashes followed by the pattern of 3 flashes result in Gp Fl (2+3).',
+                                ua: 'Груповий (складно-груповий) проблисковий вогонь — Gp Fl (x+x): це комбінація двох патернів в одному періоді (наприклад, спочатку 2 спалахи, а потім 3 спалахи дають Gp Fl (2+3)).'
+                            },
+                            {
+                                num: 'Occulting (Occ)',
+                                en: 'Occulting light (Occ): Occulting is the opposite of flashing, the light is more on than off (duration of light is greater than duration of darkness).',
+                                ua: 'Затемнюваний вогонь (Occ): протилежність проблисковому — вогонь більше увімкнений, ніж вимкнений (світло довше за темряву).'
+                            },
+                            {
+                                num: 'Alternating (AL)',
+                                en: 'Alternating light (AL): Alternating light is the light that changes colours. This special purpose light is typically used for special applications requiring the exercise of great caution. For example, ALTWG shows green and white colours alternatively.',
+                                ua: 'Змінний вогонь (AL): це вогонь, який змінює кольори. Використовується для спеціальних застосувань, що вимагають особливої обережності (наприклад, ALTWG по черзі показує зелений і білий кольори).'
+                            },
+                            {
+                                num: 'Morse Code (Mo)',
+                                en: 'Morse U — Mo (U): Morse Code light is the light which shows short and long flashes that are equivalent to the particular letter in Morse Code. Mo (U) shows two short flashes and a long flash [ • • — ], equivalent to the letter "U".',
+                                ua: 'Кодовий вогонь Морзе — Mo (U): вогонь, який показує короткі та довгі спалахи, еквівалентні певній літері в азбуці Морзе. Mo (U) показує два коротких спалахи і один довгий [ • • — ], що відповідає літері "U".'
+                            },
+                            {
+                                num: 'Long-Flashing (LFl)',
+                                en: 'Long-Flashing light (LFl): Long-Flashing light is the light with one long flash in one period. The duration of the flash is not less than 2 seconds / at least 2 seconds.',
+                                ua: 'Довгий (тривало-проблисковий) вогонь (LFl): вогонь з одним довгим спалахом в одному періоді. Тривалість спалаху становить не менше 2 секунд (щонайменше 2 секунди).'
+                            }
+                        ]
+                    },
+                    {
+                        badge: 'Помітність та класифікація • Стор. 2 PDF',
+                        titleEn: 'Conspicuousness & Classification of Lights (Major, Primary, Secondary, Minor)',
+                        titleUa: 'Помітність вогнів та класифікація (Основні, Первинні, Вторинні та Другорядні вогні)',
+                        svg: svgClassification(),
+                        points: [
+                            {
+                                num: 'Conspicuousness',
+                                en: 'The applications of the types of light are determined by whether a light is conspicuous or not:',
+                                ua: 'Застосування типів вогнів визначається тим, чи є вогонь помітним (привертаючим увагу), чи ні:',
+                                listItems: [
+                                    { code: 'Flashing', en: 'Most conspicuous by far — always used to indicate danger', ua: 'Найбільш помітний вогонь — тому завжди використовується для позначення небезпеки' },
+                                    { code: 'Fixed', en: 'Least conspicuous — should merely be used to illuminate an object or an area', ua: 'Найменш помітний вогонь — використовується лише для освітлення об\'єкта або ділянки' }
+                                ]
+                            },
+                            {
+                                num: 'Structures',
+                                en: 'Lights are exhibited from different conspicuous structures, such as towers, poles, posts, buoys, beacons, staffs, masts and lighthouses.',
+                                ua: 'Вогні встановлюються на різних помітних спорудах, таких як вежі, стовпи, опори, буї, бакени (знаки), щогли, флагштоки та маяки.'
+                            },
+                            {
+                                num: 'Major Lights',
+                                en: 'Major lights are used for key navigational points along sea-coasts, channels and harbour and river entrances. They are normally placed in lightships, lighthouses and other permanently installed structures, providing both high intensity and high reliability.',
+                                ua: 'Основні вогні (Major lights) використовуються для ключових навігаційних точок уздовж морського узбережжя, каналів, а також входів у гавані та річки. Зазвичай розміщуються на плавучих маяках, маяках та стаціонарних спорудах, забезпечуючи високу інтенсивність і високу надійність.',
+                                listItems: [
+                                    { code: 'Primary', en: 'Primary lights: very strong, long range lights used for making landfalls or coastal passages (details in the Light List)', ua: 'Первинні вогні: дуже потужні далекобійні вогні для підходу до берега з моря або прибережного плавання (деталі вказані у Довіднику вогнів — Light List)' },
+                                    { code: 'Secondary', en: 'Secondary lights: shorter range lights found for example at harbour and river entrances', ua: 'Вторинні вогні: вогні меншої дальності дії, розташовані, наприклад, біля входів у гавані та річки' }
+                                ]
+                            },
+                            {
+                                num: 'Minor Lights',
+                                en: 'Minor lights are likely to be found within harbours, along channels and rivers. These have a low or moderate intensity and sometimes mark isolated dangers.',
+                                ua: 'Другорядні вогні (Minor lights) зазвичай знаходяться всередині гаваней, уздовж каналів і річок. Вони мають низьку або помірну інтенсивність та іноді позначають окремі небезпеки.'
+                            }
+                        ]
+                    },
+                    {
+                        badge: 'Секторні, Створні вогні та Карта • Стор. 3 PDF + Конспект',
+                        titleEn: 'Sector Lights, Leading Lights & Chart Notation',
+                        titleUa: 'Секторні вогні, Створні вогні та позначення вогнів на навігаційній карті',
+                        svg: svgSectorAndLeading(),
+                        points: [
+                            {
+                                num: 'Sector Light (PDF)',
+                                en: 'Sectors of colored glass or plastic are sometimes placed in the lanterns of certain lights to indicate dangerous waters. These lights show different colors when observed from different bearings. A sector changes the color of a light, but not its characteristic, when viewed from certain directions.',
+                                ua: 'Сектори з кольорового скла або пластику іноді встановлюють у ліхтарях певних вогнів для позначення небезпечних вод. Ці вогні показують різні кольори при спостереженні з різних пеленгів. Сектор змінює колір вогню, але НЕ змінює його фазову характеристику.'
+                            },
+                            {
+                                num: 'Sector Colours (Конспект)',
+                                en: 'Sector light usually uses a combination of white, red and green colours:',
+                                ua: 'Секторний вогонь зазвичай використовує комбінацію білого, червоного та зеленого кольорів:',
+                                listItems: [
+                                    { code: 'White = Safe', en: 'White sector marks the middle of the safe deep-water channel', ua: 'Білий сектор = безпечно: позначає середину безпечного глибоководного каналу (фарватеру)' },
+                                    { code: 'Red & Green = Danger', en: 'Red and green sectors = warning / danger: mark the edges of the safe channel or indicate nearby hazards like shallow water and rocks', ua: 'Червоний та зелений сектори = попередження / небезпека: позначають краї безпечного каналу або вказують на сусідні небезпеки, такі як мілководдя та скелі' }
+                                ]
+                            },
+                            {
+                                num: 'Leading Lights',
+                                en: 'Leading lights are a pair of lights placed at different distances and elevations to guide ships safely through narrow channels, fairways or harbor entrances.',
+                                ua: 'Створні вогні (Leading lights) — це пара вогнів, розміщених на різних відстанях та висотах для безпечного проведення суден через вузькі канали, фарватери або входи в гавань.',
+                                listItems: [
+                                    { code: 'Front & Rear', en: 'Leading lights consist of: the front light and the rear light. Rear light is always higher than the front light.', ua: 'Складаються з переднього вогню (front light) та заднього вогню (rear light). Задній вогонь завжди вищий за передній.' },
+                                    { code: 'In line / Just open', en: 'Leading lights form an alignment. When the two lights appear directly aligned vertically (one above the other — "in line"), the vessel is on the safe centerline course. Slightly apart = "just open".', ua: 'Утворюють створну лінію (alignment). Коли два вогні розташовані вертикально один над іншим ("in line" — на створі), судно йде безпечним осьовим курсом. Коли вони трохи розійшлися — "just open".' }
+                                ]
+                            },
+                            {
+                                num: 'Chart Notation',
+                                en: 'Example from chart ("Seguin Island Light"): F 180ft 18M HORN (MRASS)',
+                                ua: 'Приклад розшифровки позначення вогню на морській карті (маяк Seguin Island):',
+                                listItems: [
+                                    { code: 'F (White)', en: 'It shows a fixed light (F). The color of the light is white (default).', ua: 'Постійний вогонь (Fixed). Колір вогню — білий (за замовчуванням).' },
+                                    { code: '180ft', en: 'It is located 180 feet above sea level (elevation).', ua: 'Висота вогню становить 180 футів над рівнем моря (elevation).' },
+                                    { code: '18M', en: 'It has a nominal range of 18 NM (range of visibility).', ua: 'Має номінальну дальність видимості 18 морських миль.' },
+                                    { code: 'HORN', en: 'Auxiliary sound signal (fog horn).', ua: 'Допоміжний звуковий туманний сигнал (горн).' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'short',
+                tabName: '2. Короткі варіанти (Шпаргалка / Short)',
+                title: 'Вкладка 2: Короткі варіанти — Шпаргалка для швидкого заучування',
+                subtitle: 'Максимально стислі визначення кожного терміна та вогню (EN + UA) • Зручно для повторення перед парою',
+                cards: [
+                    {
+                        badge: 'Шпаргалка • Частина 1: Терміни та Фази вогнів',
+                        titleEn: 'Short Definitions — Basic Terms & Light Characteristics',
+                        titleUa: 'Короткі визначення — Базові терміни та фазові характеристики вогнів',
+                        svg: svgFlashingTypes(),
+                        points: [
+                            {
+                                num: 'Basic Terms',
+                                en: 'Core parameters of any navigational light:',
+                                ua: 'Основні параметри будь-якого навігаційного вогню:',
+                                listItems: [
+                                    { code: 'Colour', en: 'White (default), red, green, or yellow.', ua: 'Білий (за замовчуванням), червоний, зелений або жовтий.' },
+                                    { code: 'Period', en: 'Time (in seconds) for one complete cycle of changes.', ua: 'Час (у секундах) одного повного циклу змін.' },
+                                    { code: 'Phase', en: 'The pattern of changes within one period.', ua: 'Схема (патерн) змін протягом одного періоду.' },
+                                    { code: 'Racon', en: 'Radar transponder beacon.', ua: 'Радіомаяк (радіолокаційний маяк-відповідач).' }
+                                ]
+                            },
+                            {
+                                num: 'Flash Rates',
+                                en: 'Fixed & Flashing light characteristics (short version):',
+                                ua: 'Постійні та проблискові характеристики (коротко):',
+                                listItems: [
+                                    { code: 'F (Fixed)', en: 'Always on, steady unblinking light.', ua: 'Світить постійно та немиготливо.' },
+                                    { code: 'Fl (Flashing)', en: 'Light < Darkness (max 30 flashes/min).', ua: 'Світло < Темряви (не більше 30 спалахів/хв).' },
+                                    { code: 'Q (Quick)', en: '50–79 flashes/min (usually 50 or 60).', ua: '50–79 спалахів/хв (зазвичай 50 або 60).' },
+                                    { code: 'VQ (Very Quick)', en: '80–159 flashes/min (usually 100 or 120).', ua: '80–159 спалахів/хв (зазвичай 100 або 120).' },
+                                    { code: 'UQ (Ultra Quick)', en: '160+ flashes/min (usually 240–300).', ua: '160 і більше спалахів/хв (зазвичай 240–300).' },
+                                    { code: 'IQ (Interrupted)', en: 'Quick flashing with one moment of darkness in a period.', ua: 'Швидкий проблисковий з однією темною паузою в періоді.' }
+                                ]
+                            },
+                            {
+                                num: 'Other Rhythms',
+                                en: 'Isophase, Group, Occulting, Alternating, Morse & Long-Flashing:',
+                                ua: 'Ізофазний, Груповий, Затемнюваний, Змінний, Морзе та Довгий проблисковий:',
+                                listItems: [
+                                    { code: 'Iso (Isophase)', en: 'Duration of light = duration of darkness.', ua: 'Тривалість світла = тривалості темряви.' },
+                                    { code: 'Gp Fl (x+x)', en: 'Combination of two flash patterns in one period.', ua: 'Комбінація двох груп спалахів в одному періоді.' },
+                                    { code: 'Occ (Occulting)', en: 'Light > Darkness (more on than off).', ua: 'Світло > Темряви (більше увімкнений, ніж вимкнений).' },
+                                    { code: 'AL (Alternating)', en: 'Light that changes colours (e.g. ALTWG).', ua: 'Вогонь, що змінює кольори.' },
+                                    { code: 'Mo (Morse Code)', en: 'Short & long flashes matching a Morse letter (Mo(U) = • • —).', ua: 'Короткі й довгі спалахи за літерою Морзе.' },
+                                    { code: 'LFl (Long-Flash)', en: '1 long flash in a period (duration ≥ 2 seconds).', ua: '1 довгий спалах у періоді (не менше 2 секунд).' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        badge: 'Шпаргалка • Частина 2: Класифікація, Сектори та Створи',
+                        titleEn: 'Short Definitions — Classification, Sector & Leading Lights',
+                        titleUa: 'Короткі визначення — Класифікація, Секторні та Створні вогні',
+                        svg: svgSectorAndLeading(),
+                        points: [
+                            {
+                                num: 'Classification',
+                                en: 'Major, Primary, Secondary & Minor lights (short version):',
+                                ua: 'Основні, Первинні, Вторинні та Другорядні вогні (коротко):',
+                                listItems: [
+                                    { code: 'Major lights', en: 'High intensity & reliability; key coastal/channel/harbour points.', ua: 'Висока інтенсивність і надійність; ключові берегові точки та входи.' },
+                                    { code: 'Primary lights', en: 'Very strong, long-range major lights for landfalls (in Light List).', ua: 'Потужні далекобійні вогні для підходу з моря.' },
+                                    { code: 'Secondary lights', en: 'Shorter-range major lights at harbour/river entrances.', ua: 'Основні вогні меншої дальності біля входів у гавані/річки.' },
+                                    { code: 'Minor lights', en: 'Low/moderate intensity inside harbours, channels & rivers.', ua: 'Низька/помірна інтенсивність всередині гаваней та каналів.' }
+                                ]
+                            },
+                            {
+                                num: 'Sector Light',
+                                en: 'Shows different colours from different bearings (characteristic stays the same):',
+                                ua: 'Показує різні кольори з різних пеленгів (характеристика не змінюється):',
+                                listItems: [
+                                    { code: 'White sector', en: 'Safe — marks the middle of the deep-water channel.', ua: 'Безпечно — позначає середину глибоководного фарватеру.' },
+                                    { code: 'Red / Green', en: 'Warning / danger — marks channel edges or shallow water/rocks.', ua: 'Небезпека — позначає краї каналу або мілководдя і скелі.' }
+                                ]
+                            },
+                            {
+                                num: 'Leading Lights',
+                                en: 'A pair of lights (front + higher rear light) forming an alignment:',
+                                ua: 'Пара вогнів (передній + вищий задній), що утворюють створ (alignment):',
+                                listItems: [
+                                    { code: 'In line', en: 'Aligned vertically (one above the other) = on safe centerline course.', ua: 'Один над іншим по вертикалі = судно на безпечному курсі.' },
+                                    { code: 'Just open', en: 'Lights slightly apart = vessel is off the centerline.', ua: 'Вогні трохи розійшлися = судно зійшло з лінії створу.' }
+                                ]
+                            },
+                            {
+                                num: 'F 180ft 18M',
+                                en: 'Fixed white light, 180 feet elevation above sea level, 18 NM nominal range.',
+                                ua: 'Постійний білий вогонь, висота 180 футів над рівнем моря, дальність видимості 18 морських миль.'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // РЕНДЕРИНГ ИНТЕРФЕЙСА И УПРАВЛЕНИЕ СОСТОЯНИЕМ
+        // =========================================================================
+        let activeTopicIdx = 0;
+        let showAllMode = false;
+        let hideUaMode = false;
+
+        function initApp() {
+            renderNavTabs();
+            renderMainContent();
+        }
+
+        function renderNavTabs() {
+            const nav = document.getElementById('navTabs');
+            nav.innerHTML = TOPICS.map((t, idx) => {
+                const isActive = (!showAllMode && idx === activeTopicIdx);
+                return `
+                    <button onclick="selectTab(${idx})" class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border ${
+                        isActive
+                            ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-600/20'
+                            : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }">
+                        <span>${t.tabName}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectTab(idx) {
+            showAllMode = false;
+            activeTopicIdx = idx;
+            document.getElementById('btnViewAll').textContent = '📋 Показати обидві вкладки підряд';
+            renderNavTabs();
+            renderMainContent();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleViewAll() {
+            showAllMode = !showAllMode;
+            const btn = document.getElementById('btnViewAll');
+            btn.textContent = showAllMode ? '🎯 Повернутися до вкладок (по 1 вкладці)' : '📋 Показати обидві вкладки підряд';
+            renderNavTabs();
+            renderMainContent();
+        }
+
+        function toggleTranslation() {
+            hideUaMode = !hideUaMode;
+            document.body.classList.toggle('hide-ua', hideUaMode);
+            document.getElementById('eyeIcon').textContent = hideUaMode ? '🙈' : '👁️';
+            document.getElementById('eyeText').textContent = hideUaMode ? 'Показати переклад (UA)' : 'Приховати переклад (UA)';
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = isDark ? 'Світла тема' : 'Темна тема';
+        }
+
+        function renderTopicSection(topic) {
+            const cardsHtml = topic.cards.map(card => {
+                const pointsHtml = card.points.map(pt => {
+                    let subListHtml = '';
+                    if (pt.listItems && pt.listItems.length > 0) {
+                        subListHtml = `
+                            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 pl-1">
+                                ${pt.listItems.map(item => `
+                                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 shadow-sm flex items-start gap-2.5">
+                                        <span class="px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-xs font-bold shrink-0 mt-0.5">${item.code}</span>
+                                        <div class="min-w-0">
+                                            <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white leading-tight">${item.en}</div>
+                                            <div class="text-xs text-emerald-700 dark:text-emerald-400 font-medium mt-0.5 ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${item.ua}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 transition hover:border-blue-400 dark:hover:border-blue-500/60">
+                            <div class="flex items-start gap-3">
+                                <span class="px-2.5 py-0.5 rounded-md bg-blue-600/15 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border border-blue-500/30 font-mono text-xs font-bold shrink-0 mt-0.5">
+                                    ${pt.num}
+                                </span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug">
+                                        ${pt.en}
+                                    </p>
+                                    <p class="text-xs sm:text-sm text-blue-700 dark:text-amber-300/90 font-medium mt-1 ua-trans" onclick="this.classList.toggle('revealed')">
+                                        🇺🇦 ${pt.ua}
+                                    </p>
+                                    ${subListHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+                        <!-- Шапка карточки -->
+                        <div class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700/80 px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">${card.titleEn}</h3>
+                                <p class="text-xs sm:text-sm text-blue-700 dark:text-blue-300 font-medium ua-trans" onclick="this.classList.toggle('revealed')">🇺🇦 ${card.titleUa}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-600/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border border-blue-500/30">
+                                ${card.badge}
+                            </span>
+                        </div>
+
+                        <!-- Контент карточки: Слева SVG-схема, Справа пункты -->
+                        <div class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                            <div class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-28 bg-slate-50 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center shadow-inner">
+                                ${card.svg}
+                                <span class="mt-2 text-[11px] text-slate-400 dark:text-slate-500 font-mono text-center">
+                                    Векторна діаграма характеристик вогнів (SVG)
+                                </span>
+                            </div>
+
+                            <div class="lg:col-span-7 xl:col-span-8 space-y-3">
+                                ${pointsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <section class="space-y-5">
+                    <div class="border-l-4 border-blue-600 pl-4 py-1">
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">${topic.title}</h2>
+                        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">${topic.subtitle}</p>
+                    </div>
+                    <div class="space-y-6">
+                        ${cardsHtml}
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderMainContent() {
+            const container = document.getElementById('mainContainer');
+            if (showAllMode) {
+                container.innerHTML = TOPICS.map(t => renderTopicSection(t)).join('<hr class="border-slate-300 dark:border-slate-800 my-10"/>');
+            } else {
+                container.innerHTML = renderTopicSection(TOPICS[activeTopicIdx]);
+            }
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
