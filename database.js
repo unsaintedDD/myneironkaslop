@@ -40,6 +40,11 @@ const pagesData = [
         "category": "важное"
     },
     {
+        "title": "Light_Determ",
+        "url": "page/light_determ.html",
+        "category": "важное"
+    },
+    {
         "title": "Rozklad 02 16.11.26",
         "url": "page/rozklad 02-16.11.26.html",
         "category": "важное"
